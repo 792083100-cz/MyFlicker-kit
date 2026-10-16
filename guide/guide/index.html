@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyFlicker Kit — 把「我有个需求」变成能点的原型</title>
+  <link rel="icon" href="assets/myflicker.svg" />
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <link rel="stylesheet" href="../components.css" />
+  <style>
+    /* ══════════════════ BASE ══════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    .wrap { width: 100%; max-width: 1040px; margin: 0 auto; padding: 0 var(--spacer-32); }
+
+    /* ══════════════════ KID ICONS ══════════════════ */
+    .icon {
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      width: 16px; height: 16px;
+      -webkit-mask-size: contain; mask-size: contain;
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      -webkit-mask-position: center; mask-position: center;
+      background-color: currentColor;
+    }
+    .icon--12 { width: var(--icon-size-12); height: var(--icon-size-12); }
+    .icon--14 { width: var(--icon-size-14); height: var(--icon-size-14); }
+    .icon--20 { width: var(--icon-size-20); height: var(--icon-size-20); }
+
+    .i-flash      { -webkit-mask-image: url(../assets/icons/kid/flash.svg);       mask-image: url(../assets/icons/kid/flash.svg); }
+    .i-canvas     { -webkit-mask-image: url(../assets/icons/kid/canvas.svg);      mask-image: url(../assets/icons/kid/canvas.svg); }
+    .i-layers     { -webkit-mask-image: url(../assets/icons/kid/layers.svg);      mask-image: url(../assets/icons/kid/layers.svg); }
+    .i-pushto     { -webkit-mask-image: url(../assets/icons/kid/pushto.svg);      mask-image: url(../assets/icons/kid/pushto.svg); }
+    .i-copy       { -webkit-mask-image: url(../assets/icons/kid/copy.svg);        mask-image: url(../assets/icons/kid/copy.svg); }
+    .i-check      { -webkit-mask-image: url(../assets/icons/kid/check.svg);       mask-image: url(../assets/icons/kid/check.svg); }
+    .i-arrowdown  { -webkit-mask-image: url(../assets/icons/kid/arrowdown.svg);   mask-image: url(../assets/icons/kid/arrowdown.svg); }
+    .i-appearance { -webkit-mask-image: url(../assets/icons/kid/appearance.svg);  mask-image: url(../assets/icons/kid/appearance.svg); }
+    .i-base       { -webkit-mask-image: url(../assets/icons/kid/base.svg);        mask-image: url(../assets/icons/kid/base.svg); }
+    .i-picture    { -webkit-mask-image: url(../assets/icons/kid/picture.svg);     mask-image: url(../assets/icons/kid/picture.svg); }
+    .i-rule       { -webkit-mask-image: url(../assets/icons/kid/rule.svg);        mask-image: url(../assets/icons/kid/rule.svg); }
+    .i-start      { -webkit-mask-image: url(../assets/icons/kid/start1.svg);      mask-image: url(../assets/icons/kid/start1.svg); }
+    .i-send       { -webkit-mask-image: url(../assets/icons/kid/send.svg);        mask-image: url(../assets/icons/kid/send.svg); }
+    .i-add        { -webkit-mask-image: url(../assets/icons/kid/add.svg);         mask-image: url(../assets/icons/kid/add.svg); }
+    .i-arrowleft  { -webkit-mask-image: url(../assets/icons/kid/arrowleft.svg);   mask-image: url(../assets/icons/kid/arrowleft.svg); }
+    .i-arrowright { -webkit-mask-image: url(../assets/icons/kid/arrowright.svg);  mask-image: url(../assets/icons/kid/arrowright.svg); }
+    .i-skill      { -webkit-mask-image: url(../assets/icons/kid/skill.svg);       mask-image: url(../assets/icons/kid/skill.svg); }
+    .i-models     { -webkit-mask-image: url(../assets/icons/kid/models.svg);      mask-image: url(../assets/icons/kid/models.svg); }
+    .i-closefolder{ -webkit-mask-image: url(../assets/icons/kid/closefolder.svg); mask-image: url(../assets/icons/kid/closefolder.svg); }
+    .i-jumppage   { -webkit-mask-image: url(../assets/icons/kid/jumppage.svg);    mask-image: url(../assets/icons/kid/jumppage.svg); }
+    .i-lightdark  { -webkit-mask-image: url(../assets/icons/kid/lightanddarkswitching.svg); mask-image: url(../assets/icons/kid/lightanddarkswitching.svg); }
+    /* ══════════════════ HEADER ══════════════════ */
+    .site-head {
+      position: sticky; top: 0; z-index: 50;
+      background: transparent;
+      transition: background 200ms ease, backdrop-filter 200ms ease;
+    }
+    .site-head.is-scrolled {
+      background: color-mix(in srgb, var(--bg-base-secondary) 80%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .head-inner { display: flex; align-items: center; height: 56px; gap: var(--spacer-24); }
+    .logo {
+      display: flex; align-items: center; gap: var(--spacer-8);
+      font-size: var(--body-md-medium-font-size);
+      font-weight: var(--font-weight-strong);
+    }
+    .logo img { width: 24px; height: 24px; border-radius: var(--radius-6); }
+    .head-nav { display: flex; align-items: center; gap: var(--spacer-24); margin-left: var(--spacer-16); }
+    .head-nav a { color: var(--text-secondary); transition: color 120ms ease; }
+    .head-nav a:hover { color: var(--text-default); }
+    .head-actions { margin-left: auto; display: flex; align-items: center; gap: var(--spacer-8); }
+
+    /* ══════════════════ HERO ══════════════════ */
+    .hero-wrap {
+      background: linear-gradient(
+        to bottom,
+        var(--bg-base-secondary) 0%,
+        var(--bg-base-default) 100%
+      );
+    }
+    .hero { padding: var(--spacer-64) 0 var(--spacer-48); }
+    .hero-inner { display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: var(--spacer-6);
+      height: 24px; padding: 0 var(--spacer-10);
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-neutral-l1);
+      background: var(--bg-base-secondary);
+      color: var(--text-secondary);
+      font-size: var(--body-xs-font-size);
+    }
+    .eyebrow .icon { width: 12px; height: 12px; color: var(--icon-secondary); }
+    .hero-title {
+      margin-top: var(--spacer-24);
+      font-family: var(--font-family-heading);
+      font-size: clamp(32px, 5vw, 52px);
+      line-height: 1.14;
+      font-weight: var(--font-weight-strong);
+      letter-spacing: -0.02em;
+    }
+    .hero-sub {
+      margin-top: var(--spacer-16);
+      font-size: var(--body-md-medium-font-size);
+      line-height: var(--body-md-medium-line-height);
+      font-weight: var(--font-weight-default);
+      color: var(--text-secondary);
+    }
+    .hero-cta { margin-top: var(--spacer-24); display: flex; align-items: center; gap: var(--spacer-12); }
+
+    /* hero 视觉：模拟对话框 */
+    .composer {
+      width: 100%; max-width: 720px; margin: var(--spacer-40) auto 0;
+      background: var(--bg-base-default);
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-12);
+      padding: var(--spacer-12);
+      text-align: left;
+      box-shadow: 0 4px 13.7px 6px color-mix(in srgb, var(--text-default) 5%, transparent);
+    }
+    .composer-text { min-height: 44px; }
+    #composerText { white-space: pre-line; }
+
+    /* 输入框内选中的 Skill chip */
+    .composer-chip {
+      display: inline-flex; align-items: center; gap: var(--spacer-4);
+      max-width: 180px;
+      height: 22px; padding: 0 var(--spacer-6);
+      margin-right: var(--spacer-6);
+      border-radius: var(--radius-4);
+      background: var(--status-primary-surface-l1);
+      color: var(--color-info);
+      vertical-align: -5px;
+      white-space: nowrap;
+    }
+    .composer-chip .icon { width: 14px; height: 14px; }
+    .composer-chip .i-skill { background-color: var(--color-info); }
+    .composer-chip-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+
+    .composer-caret {
+      display: inline-block; width: 1px; height: 14px;
+      background: var(--text-default); vertical-align: -2px; margin-left: 1px;
+      animation: mf-blink 1s step-end infinite;
+    }
+    @keyframes mf-blink { 50% { opacity: 0; } }
+    .composer-bar { display: flex; align-items: center; gap: var(--spacer-4); margin-top: var(--spacer-12); }
+    .composer-btn {
+      width: 28px; height: 28px; border-radius: var(--radius-8);
+      border: none; background: transparent; color: var(--icon-secondary);
+      display: grid; place-items: center; cursor: pointer;
+    }
+    .composer-btn:hover { background: var(--bg-overlay-l2); }
+    .composer-action {
+      display: inline-flex; align-items: center; gap: var(--spacer-6);
+      height: 28px; padding: 0 var(--spacer-8);
+      border-radius: var(--radius-8); border: none; background: transparent; cursor: pointer;
+      color: var(--text-secondary);
+      font-family: var(--body-sm-font-family); font-size: var(--body-sm-font-size);
+    }
+    .composer-action:hover { background: var(--bg-overlay-l2); }
+    .composer-action .icon { width: 14px; height: 14px; }
+    .composer-send {
+      margin-left: auto; width: 28px; height: 28px;
+      border-radius: var(--radius-8); border: none;
+      background: var(--bg-brand); color: var(--icon-onbrand);
+      display: grid; place-items: center; cursor: pointer;
+    }
+    /* ══════════════════ SECTION ══════════════════ */
+    .sec { padding: var(--spacer-64) 0; border-top: 1px solid var(--border-neutral-l1); }
+    #start { border-top: none; }
+    .sec--tint { background: var(--bg-base-secondary); }
+    .sec-head { display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .sec-kicker { color: var(--text-tertiary); font-size: var(--body-xs-font-size); }
+    .sec-title {
+      margin-top: var(--spacer-8);
+      font-family: var(--font-family-heading);
+      font-size: clamp(22px, 3vw, 28px);
+      line-height: 1.28;
+      font-weight: var(--font-weight-strong);
+    }
+    .sec-body {
+      margin-top: var(--spacer-8);
+      color: var(--text-secondary);
+      font-size: var(--body-md-medium-font-size);
+      line-height: var(--body-md-medium-line-height);
+    }
+
+    /* Tab 四宫格 */
+    .quad {
+      display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--spacer-16); margin-top: var(--spacer-24);
+    }
+    .qcard {
+      display: flex; flex-direction: column; gap: var(--spacer-8);
+      padding: var(--spacer-16);
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-12);
+      background: var(--bg-base-default);
+    }
+    .qcard .icon { color: var(--icon-default); }
+    .qcard:nth-child(1) .icon { color: var(--status-primary-default); }
+    .qcard:nth-child(2) .icon { color: var(--purple-fill); }
+    .qcard:nth-child(3) .icon { color: var(--accent-teal); }
+    .qcard:nth-child(4) .icon { color: var(--status-warning-default); }
+    .qcard-name { font-weight: var(--font-weight-medium); }
+    .qcard-desc { color: var(--text-secondary); font-size: var(--body-xs-font-size); line-height: var(--body-xs-line-height); }
+
+    /* ══════════════════ CODE ══════════════════ */
+    .codebox { position: relative; }
+    .codebox .mf-code { white-space: pre-wrap; word-break: break-word; padding-right: 68px; }
+    .codebox-copy { position: absolute; top: var(--spacer-8); right: var(--spacer-8); }
+    .codebox-copy .icon { color: var(--icon-secondary); }
+    .code-ph { color: var(--text-tertiary); }
+    .codebox--wide { margin-top: var(--spacer-40); }
+    .codebox--wide .codebox-copy { top: 50%; transform: translateY(-50%); }
+    /* skill codebox: chip 内联进 mf-code */
+    .mf-code--prompt {
+      display: flex; flex-direction: column;
+      gap: 0;
+    }
+    .code-prompt-first {
+      display: flex; align-items: baseline; gap: var(--spacer-8);
+      flex-wrap: wrap;
+    }
+    .code-prompt-body {
+      margin-top: var(--spacer-12);
+      font-family: var(--code-editor-font-family);
+      font-size: var(--code-editor-font-size);
+      line-height: var(--code-editor-line-height);
+      white-space: pre-wrap; word-break: break-word;
+      background: none; border: none; padding: 0; color: inherit;
+    }
+    .code-skill-chip {
+      display: inline-flex; align-items: center; gap: var(--spacer-4);
+      height: 22px; padding: 0 var(--spacer-8);
+      border-radius: var(--radius-full);
+      background: color-mix(in srgb, var(--color-info) 12%, transparent);
+      color: var(--color-info);
+      font-size: var(--body-xs-font-size);
+      font-family: var(--code-editor-font-family);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .code-skill-chip .icon { width: 12px; height: 12px; }
+    /* ══════════════════ SKILL CARDS ══════════════════ */
+    /* ══════════════════ SKILL TABS ══════════════════ */
+    .stab { margin-top: var(--spacer-40); }
+    .stab-nav {
+      display: inline-flex;
+      align-self: center;
+      padding: var(--spacer-4);
+      background: var(--bg-overlay-l1);
+      border-radius: var(--radius-12);
+      gap: var(--spacer-4);
+    }
+    .stab-nav-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: var(--spacer-24);
+    }
+    .stab-btn {
+      position: relative;
+      display: inline-flex; flex-direction: row; align-items: center;
+      padding: var(--spacer-8) var(--spacer-12);
+      background: transparent;
+      border: none; border-radius: var(--radius-8);
+      cursor: pointer; text-align: left;
+      transition: background 150ms ease;
+    }
+    .stab-btn:hover { background: var(--bg-overlay-l1); }
+    .stab-btn.is-active {
+      background: var(--bg-base-default);
+      box-shadow: 0 1px 4px color-mix(in srgb, var(--text-default) 10%, transparent);
+    }
+    .stab-icon-wrap { display: none; }
+    .stab-btn.is-active .stab-icon-wrap { display: contents; }
+    .stab-icon { width: 16px; height: 16px; flex-shrink: 0; background-color: var(--icon-secondary); transition: background-color 120ms ease; }
+    .stab-btn.is-active .stab-icon,
+    .stab-btn:hover .stab-icon { background-color: var(--icon-default); }
+    .stab-label {
+      display: inline-flex; align-items: center; gap: var(--spacer-8);
+      font-weight: var(--font-weight-medium);
+      font-size: var(--body-sm-font-size);
+      color: var(--text-secondary);
+      transition: color 120ms ease;
+    }
+    .stab-btn.is-active .stab-label { color: var(--text-default); }
+
+    .stab-panels { margin-top: var(--spacer-24); }
+    .stab-panel { display: none; }
+    .stab-panel.is-active {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: var(--spacer-32);
+      padding: var(--spacer-24);
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-12);
+      background: var(--bg-base-default);
+    }
+
+    /* 左：身份 */
+    .skill-id { display: flex; flex-direction: column; }
+    .skill-name {
+      margin-top: var(--spacer-4);
+      display: inline-flex; align-items: center;
+      align-self: flex-start;
+      padding: var(--spacer-4) var(--spacer-8);
+      border: 1px solid var(--border-neutral-l2);
+      border-radius: var(--radius-6);
+      background: var(--bg-overlay-l1);
+      font-family: var(--code-editor-font-family);
+      font-size: var(--body-sm-font-size);
+      font-weight: var(--font-weight-medium);
+      color: var(--text-default);
+      word-break: break-all;
+    }
+    .skill-purpose {
+      margin-top: var(--spacer-16);
+      font-size: var(--body-md-medium-font-size);
+      line-height: var(--body-md-medium-line-height);
+      font-weight: var(--font-weight-medium);
+    }
+    .skill-when { margin-top: var(--spacer-8); color: var(--text-secondary); font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); }
+    .skill-out {
+      margin-top: auto; padding-top: var(--spacer-16);
+      display: flex; align-items: center; gap: var(--spacer-6);
+      color: var(--text-tertiary); font-size: var(--body-xs-font-size);
+      white-space: nowrap;
+    }
+    .skill-out code { font-family: var(--code-editor-font-family); color: var(--text-secondary); }
+
+    /* 右：怎么说 */
+    .skill-say { display: flex; flex-direction: column; }
+    .skill-say-title { margin-bottom: var(--spacer-8); color: var(--text-tertiary); font-size: var(--body-xs-font-size); }
+    .skill-tip {
+      margin-top: var(--spacer-12);
+      display: flex; align-items: flex-start; gap: var(--spacer-6);
+      color: var(--text-tertiary); font-size: var(--body-xs-font-size);
+      line-height: var(--body-xs-line-height);
+    }
+    .skill-tip .icon { width: 12px; height: 12px; margin-top: 3px; flex-shrink: 0; }
+    /* ══════════════════ FAQ ══════════════════ */
+    .faq {
+      margin: var(--spacer-40) auto 0;
+      border-radius: var(--radius-12);
+      background: var(--bg-base-default);
+      overflow: hidden;
+    }
+    .faq-item + .faq-item { border-top: 1px solid var(--border-neutral-l1); }
+    .faq-q {
+      display: flex; align-items: center; gap: var(--spacer-8);
+      width: 100%; padding: 14px 0;
+      background: transparent; border: none; cursor: pointer; text-align: left;
+      font-family: inherit;
+      font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height);
+      color: var(--text-default);
+    }
+    .faq-q-text { flex: 1; min-width: 0; font-weight: var(--font-weight-medium); font-size: var(--body-md-font-size); }
+    .faq-chevron {
+      display: grid; place-items: center; flex-shrink: 0;
+      width: 24px; height: 24px;
+      color: var(--icon-secondary);
+      font-size: 16px; line-height: 1;
+      transition: color 120ms ease;
+    }
+    .faq-chevron::before { content: "+"; font-weight: 300; }
+    .faq-item.is-open .faq-chevron::before { content: "×"; }
+    .faq-item.is-open .faq-chevron { color: var(--icon-default); }
+    .faq-a { display: none; padding: 0 0 var(--spacer-16); color: var(--text-secondary); font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); }
+    .faq-item.is-open .faq-a { display: block; }
+    .faq-a code {
+      font-family: var(--code-editor-font-family);
+      font-size: var(--body-xs-font-size);
+      padding: 1px 4px;
+      border-radius: var(--radius-4);
+      background: var(--bg-overlay-l1);
+      color: var(--text-default);
+    }
+
+    /* ══════════════════ FOOTER ══════════════════ */
+    .site-foot {
+      border-top: 1px solid var(--border-neutral-l1);
+      padding: var(--spacer-24) 0;
+    }
+    .foot-inner {
+      display: flex; align-items: center; gap: var(--spacer-16);
+      color: var(--text-tertiary); font-size: var(--body-xs-font-size);
+    }
+    .foot-links { margin-left: auto; display: flex; align-items: center; gap: var(--spacer-16); }
+    .foot-links a { transition: color 120ms ease; }
+    .foot-links a:hover { color: var(--text-default); }
+    /* ══════════════════ CAROUSEL ══════════════════ */
+    .carousel {
+      margin-top: var(--spacer-24);
+      border-radius: var(--radius-12);
+      overflow: hidden;
+      background: var(--bg-base-default);
+    }
+    .carousel-viewport {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius-12);
+    }
+    .carousel-viewport:hover .carousel-arrow { opacity: 1; }
+    .carousel-track {
+      display: flex;
+      transition: transform 400ms cubic-bezier(0.4,0,0.2,1);
+    }
+    .carousel-slide {
+      min-width: 100%;
+      width: 100%;
+      display: block;
+      object-fit: cover;
+      aspect-ratio: 16/9;
+    }
+    .carousel-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 36px; height: 36px; border-radius: var(--radius-8);
+      border: none; cursor: pointer;
+      background: color-mix(in srgb, var(--bg-base-default) 80%, transparent);
+      backdrop-filter: blur(8px);
+      display: grid; place-items: center;
+      color: var(--icon-default);
+      opacity: 0;
+      transition: opacity 180ms ease, background 120ms ease;
+    }
+    .carousel-arrow:hover { background: var(--bg-base-default); }
+    .carousel-arrow--prev { left: var(--spacer-12); }
+    .carousel-arrow--next { right: var(--spacer-12); }
+    .carousel-arrow .icon { width: 18px; height: 18px; }
+    .carousel-footer {
+      display: flex; justify-content: center; align-items: center;
+      gap: var(--spacer-6);
+      padding: var(--spacer-12) 0;
+      background: var(--bg-base-default);
+    }
+    .carousel-dot {
+      width: 6px; height: 6px; border-radius: 999px;
+      border: none; padding: 0; cursor: pointer;
+      background: var(--border-neutral-l2);
+      transition: width 200ms ease, background 200ms ease;
+    }
+    .carousel-dot.is-active {
+      width: 16px;
+      background: var(--bg-brand);
+    }
+    /* ══════════════════ RESPONSIVE ══════════════════ */
+    @media (max-width: 900px) {
+      .wrap { padding: 0 var(--spacer-16); }
+      .head-nav { display: none; }
+      .sec, .hero { padding: var(--spacer-40) 0; }
+      .quad { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stab-panel.is-active { grid-template-columns: minmax(0, 1fr); gap: var(--spacer-20); }
+      .stab-nav { flex-direction: column; gap: var(--spacer-4); }
+    }
+    @media (max-width: 560px) {
+      .quad { grid-template-columns: 1fr; }
+      .head-actions .mf-btn--secondary { display: none; }
+      .foot-inner { flex-direction: column; align-items: flex-start; gap: var(--spacer-12); }
+      .foot-links { margin-left: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+<div class="hero-wrap">
+<header class="site-head">
+  <div class="wrap head-inner">
+    <a class="logo" href="#top"><img src="../assets/myflicker.svg" alt="" />MyFlicker Kit</a>
+    <nav class="head-nav">
+      <a href="#start">打开设计系统</a>
+      <a href="#skills">三个 Skill</a>
+      <a href="#faq">常见问题</a>
+    </nav>
+    <div class="head-actions">
+      <button class="mf-btn mf-btn--md mf-btn--tertiary" id="themeToggle" type="button" aria-label="切换主题">
+        <span class="icon icon--14 i-lightdark"></span>
+      </button>
+      <a class="mf-btn mf-btn--md mf-btn--primary" href="https://cdnfile.corp.kuaishou.com/kc/files/a/myflicker-cdn-default/agent-file-1788416772533358537.html" target="_blank" rel="noopener">
+        <span class="icon icon--14 i-jumppage"></span>设计系统
+      </a>
+    </div>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="wrap hero-inner">
+    <span class="eyebrow"><span class="icon i-flash"></span>3 个 Skill · 一套设计系统</span>
+    <h1 class="hero-title">把「我有个需求」变成能点的原型</h1>
+    <p class="hero-sub">在 MyFlicker 对话框里描述需求，直接拿到高保真交互原型。</p>
+    <div class="hero-cta">
+      <a class="mf-btn mf-btn--lg mf-btn--primary" href="#start">
+        <span class="icon icon--14 i-start"></span>三分钟上手
+      </a>
+      <a class="mf-btn mf-btn--lg mf-btn--secondary" href="#skills">看三个 Skill</a>
+    </div>
+
+    <div class="composer">
+      <div class="composer-text"><span class="composer-chip" id="composerChip" hidden><span class="icon i-skill"></span><span class="composer-chip-name">MyFlicker-AIUI-Kit</span></span><span id="composerText"></span></div>
+      <div class="composer-bar">
+        <button class="composer-btn" type="button" aria-label="添加"><span class="icon i-add"></span></button>
+        <button class="composer-action" type="button"><span class="icon i-skill"></span>Skills</button>
+        <button class="composer-action" type="button"><span class="icon i-models"></span>Opus 5</button>
+        <button class="composer-send" type="button" aria-label="发送"><span class="icon i-send"></span></button>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<section class="sec" id="start">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-kicker">第一步</div>
+      <h2 class="sec-title">先打开设计系统，看看手里有什么</h2>
+      <p class="sec-body">在对话框发这句话，AI 自动起服务并打开浏览器。</p>
+    </div>
+
+    <div class="codebox codebox--wide">
+      <pre class="mf-code">帮我打开设计系统</pre>
+      <button class="mf-btn mf-btn--sm mf-btn--secondary codebox-copy" data-copy>
+        <span class="icon icon--12 i-copy"></span><span>复制</span>
+      </button>
+    </div>
+
+    <div class="quad">
+      <div class="qcard">
+        <span class="icon icon--20 i-appearance"></span>
+        <div class="qcard-name">主题</div>
+        <div class="qcard-desc">品牌色板、颜色 Token</div>
+      </div>
+      <div class="qcard">
+        <span class="icon icon--20 i-base"></span>
+        <div class="qcard-name">组件 <span class="mf-tag mf-tag--success">最常用</span></div>
+        <div class="qcard-desc">基础组件 / 业务组件 / 页面模板</div>
+      </div>
+      <div class="qcard">
+        <span class="icon icon--20 i-picture"></span>
+        <div class="qcard-name">图形</div>
+        <div class="qcard-desc">KID 图标库，可搜索</div>
+      </div>
+      <div class="qcard">
+        <span class="icon icon--20 i-rule"></span>
+        <div class="qcard-name">设计规范</div>
+        <div class="qcard-desc">间距、字体、圆角</div>
+      </div>
+    </div>
+
+    <!-- 设计系统轮播图 -->
+    <div class="carousel" aria-label="设计系统预览">
+      <div class="carousel-viewport" id="carouselViewport">
+        <div class="carousel-track" id="carouselTrack">
+          <img class="carousel-slide" src="assets/1.webp" alt="设计系统截图 1">
+          <img class="carousel-slide" src="assets/2.webp" alt="设计系统截图 2">
+          <img class="carousel-slide" src="assets/3.webp" alt="设计系统截图 3">
+          <img class="carousel-slide" src="assets/4.webp" alt="设计系统截图 4">
+          <img class="carousel-slide" src="assets/5.webp" alt="设计系统截图 5">
+          <img class="carousel-slide" src="assets/6.webp" alt="设计系统截图 6">
+        </div>
+        <button class="carousel-arrow carousel-arrow--prev" id="carouselPrev" aria-label="上一张">
+          <span class="icon i-arrowleft"></span>
+        </button>
+        <button class="carousel-arrow carousel-arrow--next" id="carouselNext" aria-label="下一张">
+          <span class="icon i-arrowright"></span>
+        </button>
+      </div>
+      <div class="carousel-footer" id="carouselDots">
+        <button class="carousel-dot is-active" data-index="0" aria-label="第 1 张"></button>
+        <button class="carousel-dot" data-index="1" aria-label="第 2 张"></button>
+        <button class="carousel-dot" data-index="2" aria-label="第 3 张"></button>
+        <button class="carousel-dot" data-index="3" aria-label="第 4 张"></button>
+        <button class="carousel-dot" data-index="4" aria-label="第 5 张"></button>
+        <button class="carousel-dot" data-index="5" aria-label="第 6 张"></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec--tint" id="skills">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-kicker">第二步</div>
+      <h2 class="sec-title">三个 Skill，按你要做的事挑</h2>
+      <p class="sec-body">灰底等宽的就是 Skill 名称。直接说需求，AI 会自动挑；也可以在话里点名指定。</p>
+    </div>
+
+    <div class="stab" id="skillTab">
+      <!-- Tab 导航 -->
+      <div class="stab-nav-wrap">
+      <div class="stab-nav" role="tablist">
+        <button class="stab-btn is-active" data-tab="0" role="tab">
+          <span class="stab-label"><span class="stab-icon-wrap"><span class="icon i-canvas stab-icon"></span></span>出需求原型</span>
+        </button>
+        <button class="stab-btn" data-tab="1" role="tab">
+          <span class="stab-label"><span class="stab-icon-wrap"><span class="icon i-layers stab-icon"></span></span>加 / 改组件库</span>
+        </button>
+        <button class="stab-btn" data-tab="2" role="tab">
+          <span class="stab-label"><span class="stab-icon-wrap"><span class="icon i-pushto stab-icon"></span></span>发布分享原型</span>
+        </button>
+      </div>
+      </div>
+
+      <!-- Tab 面板 -->
+      <div class="stab-panels">
+        <!-- Panel A -->
+        <div class="stab-panel is-active" data-panel="0">
+          <div class="skill-id">
+            <span class="skill-name">MyFlicker-AIUI-Kit</span>
+            <div class="skill-purpose">出需求原型</div>
+            <div class="skill-when">想快速拿到一个可点击的高保真原型，给研发或老板对齐。</div>
+            <div class="skill-out">
+              <span class="icon icon--12 i-closefolder"></span>产物：产品原型 + PRD 方案
+            </div>
+          </div>
+          <div class="skill-say">
+            <div class="skill-say-title">在对话框里这样说</div>
+            <div class="codebox codebox--skill">
+              <div class="mf-code mf-code--prompt" data-prompt>
+                <span class="code-prompt-first">
+                  <span class="code-skill-chip"><span class="icon i-skill"></span>MyFlicker-AIUI-Kit</span>我有个需求，帮我用 MyFlicker 设计规范出一个交互原型：</span><pre class="code-prompt-body">
+- 背景：<span class="code-ph">[当前是什么功能/场景]</span>
+- 痛点：<span class="code-ph">[哪里不好用]</span>
+- 方案：<span class="code-ph">[期望做成什么样]</span></pre>
+              </div>
+              <button class="mf-btn mf-btn--sm mf-btn--secondary codebox-copy" data-copy>
+                <span class="icon icon--12 i-copy"></span><span>复制</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel B -->
+        <div class="stab-panel" data-panel="1">
+          <div class="skill-id">
+            <span class="skill-name">myflicker-aiui-creator</span>
+            <div class="skill-purpose">加 / 改组件库</div>
+            <div class="skill-when">把验证过的样式沉淀进组件库，或改造已有页面。产物所有人复用。</div>
+            <div class="skill-out">
+              <span class="icon icon--12 i-closefolder"></span>产物：组件样式沉淀进设计系统
+            </div>
+          </div>
+          <div class="skill-say">
+            <div class="skill-say-title">在对话框里这样说</div>
+            <div class="codebox codebox--skill">
+              <div class="mf-code mf-code--prompt" data-prompt>
+                <span class="code-prompt-first">
+                  <span class="code-skill-chip"><span class="icon i-skill"></span>myflicker-aiui-creator</span>帮我新建一个 <span class="code-ph">[组件名]</span> 业务组件：</span><pre class="code-prompt-body">
+- 组件用途：<span class="code-ph">[解决什么问题，在哪个页面出现]</span>
+- 视觉描述：<span class="code-ph">[尺寸、布局、状态，或直接贴截图]</span>
+- 参考页面：<span class="code-ph">[相似组件路径]</span></pre>
+              </div>
+              <button class="mf-btn mf-btn--sm mf-btn--secondary codebox-copy" data-copy>
+                <span class="icon icon--12 i-copy"></span><span>复制</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel C -->
+        <div class="stab-panel" data-panel="2">
+          <div class="skill-id">
+            <span class="skill-name">MyFlicker-prototype-push</span>
+            <div class="skill-purpose">发布分享原型</div>
+            <div class="skill-when">原型做完了，一键生成可分享的快手内网链接发给同事。</div>
+            <div class="skill-out">
+              <span class="icon icon--12 i-closefolder"></span>产物：内网 KCDN 链接
+            </div>
+          </div>
+          <div class="skill-say">
+            <div class="skill-say-title">在对话框里这样说</div>
+            <div class="codebox codebox--skill">
+              <div class="mf-code mf-code--prompt" data-prompt>
+                <span class="code-prompt-first">
+                  <span class="code-skill-chip"><span class="icon i-skill"></span>MyFlicker-prototype-push</span>发布原型</span>
+              </div>
+              <button class="mf-btn mf-btn--sm mf-btn--secondary codebox-copy" data-copy>
+                <span class="icon icon--12 i-copy"></span><span>复制</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="faq">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="sec-title">常见问题</h2>
+    </div>
+    <div class="faq">
+      <div class="faq-item is-open">
+        <button class="faq-q" type="button">
+          <span class="faq-q-text">原型里的样式能直接合入组件库吗？</span>
+          <span class="faq-chevron"></span>
+        </button>
+        <div class="faq-a">
+          不能直接合入，需要经过评审。原型完成后 AI 会提示你哪些样式可以沉淀，确认后再用 <code>myflicker-aiui-creator</code> 正式写入。
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button">
+          <span class="faq-q-text">我想改已有页面（比如对话页），用哪个 Skill？</span>
+          <span class="faq-chevron"></span>
+        </button>
+        <div class="faq-a">
+          用 <code>myflicker-aiui-creator</code>，它知道所有已有组件类名和规范，不会发明新样式。
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button">
+          <span class="faq-q-text">本地预览服务怎么关？</span>
+          <span class="faq-chevron"></span>
+        </button>
+        <div class="faq-a">
+          在终端执行 <code>pkill -f "http.server"</code>。
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-foot">
+  <div class="wrap foot-inner">
+    <span>MyFlicker Kit</span>
+    <span>有问题找 Coci（@陈炯枫）</span>
+    <div class="foot-links">
+      <a href="https://cdnfile.corp.kuaishou.com/kc/files/a/myflicker-cdn-default/agent-file-1788416772533358537.html" target="_blank" rel="noopener">设计系统</a>
+      <a href="https://cdnfile.corp.kuaishou.com/kc/files/a/myflicker-cdn-default/agent-file-1788428068145681793.html" target="_blank" rel="noopener">图标库</a>
+      <a href="#top">回到顶部</a>
+    </div>
+  </div>
+</footer>
+
+
+  <script>
+    // Hero 打字机：先选中 Skill chip，再逐字输入需求
+    (function () {
+      var el = document.getElementById('composerText');
+      var chip = document.getElementById('composerChip');
+      var text = '我有个需求，帮我用 MyFlicker 设计规范出一个交互原型：\n\n- 背景：用户删除对话时没有确认步骤\n- 痛点：误触后对话直接消失，没有撤回机会\n- 方案：点击删除后弹出确认弹窗';
+      var caret = '<span class="composer-caret"></span>';
+
+      function reveal() {
+        chip.hidden = false;
+      }
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        reveal();
+        el.innerHTML = text.replace(/\n/g, '<br>') + caret;
+        return;
+      }
+
+      el.innerHTML = caret;
+      setTimeout(function () {
+        reveal();
+        var i = 0;
+        (function tick() {
+          el.innerHTML = text.slice(0, i).replace(/\n/g, '<br>') + caret;
+          if (i++ < text.length) setTimeout(tick, 32);
+        })();
+      }, 700);
+    })();
+
+    // 复制按钮
+
+    // 轮播
+    (function () {
+      var track = document.getElementById('carouselTrack');
+      var dots  = Array.from(document.querySelectorAll('.carousel-dot'));
+      var prev  = document.getElementById('carouselPrev');
+      var next  = document.getElementById('carouselNext');
+      if (!track) return;
+      var cur = 0, total = dots.length, timer;
+
+      function go(n) {
+        cur = (n + total) % total;
+        track.style.transform = 'translateX(-' + (cur * 100) + '%)';
+        dots.forEach(function (d, i) { d.classList.toggle('is-active', i === cur); });
+      }
+
+      function start() { timer = setInterval(function () { go(cur + 1); }, 5000); }
+
+      dots.forEach(function (d) {
+        d.addEventListener('click', function () { clearInterval(timer); go(+d.dataset.index); start(); });
+      });
+      if (prev) prev.addEventListener('click', function () { clearInterval(timer); go(cur - 1); start(); });
+      if (next) next.addEventListener('click', function () { clearInterval(timer); go(cur + 1); start(); });
+
+      start();
+    })();    document.querySelectorAll('[data-copy]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var box = btn.parentElement.querySelector('[data-prompt]');
+        if (!box) return;
+        var clone = box.cloneNode(true);
+        var chip = clone.querySelector('.code-skill-chip');
+        var skillPrefix = '';
+        if (chip) {
+          skillPrefix = '/' + chip.innerText.trim() + ' ';
+          chip.remove();
+        }
+        navigator.clipboard.writeText(skillPrefix + clone.innerText.trim()).then(function () {
+          var label = btn.querySelector('span:last-child');
+          var ico = btn.querySelector('.icon');
+          label.textContent = '已复制';
+          ico.classList.replace('i-copy', 'i-check');
+          setTimeout(function () {
+            label.textContent = '复制';
+            ico.classList.replace('i-check', 'i-copy');
+          }, 1600);
+        });
+      });
+    });
+
+    // FAQ 手风琴
+    (function () {
+      var items = Array.from(document.querySelectorAll('.faq-item'));
+      items.forEach(function (item) {
+        item.querySelector('.faq-q').addEventListener('click', function () {
+          var isOpen = item.classList.contains('is-open');
+          items.forEach(function (i) { i.classList.remove('is-open'); });
+          if (!isOpen) item.classList.add('is-open');
+        });
+      });
+    })();
+
+    // 明暗切换
+    document.getElementById('themeToggle').addEventListener('click', function () {
+      var root = document.documentElement;
+      root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+
+
+    // Skill Tab 切换
+    (function () {
+      var tab = document.getElementById('skillTab');
+      if (!tab) return;
+      var btns   = Array.from(tab.querySelectorAll('.stab-btn'));
+      var panels = Array.from(tab.querySelectorAll('.stab-panel'));
+      var cur = 0, total = btns.length;
+
+      function go(n) {
+        btns[cur].classList.remove('is-active');
+        panels[cur].classList.remove('is-active');
+        cur = (n + total) % total;
+        btns[cur].classList.add('is-active');
+        panels[cur].classList.add('is-active');
+      }
+
+      btns.forEach(function (btn) {
+        btn.addEventListener('click', function () { go(+btn.dataset.tab); });
+      });
+    })();
+
+    // 顶栏滚动状态
+    (function () {
+      var head = document.querySelector('.site-head');
+      function update() { head.classList.toggle('is-scrolled', window.scrollY > 10); }
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+    })();
+  </script>
+</body>
+</html>
