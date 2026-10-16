@@ -1,2 +1,0 @@
-# SIKA
-Resume
