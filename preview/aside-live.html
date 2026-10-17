@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>FlickerAside</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <link rel="stylesheet" href="../components.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%; width: 100%;
+      background: var(--bg-brand-subtle);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+    body {
+      display: flex;
+      align-items: stretch;
+      height: 100vh;
+      padding: 8px;
+    }
+
+    /* icon CSS mask */
+    .icon {
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      width: 16px; height: 16px;
+      -webkit-mask-size: contain; mask-size: contain;
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      -webkit-mask-position: center; mask-position: center;
+      background-color: currentColor;
+    }
+    .i-newchat            { -webkit-mask-image: url(../assets/icons/kid/newconversation02.svg); mask-image: url(../assets/icons/kid/newconversation02.svg); }
+    .i-search             { -webkit-mask-image: url(../assets/icons/kid/search.svg);            mask-image: url(../assets/icons/kid/search.svg); }
+    .i-schedule           { -webkit-mask-image: url(../assets/icons/kid/scheduledtasks.svg);    mask-image: url(../assets/icons/kid/scheduledtasks.svg); }
+    .i-skill              { -webkit-mask-image: url(../assets/icons/kid/skill.svg);             mask-image: url(../assets/icons/kid/skill.svg); }
+    .i-knowledge          { -webkit-mask-image: url(../assets/icons/kid/knowledge.svg);         mask-image: url(../assets/icons/kid/knowledge.svg); }
+    .i-leftsidebar        { -webkit-mask-image: url(../assets/icons/kid/leftsidebar.svg);       mask-image: url(../assets/icons/kid/leftsidebar.svg); }
+    .i-unfold { -webkit-mask-image: url(../assets/icons/kid/myflicker_system_unfold.svg); mask-image: url(../assets/icons/kid/myflicker_system_unfold.svg); }
+    .i-openfolder         { -webkit-mask-image: url(../assets/icons/kid/openfolder.svg);        mask-image: url(../assets/icons/kid/openfolder.svg); }
+    .i-closefolder        { -webkit-mask-image: url(../assets/icons/kid/closefolder.svg);       mask-image: url(../assets/icons/kid/closefolder.svg); }
+    .i-add                { -webkit-mask-image: url(../assets/icons/kid/add.svg);               mask-image: url(../assets/icons/kid/add.svg); }
+    .i-addgroup           { -webkit-mask-image: url(../assets/icons/kid/addgroup.svg);          mask-image: url(../assets/icons/kid/addgroup.svg); }
+    .i-more               { -webkit-mask-image: url(../assets/icons/kid/more.svg);              mask-image: url(../assets/icons/kid/more.svg); }
+    .i-setting            { -webkit-mask-image: url(../assets/icons/kid/setting.svg);           mask-image: url(../assets/icons/kid/setting.svg); }
+    .i-generating         { -webkit-mask-image: url(../assets/icons/kid/generating.svg);        mask-image: url(../assets/icons/kid/generating.svg); }
+    .i-generationcompleted{ -webkit-mask-image: url(../assets/icons/kid/generationcompleted.svg); mask-image: url(../assets/icons/kid/generationcompleted.svg); }
+    .i-pintotop           { -webkit-mask-image: url(../assets/icons/kid/pintotop.svg);          mask-image: url(../assets/icons/kid/pintotop.svg); }
+    .i-draft              { -webkit-mask-image: url(../assets/icons/kid/draft.svg);             mask-image: url(../assets/icons/kid/draft.svg); }
+  </style>
+</head>
+<body>
+
+<aside class="mf-aside">
+
+  <!-- 头部 -->
+  <div class="mf-aside__header">
+    <div class="mf-aside__workspace">
+      <img class="mf-aside__workspace-avatar" src="../assets/icons/workspace-myflicker.svg" alt="workspace" />
+      <span class="mf-aside__workspace-name">个人空间</span>
+      <span class="icon i-unfold mf-aside__workspace-unfold"></span>
+    </div>
+    <button class="mf-aside__collapse" aria-label="收起">
+      <span class="icon i-leftsidebar"></span>
+    </button>
+  </div>
+
+  <!-- 主导航 -->
+  <nav class="mf-aside__nav">
+    <div class="mf-aside__nav-item is-active">
+      <span class="icon i-newchat"></span>
+      <span class="mf-aside__nav-item__label">新对话</span>
+    </div>
+    <div class="mf-aside__nav-item">
+      <span class="icon i-search"></span>
+      <span class="mf-aside__nav-item__label">搜索</span>
+    </div>
+    <div class="mf-aside__nav-item">
+      <span class="icon i-schedule"></span>
+      <span class="mf-aside__nav-item__label">定时任务</span>
+    </div>
+    <div class="mf-aside__nav-item">
+      <span class="icon i-skill"></span>
+      <span class="mf-aside__nav-item__label">技能</span>
+    </div>
+    <div class="mf-aside__nav-item">
+      <span class="icon i-knowledge"></span>
+      <span class="mf-aside__nav-item__label">知识</span>
+    </div>
+  </nav>
+
+  <!-- 滚动区 -->
+  <div class="mf-aside__body">
+
+    <!-- 分组 label（常驻 actions） -->
+    <div class="mf-aside__section-label is-always-show">
+      <span>分组</span>
+      <div class="mf-aside__section-label-actions">
+        <button class="mf-aside__icon-btn" aria-label="新建分组">
+          <span class="icon i-addgroup"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 分组 1 — 展开 -->
+    <div class="mf-aside__group">
+      <div class="mf-aside__group-icon"><span class="icon i-openfolder"></span></div>
+      <span class="mf-aside__group-name">设计系统项目</span>
+      <div class="mf-aside__group-actions">
+        <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+        <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+      </div>
+    </div>
+    <div class="mf-aside__group-sessions">
+      <div class="mf-aside__session">
+        <span class="mf-aside__session-status"><span class="icon i-generating" style="color:var(--text-brand);"></span></span>
+        <span class="mf-aside__session-title">组件 Token 绑定机制</span>
+        <span class="mf-aside__session-meta">
+          <span class="mf-aside__session-time">14:30</span>
+          <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+        </span>
+      </div>
+      <div class="mf-aside__session">
+        <span class="mf-aside__session-status"></span>
+        <span class="mf-aside__session-title">AI 对话页 UI Kit</span>
+        <span class="mf-aside__session-meta">
+          <span class="mf-aside__session-time">昨天</span>
+          <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+        </span>
+      </div>
+      <div class="mf-aside__session">
+        <span class="mf-aside__session-status"><span class="icon i-generationcompleted" style="color:var(--text-secondary);"></span></span>
+        <span class="mf-aside__session-title">颜色系统整理</span>
+        <span class="mf-aside__session-meta">
+          <span class="mf-aside__session-time">2026/7/12</span>
+          <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+        </span>
+      </div>
+    </div>
+
+    <!-- 分组 2 — 折叠 -->
+    <div class="mf-aside__group" style="margin-top:4px;">
+      <div class="mf-aside__group-icon"><span class="icon i-closefolder"></span></div>
+      <span class="mf-aside__group-name">个人任务</span>
+      <div class="mf-aside__group-actions">
+        <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+        <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+      </div>
+    </div>
+
+    <!-- 对话 label -->
+    <div class="mf-aside__section-label">
+      <span>对话</span>
+      <div class="mf-aside__section-label-actions">
+        <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+      </div>
+    </div>
+
+    <!-- 未分组会话 -->
+    <div style="display:flex; flex-direction:column; gap:4px;">
+      <div class="mf-aside__session is-active">
+        <span class="mf-aside__session-status"><span class="icon i-generating" style="color:var(--text-brand);"></span></span>
+        <span class="mf-aside__session-title">构建 MyFlicker 世界</span>
+        <span class="mf-aside__session-meta">
+          <span class="mf-aside__session-time">16:22</span>
+          <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+        </span>
+      </div>
+      <div class="mf-aside__session">
+        <span class="mf-aside__session-status"><span class="icon i-pintotop" style="color:var(--text-tertiary);"></span></span>
+        <span class="mf-aside__session-title">帮我顶会议</span>
+        <span class="mf-aside__session-meta">
+          <span class="mf-aside__session-time">今天</span>
+          <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+        </span>
+      </div>
+      <div class="mf-aside__session">
+        <span class="mf-aside__session-status"></span>
+        <span class="mf-aside__session-title">订机票</span>
+        <span class="mf-aside__session-meta">
+          <span class="mf-aside__session-time">昨天</span>
+          <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+        </span>
+      </div>
+      <div class="mf-aside__session">
+        <span class="mf-aside__session-status"></span>
+        <span class="mf-aside__session-title">做一个 Logo</span>
+        <span class="mf-aside__session-meta">
+          <span class="mf-aside__session-time">2026/7/14</span>
+          <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+        </span>
+      </div>
+      <div class="mf-aside__session">
+        <span class="mf-aside__session-status"><span class="icon i-draft" style="color:var(--text-tertiary);"></span></span>
+        <span class="mf-aside__session-title">设计规范草稿</span>
+        <span class="mf-aside__session-meta">
+          <span class="mf-aside__session-time">2026/7/13</span>
+          <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+        </span>
+      </div>
+    </div>
+
+  </div><!-- /body -->
+
+  <!-- footer -->
+  <div class="mf-aside__footer">
+    <button class="mf-aside__footer-setting">
+      <span class="icon i-setting"></span>
+      <span>设置</span>
+    </button>
+    <div class="mf-aside__footer-credit">
+      <img src="../assets/icons/points-gradient.svg" width="14" height="14" style="flex-shrink:0;" />
+      <span>积分：剩余 92%</span>
+    </div>
+  </div>
+
+</aside>
+
+</body>
+</html>

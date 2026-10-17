@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>组件总览 — MyFlicker Design System</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <link rel="stylesheet" href="../components.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100%;
+    }
+
+    /* ── Layout ── */
+    .ov-layout {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── Topbar ── */
+    .ov-topbar {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      padding: 0 var(--spacer-24);
+      border-bottom: 1px solid var(--border-neutral-l1);
+      gap: var(--spacer-24);
+      position: sticky;
+      top: 0;
+      background: var(--bg-base-default);
+      z-index: 100;
+    }
+    .ov-topbar__brand {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-default);
+      display: flex;
+      align-items: center;
+      gap: var(--spacer-8);
+    }
+    .ov-topbar__brand-dot {
+      width: 8px; height: 8px;
+      border-radius: var(--radius-full);
+      background: var(--bg-brand);
+    }
+    .ov-topbar__nav {
+      display: flex;
+      gap: var(--spacer-4);
+      margin-left: auto;
+    }
+    .ov-topbar__nav-item {
+      padding: var(--spacer-4) var(--spacer-12);
+      border-radius: var(--radius-8);
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      transition: background 0.1s, color 0.1s;
+    }
+    .ov-topbar__nav-item:hover { background: var(--bg-overlay-l1); color: var(--text-default); }
+    .ov-topbar__nav-item.is-active { background: var(--bg-overlay-l2); color: var(--text-default); font-weight: 500; }
+    .ov-topbar__meta {
+      margin-left: var(--spacer-16);
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    /* ── Body ── */
+    .ov-body {
+      display: flex;
+      flex: 1;
+    }
+
+    /* ── Sidebar ── */
+    .ov-sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border-neutral-l1);
+      padding: var(--spacer-16) 0;
+      position: sticky;
+      top: 48px;
+      height: calc(100vh - 48px);
+      overflow-y: auto;
+    }
+    .ov-sidebar__section {
+      padding: 0 var(--spacer-12);
+      margin-bottom: var(--spacer-16);
+    }
+    .ov-sidebar__label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0 var(--spacer-8);
+      margin-bottom: var(--spacer-4);
+    }
+    .ov-sidebar__item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacer-8);
+      padding: var(--spacer-6) var(--spacer-8);
+      border-radius: var(--radius-8);
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background 0.1s, color 0.1s;
+      text-decoration: none;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      width: 100%;
+      text-align: left;
+    }
+    .ov-sidebar__item:hover { background: var(--bg-overlay-l1); color: var(--text-default); }
+    .ov-sidebar__item.is-active { background: var(--bg-overlay-l2); color: var(--text-default); font-weight: 500; }
+    .ov-sidebar__badge {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      background: var(--bg-overlay-l2);
+      border-radius: var(--radius-full);
+      padding: 1px 6px;
+      font-family: var(--font-family-metric, monospace);
+    }
+
+    /* ── Main ── */
+    .ov-main {
+      flex: 1;
+      min-width: 0;
+      padding: var(--spacer-32);
+    }
+    .ov-main__header {
+      margin-bottom: var(--spacer-32);
+    }
+    .ov-main__title {
+      font-size: var(--heading-lg-font-size);
+      font-weight: var(--heading-lg-font-weight);
+      line-height: var(--heading-lg-line-height);
+      margin-bottom: var(--spacer-4);
+    }
+    .ov-main__sub {
+      font-size: var(--body-sm-font-size);
+      color: var(--text-secondary);
+    }
+
+    /* ── Accordion ── */
+    .ov-accordion {
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-8);
+      overflow: hidden;
+    }
+    .ov-accordion__item + .ov-accordion__item {
+      border-top: 1px solid var(--border-neutral-l1);
+    }
+    .ov-accordion__trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: var(--spacer-12);
+      padding: 0 var(--spacer-20);
+      height: 52px;
+      background: var(--bg-base-default);
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      color: var(--text-default);
+      font-size: 13px;
+      font-weight: 500;
+      text-align: left;
+      transition: background 0.1s;
+    }
+    .ov-accordion__trigger:hover { background: var(--bg-overlay-l1); }
+    .ov-accordion__item.is-open > .ov-accordion__trigger { background: var(--bg-overlay-l1); }
+    .ov-accordion__trigger-icon {
+      width: 16px; height: 16px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--icon-brand);
+    }
+    .ov-accordion__trigger-icon svg { width: 14px; height: 14px; }
+    .ov-accordion__trigger-name { flex: 1; }
+    .ov-accordion__trigger-meta {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      gap: var(--spacer-8);
+    }
+    .ov-accordion__chevron {
+      width: 16px; height: 16px;
+      color: var(--icon-secondary);
+      transition: transform 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ov-accordion__chevron svg { width: 12px; height: 12px; }
+    .ov-accordion__item.is-open .ov-accordion__chevron { transform: rotate(180deg); }
+
+    .ov-accordion__body {
+      display: none;
+      border-top: 1px solid var(--border-neutral-l1);
+      background: var(--bg-base-secondary);
+    }
+    .ov-accordion__item.is-open .ov-accordion__body { display: block; }
+
+    .ov-accordion__frame-wrap {
+      width: 100%;
+      overflow: hidden;
+    }
+    .ov-accordion__frame {
+      width: 100%;
+      border: none;
+      display: block;
+      background: var(--bg-base-default);
+    }
+
+    /* ── Toolbar ── */
+    .ov-accordion__toolbar {
+      display: flex;
+      align-items: center;
+      gap: var(--spacer-8);
+      padding: var(--spacer-10) var(--spacer-20);
+      border-bottom: 1px solid var(--border-neutral-l1);
+      background: var(--bg-base-default);
+    }
+    .ov-accordion__toolbar-link {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      text-decoration: none;
+      margin-left: auto;
+    }
+    .ov-accordion__toolbar-link:hover { color: var(--text-default); }
+    .ov-height-ctrl {
+      display: flex;
+      align-items: center;
+      gap: var(--spacer-4);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .ov-height-ctrl button {
+      padding: 2px var(--spacer-8);
+      border-radius: var(--radius-4);
+      border: 1px solid var(--border-neutral-l1);
+      background: var(--bg-base-default);
+      font-size: 12px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .ov-height-ctrl button:hover { background: var(--bg-overlay-l1); color: var(--text-default); }
+    .ov-height-ctrl button.is-active { background: var(--bg-overlay-l2); color: var(--text-default); font-weight: 500; border-color: var(--border-neutral-l2); }
+
+    /* ── Expand all ── */
+    .ov-controls {
+      display: flex;
+      align-items: center;
+      gap: var(--spacer-8);
+      margin-bottom: var(--spacer-16);
+    }
+    .ov-controls__count {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+  </style>
+</head>
+<body>
+<div class="ov-layout">
+
+  <!-- Topbar -->
+  <header class="ov-topbar">
+    <div class="ov-topbar__brand">
+      <span class="ov-topbar__brand-dot"></span>
+      MyFlicker DS
+    </div>
+    <nav class="ov-topbar__nav">
+      <button class="ov-topbar__nav-item is-active">组件</button>
+      <button class="ov-topbar__nav-item">图形</button>
+      <button class="ov-topbar__nav-item">设计规范</button>
+    </nav>
+    <span class="ov-topbar__meta">M4 · Light</span>
+  </header>
+
+  <div class="ov-body">
+
+    <!-- Sidebar -->
+    <aside class="ov-sidebar">
+      <div class="ov-sidebar__section">
+        <div class="ov-sidebar__label">Action</div>
+        <a class="ov-sidebar__item" href="#section-buttons">Button</a>
+      </div>
+      <div class="ov-sidebar__section">
+        <div class="ov-sidebar__label">Display</div>
+        <a class="ov-sidebar__item" href="#section-cards">Card</a>
+        <a class="ov-sidebar__item" href="#section-table">Table</a>
+        <a class="ov-sidebar__item" href="#section-tag">Tag</a>
+        <a class="ov-sidebar__item" href="#section-avatar">Avatar</a>
+        <a class="ov-sidebar__item" href="#section-progress">Progress</a>
+        <a class="ov-sidebar__item" href="#section-skeleton">Skeleton</a>
+      </div>
+      <div class="ov-sidebar__section">
+        <div class="ov-sidebar__label">Form</div>
+        <a class="ov-sidebar__item" href="#section-forms">Forms</a>
+      </div>
+      <div class="ov-sidebar__section">
+        <div class="ov-sidebar__label">Navigation</div>
+        <a class="ov-sidebar__item" href="#section-tabs">Tabs</a>
+        <a class="ov-sidebar__item" href="#section-menu">Menu</a>
+        <a class="ov-sidebar__item" href="#section-breadcrumb">Breadcrumb</a>
+        <a class="ov-sidebar__item" href="#section-pagination">Pagination</a>
+      </div>
+      <div class="ov-sidebar__section">
+        <div class="ov-sidebar__label">Overlay</div>
+        <a class="ov-sidebar__item" href="#section-dialog">Dialog</a>
+        <a class="ov-sidebar__item" href="#section-tooltip">Tooltip</a>
+      </div>
+      <div class="ov-sidebar__section">
+        <div class="ov-sidebar__label">Feedback</div>
+        <a class="ov-sidebar__item" href="#section-alert">Alert</a>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="ov-main">
+      <div class="ov-main__header">
+        <div class="ov-main__title">组件总览</div>
+        <div class="ov-main__sub">所有 M4 组件的当前渲染状态，点击展开查看，支持手风琴折叠</div>
+      </div>
+
+      <div class="ov-controls">
+        <button class="mf-btn mf-btn--secondary mf-btn--sm" id="expandAll">展开全部</button>
+        <button class="mf-btn mf-btn--secondary mf-btn--sm" id="collapseAll">收起全部</button>
+        <span class="ov-controls__count" id="openCount">0 / 12 已展开</span>
+      </div>
+
+      <div class="ov-accordion" id="accordion">
+
+        <!-- Buttons -->
+        <div class="ov-accordion__item" id="section-buttons" data-slug="buttons">
+          <button class="ov-accordion__trigger">
+            <span class="ov-accordion__trigger-icon"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="4" width="14" height="8" rx="3" stroke="currentColor" stroke-width="1.5"/></svg></span>
+            <span class="ov-accordion__trigger-name">Button</span>
+            <span class="ov-accordion__trigger-meta">Action</span>
+            <span class="ov-accordion__chevron"><svg viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+          <div class="ov-accordion__body">
+            <div class="ov-accordion__toolbar">
+              <span style="font-size:12px;color:var(--text-tertiary);">component-buttons.html</span>
+              <div class="ov-height-ctrl">
+                <span>高度</span>
+                <button data-h="300" class="is-active">S</button>
+                <button data-h="500">M</button>
+                <button data-h="800">L</button>
+              </div>
+              <a class="ov-accordion__toolbar-link" href="component-buttons.html" target="_blank">↗ 单独预览</a>
+            </div>
+            <div class="ov-accordion__frame-wrap">
+              <iframe class="ov-accordion__frame" src="component-buttons.html" height="300" scrolling="no" onload="autoHeight(this)"></iframe>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cards -->
+        <div class="ov-accordion__item" id="section-cards" data-slug="cards">
+          <button class="ov-accordion__trigger">
+            <span class="ov-accordion__trigger-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="12" rx="2.5" stroke="currentColor" stroke-width="1.5"/></svg></span>
+            <span class="ov-accordion__trigger-name">Card</span>
+            <span class="ov-accordion__trigger-meta">Display</span>
+            <span class="ov-accordion__chevron"><svg viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+          <div class="ov-accordion__body">
+            <div class="ov-accordion__toolbar">
+              <span style="font-size:12px;color:var(--text-tertiary);">component-cards.html</span>
+              <div class="ov-height-ctrl">
+                <span>高度</span>
+                <button data-h="300" class="is-active">S</button>
+                <button data-h="500">M</button>
+                <button data-h="800">L</button>
+              </div>
+              <a class="ov-accordion__toolbar-link" href="component-cards.html" target="_blank">↗ 单独预览</a>
+            </div>
+            <div class="ov-accordion__frame-wrap">
+              <iframe class="ov-accordion__frame" src="component-cards.html" height="300" scrolling="no" onload="autoHeight(this)"></iframe>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="ov-accordion__item" id="section-table" data-slug="table">
+          <button class="ov-accordion__trigger">
+            <span class="ov-accordion__trigger-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><line x1="1" y1="6" x2="15" y2="6" stroke="currentColor" stroke-width="1.5"/><line x1="6" y1="6" x2="6" y2="14" stroke="currentColor" stroke-width="1.5"/></svg></span>
+            <span class="ov-accordion__trigger-name">Table</span>
+            <span class="ov-accordion__trigger-meta">Display</span>
+            <span class="ov-accordion__chevron"><svg viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+          <div class="ov-accordion__body">
+            <div class="ov-accordion__toolbar">
+              <span style="font-size:12px;color:var(--text-tertiary);">component-table.html</span>
+              <div class="ov-height-ctrl">
+                <span>高度</span>
+                <button data-h="300" class="is-active">S</button>
+                <button data-h="500">M</button>
+                <button data-h="800">L</button>
+              </div>
+              <a class="ov-accordion__toolbar-link" href="component-table.html" target="_blank">↗ 单独预览</a>
+            </div>
+            <div class="ov-accordion__frame-wrap">
+              <iframe class="ov-accordion__frame" src="component-table.html" height="300" scrolling="no" onload="autoHeight(this)"></iframe>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tag -->
+        <div class="ov-accordion__item" id="section-tag" data-slug="tag">
+          <button class="ov-accordion__trigger">
+            <span class="ov-accordion__trigger-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M2 8.5V3.5A1.5 1.5 0 0 1 3.5 2h5l5 5-5.5 5.5a1.5 1.5 0 0 1-2.1 0L2 8.5Z" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="5.5" r="1" fill="currentColor"/></svg></span>
+            <span class="ov-accordion__trigger-name">Tag</span>
+            <span class="ov-accordion__trigger-meta">Display</span>
+            <span class="ov-accordion__chevron"><svg viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+          <div class="ov-accordion__body">
+            <div class="ov-accordion__toolbar">
+              <span style="font-size:12px;color:var(--text-tertiary);">component-tag.html</span>
+              <div class="ov-height-ctrl">
+                <span>高度</span>
+                <button data-h="300" class="is-active">S</button>
+                <button data-h="500">M</button>
+                <button data-h="800">L</button>
+              </div>
+              <a class="ov-accordion__toolbar-link" href="component-tag.html" target="_blank">↗ 单独预览</a>
+            </div>
+            <div class="ov-accordion__frame-wrap">
+              <iframe class="ov-accordion__frame" src="component-tag.html" height="300" scrolling="no" onload="autoHeight(this)"></iframe>
+            </div>
+          </div>
+        </div>
+
+        <!-- Avatar -->
+        <div class="ov-accordion__item" id="section-avatar" data-slug="avatar">
+          <button class="ov-accordion__trigger">
+            <span class="ov-accordion__trigger-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 13.5c0-3 2.5-4.5 5.5-4.5s5.5 1.5 5.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            <span class="ov-accordion__trigger-name">Avatar</span>
+            <span class="ov-accordion__trigger-meta">Display</span>
+            <span class="ov-accordion__chevron"><svg viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+          <div class="ov-accordion__body">
+            <div class="ov-accordion__toolbar">
+              <span style="font-size:12px;color:var(--text-tertiary);">component-avatar.html</span>
+              <div class="ov-height-ctrl">
+                <span>高度</span>
+                <button data-h="300" class="is-active">S</button>
+                <button data-h="500">M</button>
+                <button data-h="800">L</button>
+              </div>
+              <a class="ov-accordion__toolbar-link" href="component-avatar.html" target="_blank">↗ 单独预览</a>
+            </div>
+            <div class="ov-accordion__frame-wrap">
+              <iframe class="ov-accordion__frame" src="component-avatar.html" height="300" scrolling="no" onload="autoHeight(this)"></iframe>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress -->
+        <div class="ov-accordion__item" id="section-progress" data-slug="progress">
+          <button class="ov-accordion__trigger">
+            <span class="ov-accordion__trigger-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="6" width="14" height="4" rx="2" stroke="currentColor" stroke-width="1.5"/><rect x="1" y="6" width="9" height="4" rx="2" fill="currentColor" opacity="0.3"/></svg></span>
+            <span class="ov-accordion__trigger-name">Progress</span>
+            <span class="ov-accordion__trigger-meta">Display</span>
+            <span class="ov-accordion__chevron"><svg viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+          <div class="ov-accordion__body">
+            <div class="ov-accordion__toolbar">
+              <span style="font-size:12px;color:var(--text-tertiary);">component-progress.html</span>
+              <div class="ov-height-ctrl">
+                <span>高度</span>
+                <button data-h="300" class="is-active">S</button>
+                <button data-h="500">M</button>
+                <button data-h="800">L</button>
+              </div>
+              <a class="ov-accordion__toolbar-link" href="component-progress.html" target="_blank">↗ 单独预览</a>
+            </div>
+            <div class="ov-accordion__frame-wrap">
+              <iframe class="ov-accordion__frame" src="component-progress.html" height="300" scrolling="no" onload="autoHeight(this)"></iframe>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skeleton -->
+        <div class="ov-accordion__item" id="section-skeleton" data-slug="skeleton">
+          <button class="ov-accordion__trigger">
+            <span class="ov-accordion__trigger-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="3" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="1" y="8" width="10" height="2.5" rx="1.25" stroke="currentColor" stroke-width="1.5"/><rect x="1" y="12" width="7" height="2.5" rx="1.25" stroke="currentColor" stroke-width="1.5"/></svg></span>
+            <span class="ov-accordion__trigger-name">Skeleton</span>
+            <span class="ov-accordion__trigger-meta">Display</span>
+            <span class="ov-accordion__chevron"><svg viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+          <div class="ov-accordion__body">
+            <div class="ov-accordion__toolbar">
+              <span style="font-size:12px;color:var(--text-tertiary);">component-skeleton.html</span>
+              <div class="ov-height-ctrl">
+                <span>高度</span>
+                <button data-h="300" class="is-active">S</button>
+                <button data-h="500">M</button>
+                <button data-h="800">L</button>
+              </div>
+              <a class="ov-accordion__toolbar-link" href="component-skeleton.html" target="_blank">↗ 单独预览</a>
+            </div>
+            <div class="ov-accordion__frame-wrap">
+              <iframe class="ov-accordion__frame" src="component-skeleton.html" height="300" scrolling="no" onload="autoHeight(this)"></iframe>
+            </div>
+          </div>
+        </div>
+
+        <!-- Forms -->
+        <div class="ov-accordion__item" id="section-forms" data-slug="forms">
+          <button class="ov-accordion__trigger">
+            <span class="ov-accordion__trigger-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="4" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="1" y="9" width="14" height="4" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg></span>
+            <span class="ov-accordion__trigger-name">Forms</span>
+            <span class="ov-accordion__trigger-meta">Form</span>
+            <span class="ov-accordion__chevron"><svg viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+          <div class="ov-accordion__body">
+            <div class="ov-accordion__toolbar">
+              <span style="font-size:12px;color:var(--text-tertiary);">component-forms.html</span>
+              <div class="ov-height-ctrl">
+                <span>高度</span>
+                <button data-h="300" class="is-active">S</button>
+                <button data-h="500">M</button>
+                <button data-h="800">L</button>
+              </div>
+              <a class="ov-accordion__toolbar-link" href="component-forms.html" target="_blank">↗ 单独预览</a>
+            </div>
+            <div class="ov-accordion__frame-wrap">
+              <iframe class="ov-accordion__frame" src="component-forms.html" height="300" scrolling="no" onload="autoHeight(this)"></iframe>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="ov-accordion__item" id="section-tabs" data-slug="tabs">
+          <button class="ov-accordion__trigger">
+            <span class="ov-accordion__trigger-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M1 10V4.5A1.5 1.5 0 0 1 2.5 3h4A1.5 1.5 0 0 1 8 4.5V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="1" y1="10" x2="15" y2="10" stroke="currentColor" stroke-width="1.5"/></svg></span>
+            <span class="ov-accordion__trigger-name">Tabs</span>
+            <span class="ov-accordion__trigger-meta">Navigation</span>
+            <span class="ov-accordion__chevron"><svg viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+          <div class="ov-accordion__body">
+            <div class="ov-accordion__toolbar">
+              <span style="font-size:12px;color:var(--text-tertiary);">component-tabs.html</span>
+              <div class="ov-height-ctrl">
+                <span>高度</span>
+                <button data-h="300" class="is-active">S</button>
+                <button data-h="500">M</button>
+                <button data-h="800">L</button>
+              </div>
+              <a class="ov-accordion__toolbar-link" href="component-tabs.html" target="_blank">↗ 单独预览</a>
+            </div>
+            <div class="ov-accordion__frame-wrap">
+              <iframe class="ov-accordion__frame" src="component-tabs.html" height="300" scrolling="no" onload="autoHeight(this)"></iframe>
+            </div>
+          </div>
+        </div>
+
+        <!-- Menu -->
+        <div class="ov-accordion__item" id="section-menu" data-slug="menu">
+          <button class="ov-accordion__trigger">
+            <span class="ov-accordion__trigger-icon"><svg viewBox="0 0 16 16" fill="none"><line x1="2" y1="4" x2="14" y2="4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="2" y1="12" x2="10" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            <span class="ov-accordion__trigger-name">Menu</span>
+            <span class="ov-accordion__trigger-meta">Navigation</span>
+            <span class="ov-accordion__chevron"><svg viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+          <div class="ov-accordion__body">
+            <div class="ov-accordion__toolbar">
+              <span style="font-size:12px;color:var(--text-tertiary);">component-menu.html</span>
+              <div class="ov-height-ctrl">
+                <span>高度</span>
+                <button data-h="300" class="is-active">S</button>
+                <button data-h="500">M</button>
+                <button data-h="800">L</button>
+              </div>
+              <a class="ov-accordion__toolbar-link" href="component-menu.html" target="_blank">↗ 单独预览</a>
+            </div>
+            <div class="ov-accordion__frame-wrap">
+              <iframe class="ov-accordion__frame" src="component-menu.html" height="300" scrolling="no" onload="autoHeight(this)"></iframe>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dialog -->
+        <div class="ov-accordion__item" id="section-dialog" data-slug="dialog">
+          <button class="ov-accordion__trigger">
+            <span class="ov-accordion__trigger-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><line x1="2" y1="6.5" x2="14" y2="6.5" stroke="currentColor" stroke-width="1.5"/></svg></span>
+            <span class="ov-accordion__trigger-name">Dialog</span>
+            <span class="ov-accordion__trigger-meta">Overlay</span>
+            <span class="ov-accordion__chevron"><svg viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+          <div class="ov-accordion__body">
+            <div class="ov-accordion__toolbar">
+              <span style="font-size:12px;color:var(--text-tertiary);">component-dialog.html</span>
+              <div class="ov-height-ctrl">
+                <span>高度</span>
+                <button data-h="300" class="is-active">S</button>
+                <button data-h="500">M</button>
+                <button data-h="800">L</button>
+              </div>
+              <a class="ov-accordion__toolbar-link" href="component-dialog.html" target="_blank">↗ 单独预览</a>
+            </div>
+            <div class="ov-accordion__frame-wrap">
+              <iframe class="ov-accordion__frame" src="component-dialog.html" height="300" scrolling="no" onload="autoHeight(this)"></iframe>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alert -->
+        <div class="ov-accordion__item" id="section-alert" data-slug="alert">
+          <button class="ov-accordion__trigger">
+            <span class="ov-accordion__trigger-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2L14.5 13H1.5L8 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><line x1="8" y1="7" x2="8" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="11.5" r="0.75" fill="currentColor"/></svg></span>
+            <span class="ov-accordion__trigger-name">Alert</span>
+            <span class="ov-accordion__trigger-meta">Feedback</span>
+            <span class="ov-accordion__chevron"><svg viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+          <div class="ov-accordion__body">
+            <div class="ov-accordion__toolbar">
+              <span style="font-size:12px;color:var(--text-tertiary);">component-alert.html</span>
+              <div class="ov-height-ctrl">
+                <span>高度</span>
+                <button data-h="300" class="is-active">S</button>
+                <button data-h="500">M</button>
+                <button data-h="800">L</button>
+              </div>
+              <a class="ov-accordion__toolbar-link" href="component-alert.html" target="_blank">↗ 单独预览</a>
+            </div>
+            <div class="ov-accordion__frame-wrap">
+              <iframe class="ov-accordion__frame" src="component-alert.html" height="300" scrolling="no" onload="autoHeight(this)"></iframe>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /accordion -->
+    </main>
+  </div>
+</div>
+
+<script>
+(function () {
+  var items = Array.from(document.querySelectorAll('.ov-accordion__item'));
+  var countEl = document.getElementById('openCount');
+
+  function updateCount() {
+    var open = items.filter(function (i) { return i.classList.contains('is-open'); }).length;
+    countEl.textContent = open + ' / ' + items.length + ' 已展开';
+  }
+
+  // Toggle on trigger click
+  items.forEach(function (item) {
+    var trigger = item.querySelector('.ov-accordion__trigger');
+    trigger.addEventListener('click', function () {
+      item.classList.toggle('is-open');
+      updateCount();
+    });
+  });
+
+  // Height controls
+  document.querySelectorAll('.ov-height-ctrl button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var toolbar = btn.closest('.ov-accordion__toolbar');
+      toolbar.querySelectorAll('.ov-height-ctrl button').forEach(function (b) { b.classList.remove('is-active'); });
+      btn.classList.add('is-active');
+      var h = parseInt(btn.dataset.h, 10);
+      var frame = btn.closest('.ov-accordion__body').querySelector('.ov-accordion__frame');
+      frame.height = h;
+    });
+  });
+
+  // Expand / Collapse all
+  document.getElementById('expandAll').addEventListener('click', function () {
+    items.forEach(function (i) { i.classList.add('is-open'); });
+    updateCount();
+  });
+  document.getElementById('collapseAll').addEventListener('click', function () {
+    items.forEach(function (i) { i.classList.remove('is-open'); });
+    updateCount();
+  });
+
+  // Sidebar active tracking on scroll
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        var id = entry.target.id;
+        document.querySelectorAll('.ov-sidebar__item').forEach(function (a) {
+          a.classList.toggle('is-active', a.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+  items.forEach(function (i) { observer.observe(i); });
+
+  updateCount();
+})();
+
+function autoHeight(iframe) {
+  // 不自动调高，保持手动控制
+}
+</script>
+</body>
+</html>

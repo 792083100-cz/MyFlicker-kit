@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>MyFlicker Icon Browser</title>
+  <link rel="stylesheet" href="../colors_and_type.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-family-default, 'PingFang SC', sans-serif); background: var(--bg-base-secondary, #F5F5F5); color: var(--text-default, #1A1A1A); padding: 24px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    .header { margin-bottom: 24px; }
+    .header h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+    .header p { font-size: 12px; color: var(--text-tertiary, #999); }
+    .toolbar { display: flex; gap: 12px; margin-bottom: 20px; align-items: center; }
+    .search { flex: 1; max-width: 320px; height: 32px; padding: 0 12px; border: 1px solid var(--border-neutral-l1, #E5E5E5); border-radius: 8px; font-size: 13px; background: var(--bg-base-default, #FFF); color: inherit; outline: none; }
+    .search:focus { border-color: var(--border-brand, #4B3FE4); }
+    .count { font-size: 12px; color: var(--text-tertiary, #999); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; }
+    .ic-card { background: var(--bg-base-default, #FFF); border: 1px solid var(--border-neutral-l1, #E5E5E5); border-radius: 8px; padding: 12px 8px 8px; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: background 0.1s, box-shadow 0.1s; user-select: none; }
+    .ic-card:hover { background: var(--bg-overlay-l1, #F5F5F5); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .ic-card:active { background: var(--bg-overlay-l2, #EBEBEB); }
+    .ic-card__img { width: 24px; height: 24px; color: var(--icon-default, #1A1A1A); }
+    .ic-card__name { font-size: 11px; color: var(--text-tertiary, #999); text-align: center; word-break: break-all; line-height: 1.3; max-width: 100%; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .ic-card.copied { outline: 2px solid var(--border-brand, #4B3FE4); }
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--text-default, #1A1A1A); color: #FFF; padding: 8px 16px; border-radius: 8px; font-size: 12px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+    .toast.show { opacity: 1; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>MyFlicker Icon Browser</h1>
+    <p>@kid/enterprise-icon@1.0.1023 · 同步于 2026-07-15 · 共 204 个图标 · 点击复制名称</p>
+  </div>
+  <div class="toolbar">
+    <input class="search" type="search" placeholder="搜索图标名…" id="search" oninput="filter(this.value)">
+    <span class="count" id="count">204 个</span>
+  </div>
+  <div class="grid" id="grid">
+
+    <div class="ic-card" title="add" onclick="copy(this)" data-name="add">
+      <img class="ic-card__img" src="../assets/icons/kid/add.svg" alt="add" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">add</div>
+    </div>
+
+    <div class="ic-card" title="addfiles" onclick="copy(this)" data-name="addfiles">
+      <img class="ic-card__img" src="../assets/icons/kid/addfiles.svg" alt="addfiles" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">addfiles</div>
+    </div>
+
+    <div class="ic-card" title="addgroup" onclick="copy(this)" data-name="addgroup">
+      <img class="ic-card__img" src="../assets/icons/kid/addgroup.svg" alt="addgroup" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">addgroup</div>
+    </div>
+
+    <div class="ic-card" title="addteam" onclick="copy(this)" data-name="addteam">
+      <img class="ic-card__img" src="../assets/icons/kid/addteam.svg" alt="addteam" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">addteam</div>
+    </div>
+
+    <div class="ic-card" title="adjustment" onclick="copy(this)" data-name="adjustment">
+      <img class="ic-card__img" src="../assets/icons/kid/adjustment.svg" alt="adjustment" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">adjustment</div>
+    </div>
+
+    <div class="ic-card" title="agent" onclick="copy(this)" data-name="agent">
+      <img class="ic-card__img" src="../assets/icons/kid/agent.svg" alt="agent" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">agent</div>
+    </div>
+
+    <div class="ic-card" title="ai" onclick="copy(this)" data-name="ai">
+      <img class="ic-card__img" src="../assets/icons/kid/ai.svg" alt="ai" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">ai</div>
+    </div>
+
+    <div class="ic-card" title="aite" onclick="copy(this)" data-name="aite">
+      <img class="ic-card__img" src="../assets/icons/kid/aite.svg" alt="aite" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">aite</div>
+    </div>
+
+    <div class="ic-card" title="appearance" onclick="copy(this)" data-name="appearance">
+      <img class="ic-card__img" src="../assets/icons/kid/appearance.svg" alt="appearance" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">appearance</div>
+    </div>
+
+    <div class="ic-card" title="archive" onclick="copy(this)" data-name="archive">
+      <img class="ic-card__img" src="../assets/icons/kid/archive.svg" alt="archive" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">archive</div>
+    </div>
+
+    <div class="ic-card" title="around" onclick="copy(this)" data-name="around">
+      <img class="ic-card__img" src="../assets/icons/kid/around.svg" alt="around" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">around</div>
+    </div>
+
+    <div class="ic-card" title="arrowdown" onclick="copy(this)" data-name="arrowdown">
+      <img class="ic-card__img" src="../assets/icons/kid/arrowdown.svg" alt="arrowdown" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">arrowdown</div>
+    </div>
+
+    <div class="ic-card" title="arrowleft" onclick="copy(this)" data-name="arrowleft">
+      <img class="ic-card__img" src="../assets/icons/kid/arrowleft.svg" alt="arrowleft" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">arrowleft</div>
+    </div>
+
+    <div class="ic-card" title="arrowright" onclick="copy(this)" data-name="arrowright">
+      <img class="ic-card__img" src="../assets/icons/kid/arrowright.svg" alt="arrowright" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">arrowright</div>
+    </div>
+
+    <div class="ic-card" title="arrowup" onclick="copy(this)" data-name="arrowup">
+      <img class="ic-card__img" src="../assets/icons/kid/arrowup.svg" alt="arrowup" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">arrowup</div>
+    </div>
+
+    <div class="ic-card" title="ask" onclick="copy(this)" data-name="ask">
+      <img class="ic-card__img" src="../assets/icons/kid/ask.svg" alt="ask" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">ask</div>
+    </div>
+
+    <div class="ic-card" title="assets" onclick="copy(this)" data-name="assets">
+      <img class="ic-card__img" src="../assets/icons/kid/assets.svg" alt="assets" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">assets</div>
+    </div>
+
+    <div class="ic-card" title="attention" onclick="copy(this)" data-name="attention">
+      <img class="ic-card__img" src="../assets/icons/kid/attention.svg" alt="attention" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">attention</div>
+    </div>
+
+    <div class="ic-card" title="bag" onclick="copy(this)" data-name="bag">
+      <img class="ic-card__img" src="../assets/icons/kid/bag.svg" alt="bag" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">bag</div>
+    </div>
+
+    <div class="ic-card" title="base" onclick="copy(this)" data-name="base">
+      <img class="ic-card__img" src="../assets/icons/kid/base.svg" alt="base" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">base</div>
+    </div>
+
+    <div class="ic-card" title="batchselection" onclick="copy(this)" data-name="batchselection">
+      <img class="ic-card__img" src="../assets/icons/kid/batchselection.svg" alt="batchselection" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">batchselection</div>
+    </div>
+
+    <div class="ic-card" title="bath" onclick="copy(this)" data-name="bath">
+      <img class="ic-card__img" src="../assets/icons/kid/bath.svg" alt="bath" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">bath</div>
+    </div>
+
+    <div class="ic-card" title="book" onclick="copy(this)" data-name="book">
+      <img class="ic-card__img" src="../assets/icons/kid/book.svg" alt="book" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">book</div>
+    </div>
+
+    <div class="ic-card" title="brain" onclick="copy(this)" data-name="brain">
+      <img class="ic-card__img" src="../assets/icons/kid/brain.svg" alt="brain" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">brain</div>
+    </div>
+
+    <div class="ic-card" title="brainsetting" onclick="copy(this)" data-name="brainsetting">
+      <img class="ic-card__img" src="../assets/icons/kid/brainsetting.svg" alt="brainsetting" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">brainsetting</div>
+    </div>
+
+    <div class="ic-card" title="brainstorage" onclick="copy(this)" data-name="brainstorage">
+      <img class="ic-card__img" src="../assets/icons/kid/brainstorage.svg" alt="brainstorage" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">brainstorage</div>
+    </div>
+
+    <div class="ic-card" title="brightcolor" onclick="copy(this)" data-name="brightcolor">
+      <img class="ic-card__img" src="../assets/icons/kid/brightcolor.svg" alt="brightcolor" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">brightcolor</div>
+    </div>
+
+    <div class="ic-card" title="cash" onclick="copy(this)" data-name="cash">
+      <img class="ic-card__img" src="../assets/icons/kid/cash.svg" alt="cash" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">cash</div>
+    </div>
+
+    <div class="ic-card" title="chatgpt" onclick="copy(this)" data-name="chatgpt">
+      <img class="ic-card__img" src="../assets/icons/kid/chatgpt.svg" alt="chatgpt" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">chatgpt</div>
+    </div>
+
+    <div class="ic-card" title="check" onclick="copy(this)" data-name="check">
+      <img class="ic-card__img" src="../assets/icons/kid/check.svg" alt="check" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">check</div>
+    </div>
+
+    <div class="ic-card" title="circular" onclick="copy(this)" data-name="circular">
+      <img class="ic-card__img" src="../assets/icons/kid/circular.svg" alt="circular" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">circular</div>
+    </div>
+
+    <div class="ic-card" title="claude" onclick="copy(this)" data-name="claude">
+      <img class="ic-card__img" src="../assets/icons/kid/claude.svg" alt="claude" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">claude</div>
+    </div>
+
+    <div class="ic-card" title="clean" onclick="copy(this)" data-name="clean">
+      <img class="ic-card__img" src="../assets/icons/kid/clean.svg" alt="clean" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">clean</div>
+    </div>
+
+    <div class="ic-card" title="close" onclick="copy(this)" data-name="close">
+      <img class="ic-card__img" src="../assets/icons/kid/close.svg" alt="close" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">close</div>
+    </div>
+
+    <div class="ic-card" title="closefolder" onclick="copy(this)" data-name="closefolder">
+      <img class="ic-card__img" src="../assets/icons/kid/closefolder.svg" alt="closefolder" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">closefolder</div>
+    </div>
+
+    <div class="ic-card" title="closem" onclick="copy(this)" data-name="closem">
+      <img class="ic-card__img" src="../assets/icons/kid/closem.svg" alt="closem" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">closem</div>
+    </div>
+
+    <div class="ic-card" title="closure" onclick="copy(this)" data-name="closure">
+      <img class="ic-card__img" src="../assets/icons/kid/closure.svg" alt="closure" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">closure</div>
+    </div>
+
+    <div class="ic-card" title="cloud" onclick="copy(this)" data-name="cloud">
+      <img class="ic-card__img" src="../assets/icons/kid/cloud.svg" alt="cloud" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">cloud</div>
+    </div>
+
+    <div class="ic-card" title="code" onclick="copy(this)" data-name="code">
+      <img class="ic-card__img" src="../assets/icons/kid/code.svg" alt="code" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">code</div>
+    </div>
+
+    <div class="ic-card" title="code1" onclick="copy(this)" data-name="code1">
+      <img class="ic-card__img" src="../assets/icons/kid/code1.svg" alt="code1" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">code1</div>
+    </div>
+
+    <div class="ic-card" title="codework" onclick="copy(this)" data-name="codework">
+      <img class="ic-card__img" src="../assets/icons/kid/codework.svg" alt="codework" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">codework</div>
+    </div>
+
+    <div class="ic-card" title="compile" onclick="copy(this)" data-name="compile">
+      <img class="ic-card__img" src="../assets/icons/kid/compile.svg" alt="compile" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">compile</div>
+    </div>
+
+    <div class="ic-card" title="computer" onclick="copy(this)" data-name="computer">
+      <img class="ic-card__img" src="../assets/icons/kid/computer.svg" alt="computer" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">computer</div>
+    </div>
+
+    <div class="ic-card" title="contactthecreator" onclick="copy(this)" data-name="contactthecreator">
+      <img class="ic-card__img" src="../assets/icons/kid/contactthecreator.svg" alt="contactthecreator" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">contactthecreator</div>
+    </div>
+
+    <div class="ic-card" title="copresent" onclick="copy(this)" data-name="copresent">
+      <img class="ic-card__img" src="../assets/icons/kid/copresent.svg" alt="copresent" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">copresent</div>
+    </div>
+
+    <div class="ic-card" title="copy" onclick="copy(this)" data-name="copy">
+      <img class="ic-card__img" src="../assets/icons/kid/copy.svg" alt="copy" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">copy</div>
+    </div>
+
+    <div class="ic-card" title="copyconversation" onclick="copy(this)" data-name="copyconversation">
+      <img class="ic-card__img" src="../assets/icons/kid/copyconversation.svg" alt="copyconversation" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">copyconversation</div>
+    </div>
+
+    <div class="ic-card" title="creator" onclick="copy(this)" data-name="creator">
+      <img class="ic-card__img" src="../assets/icons/kid/creator.svg" alt="creator" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">creator</div>
+    </div>
+
+    <div class="ic-card" title="creatorcenter" onclick="copy(this)" data-name="creatorcenter">
+      <img class="ic-card__img" src="../assets/icons/kid/creatorcenter.svg" alt="creatorcenter" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">creatorcenter</div>
+    </div>
+
+    <div class="ic-card" title="creatorcenter02" onclick="copy(this)" data-name="creatorcenter02">
+      <img class="ic-card__img" src="../assets/icons/kid/creatorcenter02.svg" alt="creatorcenter02" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">creatorcenter02</div>
+    </div>
+
+    <div class="ic-card" title="csv" onclick="copy(this)" data-name="csv">
+      <img class="ic-card__img" src="../assets/icons/kid/csv.svg" alt="csv" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">csv</div>
+    </div>
+
+    <div class="ic-card" title="darkcolor" onclick="copy(this)" data-name="darkcolor">
+      <img class="ic-card__img" src="../assets/icons/kid/darkcolor.svg" alt="darkcolor" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">darkcolor</div>
+    </div>
+
+    <div class="ic-card" title="data" onclick="copy(this)" data-name="data">
+      <img class="ic-card__img" src="../assets/icons/kid/data.svg" alt="data" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">data</div>
+    </div>
+
+    <div class="ic-card" title="deepresearch" onclick="copy(this)" data-name="deepresearch">
+      <img class="ic-card__img" src="../assets/icons/kid/deepresearch.svg" alt="deepresearch" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">deepresearch</div>
+    </div>
+
+    <div class="ic-card" title="deepseek" onclick="copy(this)" data-name="deepseek">
+      <img class="ic-card__img" src="../assets/icons/kid/deepseek.svg" alt="deepseek" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">deepseek</div>
+    </div>
+
+    <div class="ic-card" title="delete" onclick="copy(this)" data-name="delete">
+      <img class="ic-card__img" src="../assets/icons/kid/delete.svg" alt="delete" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">delete</div>
+    </div>
+
+    <div class="ic-card" title="deploymenttools" onclick="copy(this)" data-name="deploymenttools">
+      <img class="ic-card__img" src="../assets/icons/kid/deploymenttools.svg" alt="deploymenttools" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">deploymenttools</div>
+    </div>
+
+    <div class="ic-card" title="disconnected" onclick="copy(this)" data-name="disconnected">
+      <img class="ic-card__img" src="../assets/icons/kid/disconnected.svg" alt="disconnected" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">disconnected</div>
+    </div>
+
+    <div class="ic-card" title="discuss" onclick="copy(this)" data-name="discuss">
+      <img class="ic-card__img" src="../assets/icons/kid/discuss.svg" alt="discuss" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">discuss</div>
+    </div>
+
+    <div class="ic-card" title="docs" onclick="copy(this)" data-name="docs">
+      <img class="ic-card__img" src="../assets/icons/kid/docs.svg" alt="docs" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">docs</div>
+    </div>
+
+    <div class="ic-card" title="document" onclick="copy(this)" data-name="document">
+      <img class="ic-card__img" src="../assets/icons/kid/document.svg" alt="document" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">document</div>
+    </div>
+
+    <div class="ic-card" title="document16" onclick="copy(this)" data-name="document16">
+      <img class="ic-card__img" src="../assets/icons/kid/document16.svg" alt="document16" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">document16</div>
+    </div>
+
+    <div class="ic-card" title="downleft" onclick="copy(this)" data-name="downleft">
+      <img class="ic-card__img" src="../assets/icons/kid/downleft.svg" alt="downleft" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">downleft</div>
+    </div>
+
+    <div class="ic-card" title="download" onclick="copy(this)" data-name="download">
+      <img class="ic-card__img" src="../assets/icons/kid/download.svg" alt="download" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">download</div>
+    </div>
+
+    <div class="ic-card" title="draft" onclick="copy(this)" data-name="draft">
+      <img class="ic-card__img" src="../assets/icons/kid/draft.svg" alt="draft" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">draft</div>
+    </div>
+
+    <div class="ic-card" title="earth" onclick="copy(this)" data-name="earth">
+      <img class="ic-card__img" src="../assets/icons/kid/earth.svg" alt="earth" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">earth</div>
+    </div>
+
+    <div class="ic-card" title="edit" onclick="copy(this)" data-name="edit">
+      <img class="ic-card__img" src="../assets/icons/kid/edit.svg" alt="edit" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">edit</div>
+    </div>
+
+    <div class="ic-card" title="enlarge" onclick="copy(this)" data-name="enlarge">
+      <img class="ic-card__img" src="../assets/icons/kid/enlarge.svg" alt="enlarge" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">enlarge</div>
+    </div>
+
+    <div class="ic-card" title="enlarge02" onclick="copy(this)" data-name="enlarge02">
+      <img class="ic-card__img" src="../assets/icons/kid/enlarge02.svg" alt="enlarge02" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">enlarge02</div>
+    </div>
+
+    <div class="ic-card" title="enterkey" onclick="copy(this)" data-name="enterkey">
+      <img class="ic-card__img" src="../assets/icons/kid/enterkey.svg" alt="enterkey" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">enterkey</div>
+    </div>
+
+    <div class="ic-card" title="envelope" onclick="copy(this)" data-name="envelope">
+      <img class="ic-card__img" src="../assets/icons/kid/envelope.svg" alt="envelope" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">envelope</div>
+    </div>
+
+    <div class="ic-card" title="error2" onclick="copy(this)" data-name="error2">
+      <img class="ic-card__img" src="../assets/icons/kid/error2.svg" alt="error2" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">error2</div>
+    </div>
+
+    <div class="ic-card" title="excel16" onclick="copy(this)" data-name="excel16">
+      <img class="ic-card__img" src="../assets/icons/kid/excel16.svg" alt="excel16" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">excel16</div>
+    </div>
+
+    <div class="ic-card" title="executeagain" onclick="copy(this)" data-name="executeagain">
+      <img class="ic-card__img" src="../assets/icons/kid/executeagain.svg" alt="executeagain" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">executeagain</div>
+    </div>
+
+    <div class="ic-card" title="expandtotheright" onclick="copy(this)" data-name="expandtotheright">
+      <img class="ic-card__img" src="../assets/icons/kid/expandtotheright.svg" alt="expandtotheright" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">expandtotheright</div>
+    </div>
+
+    <div class="ic-card" title="filelistsearch" onclick="copy(this)" data-name="filelistsearch">
+      <img class="ic-card__img" src="../assets/icons/kid/filelistsearch.svg" alt="filelistsearch" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">filelistsearch</div>
+    </div>
+
+    <div class="ic-card" title="filesearch" onclick="copy(this)" data-name="filesearch">
+      <img class="ic-card__img" src="../assets/icons/kid/filesearch.svg" alt="filesearch" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">filesearch</div>
+    </div>
+
+    <div class="ic-card" title="filetree" onclick="copy(this)" data-name="filetree">
+      <img class="ic-card__img" src="../assets/icons/kid/filetree.svg" alt="filetree" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">filetree</div>
+    </div>
+
+    <div class="ic-card" title="filter" onclick="copy(this)" data-name="filter">
+      <img class="ic-card__img" src="../assets/icons/kid/filter.svg" alt="filter" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">filter</div>
+    </div>
+
+    <div class="ic-card" title="fire" onclick="copy(this)" data-name="fire">
+      <img class="ic-card__img" src="../assets/icons/kid/fire.svg" alt="fire" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">fire</div>
+    </div>
+
+    <div class="ic-card" title="flash" onclick="copy(this)" data-name="flash">
+      <img class="ic-card__img" src="../assets/icons/kid/flash.svg" alt="flash" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">flash</div>
+    </div>
+
+    <div class="ic-card" title="food" onclick="copy(this)" data-name="food">
+      <img class="ic-card__img" src="../assets/icons/kid/food.svg" alt="food" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">food</div>
+    </div>
+
+    <div class="ic-card" title="forkchat" onclick="copy(this)" data-name="forkchat">
+      <img class="ic-card__img" src="../assets/icons/kid/forkchat.svg" alt="forkchat" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">forkchat</div>
+    </div>
+
+    <div class="ic-card" title="function" onclick="copy(this)" data-name="function">
+      <img class="ic-card__img" src="../assets/icons/kid/function.svg" alt="function" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">function</div>
+    </div>
+
+    <div class="ic-card" title="game" onclick="copy(this)" data-name="game">
+      <img class="ic-card__img" src="../assets/icons/kid/game.svg" alt="game" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">game</div>
+    </div>
+
+    <div class="ic-card" title="gemini" onclick="copy(this)" data-name="gemini">
+      <img class="ic-card__img" src="../assets/icons/kid/gemini.svg" alt="gemini" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">gemini</div>
+    </div>
+
+    <div class="ic-card" title="generating" onclick="copy(this)" data-name="generating">
+      <img class="ic-card__img" src="../assets/icons/kid/generating.svg" alt="generating" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">generating</div>
+    </div>
+
+    <div class="ic-card" title="generationcompleted" onclick="copy(this)" data-name="generationcompleted">
+      <img class="ic-card__img" src="../assets/icons/kid/generationcompleted.svg" alt="generationcompleted" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">generationcompleted</div>
+    </div>
+
+    <div class="ic-card" title="glm" onclick="copy(this)" data-name="glm">
+      <img class="ic-card__img" src="../assets/icons/kid/glm.svg" alt="glm" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">glm</div>
+    </div>
+
+    <div class="ic-card" title="hamburger" onclick="copy(this)" data-name="hamburger">
+      <img class="ic-card__img" src="../assets/icons/kid/hamburger.svg" alt="hamburger" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">hamburger</div>
+    </div>
+
+    <div class="ic-card" title="hammer" onclick="copy(this)" data-name="hammer">
+      <img class="ic-card__img" src="../assets/icons/kid/hammer.svg" alt="hammer" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">hammer</div>
+    </div>
+
+    <div class="ic-card" title="help" onclick="copy(this)" data-name="help">
+      <img class="ic-card__img" src="../assets/icons/kid/help.svg" alt="help" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">help</div>
+    </div>
+
+    <div class="ic-card" title="home" onclick="copy(this)" data-name="home">
+      <img class="ic-card__img" src="../assets/icons/kid/home.svg" alt="home" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">home</div>
+    </div>
+
+    <div class="ic-card" title="hooks" onclick="copy(this)" data-name="hooks">
+      <img class="ic-card__img" src="../assets/icons/kid/hooks.svg" alt="hooks" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">hooks</div>
+    </div>
+
+    <div class="ic-card" title="html16" onclick="copy(this)" data-name="html16">
+      <img class="ic-card__img" src="../assets/icons/kid/html16.svg" alt="html16" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">html16</div>
+    </div>
+
+    <div class="ic-card" title="index" onclick="copy(this)" data-name="index">
+      <img class="ic-card__img" src="../assets/icons/kid/index.svg" alt="index" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">index</div>
+    </div>
+
+    <div class="ic-card" title="info2" onclick="copy(this)" data-name="info2">
+      <img class="ic-card__img" src="../assets/icons/kid/info2.svg" alt="info2" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">info2</div>
+    </div>
+
+    <div class="ic-card" title="inspiration" onclick="copy(this)" data-name="inspiration">
+      <img class="ic-card__img" src="../assets/icons/kid/inspiration.svg" alt="inspiration" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">inspiration</div>
+    </div>
+
+    <div class="ic-card" title="install" onclick="copy(this)" data-name="install">
+      <img class="ic-card__img" src="../assets/icons/kid/install.svg" alt="install" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">install</div>
+    </div>
+
+    <div class="ic-card" title="internet" onclick="copy(this)" data-name="internet">
+      <img class="ic-card__img" src="../assets/icons/kid/internet.svg" alt="internet" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">internet</div>
+    </div>
+
+    <div class="ic-card" title="joinusergroup" onclick="copy(this)" data-name="joinusergroup">
+      <img class="ic-card__img" src="../assets/icons/kid/joinusergroup.svg" alt="joinusergroup" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">joinusergroup</div>
+    </div>
+
+    <div class="ic-card" title="json" onclick="copy(this)" data-name="json">
+      <img class="ic-card__img" src="../assets/icons/kid/json.svg" alt="json" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">json</div>
+    </div>
+
+    <div class="ic-card" title="jumppage" onclick="copy(this)" data-name="jumppage">
+      <img class="ic-card__img" src="../assets/icons/kid/jumppage.svg" alt="jumppage" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">jumppage</div>
+    </div>
+
+    <div class="ic-card" title="kat" onclick="copy(this)" data-name="kat">
+      <img class="ic-card__img" src="../assets/icons/kid/kat.svg" alt="kat" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">kat</div>
+    </div>
+
+    <div class="ic-card" title="kimi" onclick="copy(this)" data-name="kimi">
+      <img class="ic-card__img" src="../assets/icons/kid/kimi.svg" alt="kimi" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">kimi</div>
+    </div>
+
+    <div class="ic-card" title="knowledge" onclick="copy(this)" data-name="knowledge">
+      <img class="ic-card__img" src="../assets/icons/kid/knowledge.svg" alt="knowledge" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">knowledge</div>
+    </div>
+
+    <div class="ic-card" title="knowledgebase" onclick="copy(this)" data-name="knowledgebase">
+      <img class="ic-card__img" src="../assets/icons/kid/knowledgebase.svg" alt="knowledgebase" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">knowledgebase</div>
+    </div>
+
+    <div class="ic-card" title="layers" onclick="copy(this)" data-name="layers">
+      <img class="ic-card__img" src="../assets/icons/kid/layers.svg" alt="layers" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">layers</div>
+    </div>
+
+    <div class="ic-card" title="leftsidebar" onclick="copy(this)" data-name="leftsidebar">
+      <img class="ic-card__img" src="../assets/icons/kid/leftsidebar.svg" alt="leftsidebar" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">leftsidebar</div>
+    </div>
+
+    <div class="ic-card" title="light" onclick="copy(this)" data-name="light">
+      <img class="ic-card__img" src="../assets/icons/kid/light.svg" alt="light" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">light</div>
+    </div>
+
+    <div class="ic-card" title="lightanddarkswitching" onclick="copy(this)" data-name="lightanddarkswitching">
+      <img class="ic-card__img" src="../assets/icons/kid/lightanddarkswitching.svg" alt="lightanddarkswitching" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">lightanddarkswitching</div>
+    </div>
+
+    <div class="ic-card" title="loading02" onclick="copy(this)" data-name="loading02">
+      <img class="ic-card__img" src="../assets/icons/kid/loading02.svg" alt="loading02" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">loading02</div>
+    </div>
+
+    <div class="ic-card" title="lock" onclick="copy(this)" data-name="lock">
+      <img class="ic-card__img" src="../assets/icons/kid/lock.svg" alt="lock" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">lock</div>
+    </div>
+
+    <div class="ic-card" title="m4a16" onclick="copy(this)" data-name="m4a16">
+      <img class="ic-card__img" src="../assets/icons/kid/m4a16.svg" alt="m4a16" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">m4a16</div>
+    </div>
+
+    <div class="ic-card" title="map" onclick="copy(this)" data-name="map">
+      <img class="ic-card__img" src="../assets/icons/kid/map.svg" alt="map" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">map</div>
+    </div>
+
+    <div class="ic-card" title="markdown" onclick="copy(this)" data-name="markdown">
+      <img class="ic-card__img" src="../assets/icons/kid/markdown.svg" alt="markdown" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">markdown</div>
+    </div>
+
+    <div class="ic-card" title="md16" onclick="copy(this)" data-name="md16">
+      <img class="ic-card__img" src="../assets/icons/kid/md16.svg" alt="md16" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">md16</div>
+    </div>
+
+    <div class="ic-card" title="memory" onclick="copy(this)" data-name="memory">
+      <img class="ic-card__img" src="../assets/icons/kid/memory.svg" alt="memory" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">memory</div>
+    </div>
+
+    <div class="ic-card" title="message" onclick="copy(this)" data-name="message">
+      <img class="ic-card__img" src="../assets/icons/kid/message.svg" alt="message" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">message</div>
+    </div>
+
+    <div class="ic-card" title="messagesending" onclick="copy(this)" data-name="messagesending">
+      <img class="ic-card__img" src="../assets/icons/kid/messagesending.svg" alt="messagesending" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">messagesending</div>
+    </div>
+
+    <div class="ic-card" title="minimax" onclick="copy(this)" data-name="minimax">
+      <img class="ic-card__img" src="../assets/icons/kid/minimax.svg" alt="minimax" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">minimax</div>
+    </div>
+
+    <div class="ic-card" title="minimise" onclick="copy(this)" data-name="minimise">
+      <img class="ic-card__img" src="../assets/icons/kid/minimise.svg" alt="minimise" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">minimise</div>
+    </div>
+
+    <div class="ic-card" title="minimise02" onclick="copy(this)" data-name="minimise02">
+      <img class="ic-card__img" src="../assets/icons/kid/minimise02.svg" alt="minimise02" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">minimise02</div>
+    </div>
+
+    <div class="ic-card" title="models" onclick="copy(this)" data-name="models">
+      <img class="ic-card__img" src="../assets/icons/kid/models.svg" alt="models" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">models</div>
+    </div>
+
+    <div class="ic-card" title="more" onclick="copy(this)" data-name="more">
+      <img class="ic-card__img" src="../assets/icons/kid/more.svg" alt="more" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">more</div>
+    </div>
+
+    <div class="ic-card" title="multimedia" onclick="copy(this)" data-name="multimedia">
+      <img class="ic-card__img" src="../assets/icons/kid/multimedia.svg" alt="multimedia" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">multimedia</div>
+    </div>
+
+    <div class="ic-card" title="music" onclick="copy(this)" data-name="music">
+      <img class="ic-card__img" src="../assets/icons/kid/music.svg" alt="music" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">music</div>
+    </div>
+
+    <div class="ic-card" title="myflicker" onclick="copy(this)" data-name="myflicker">
+      <img class="ic-card__img" src="../assets/icons/kid/myflicker.svg" alt="myflicker" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">myflicker</div>
+    </div>
+
+    <div class="ic-card" title="myflicker02" onclick="copy(this)" data-name="myflicker02">
+      <img class="ic-card__img" src="../assets/icons/kid/myflicker02.svg" alt="myflicker02" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">myflicker02</div>
+    </div>
+
+    <div class="ic-card" title="newconversation" onclick="copy(this)" data-name="newconversation">
+      <img class="ic-card__img" src="../assets/icons/kid/newconversation.svg" alt="newconversation" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">newconversation</div>
+    </div>
+
+    <div class="ic-card" title="newconversation02" onclick="copy(this)" data-name="newconversation02">
+      <img class="ic-card__img" src="../assets/icons/kid/newconversation02.svg" alt="newconversation02" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">newconversation02</div>
+    </div>
+
+    <div class="ic-card" title="nogroup" onclick="copy(this)" data-name="nogroup">
+      <img class="ic-card__img" src="../assets/icons/kid/nogroup.svg" alt="nogroup" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">nogroup</div>
+    </div>
+
+    <div class="ic-card" title="oncall" onclick="copy(this)" data-name="oncall">
+      <img class="ic-card__img" src="../assets/icons/kid/oncall.svg" alt="oncall" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">oncall</div>
+    </div>
+
+    <div class="ic-card" title="openfolder" onclick="copy(this)" data-name="openfolder">
+      <img class="ic-card__img" src="../assets/icons/kid/openfolder.svg" alt="openfolder" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">openfolder</div>
+    </div>
+
+    <div class="ic-card" title="openpicture" onclick="copy(this)" data-name="openpicture">
+      <img class="ic-card__img" src="../assets/icons/kid/openpicture.svg" alt="openpicture" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">openpicture</div>
+    </div>
+
+    <div class="ic-card" title="pdf16" onclick="copy(this)" data-name="pdf16">
+      <img class="ic-card__img" src="../assets/icons/kid/pdf16.svg" alt="pdf16" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">pdf16</div>
+    </div>
+
+    <div class="ic-card" title="pencil" onclick="copy(this)" data-name="pencil">
+      <img class="ic-card__img" src="../assets/icons/kid/pencil.svg" alt="pencil" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">pencil</div>
+    </div>
+
+    <div class="ic-card" title="person" onclick="copy(this)" data-name="person">
+      <img class="ic-card__img" src="../assets/icons/kid/person.svg" alt="person" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">person</div>
+    </div>
+
+    <div class="ic-card" title="phone" onclick="copy(this)" data-name="phone">
+      <img class="ic-card__img" src="../assets/icons/kid/phone.svg" alt="phone" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">phone</div>
+    </div>
+
+    <div class="ic-card" title="pintotop" onclick="copy(this)" data-name="pintotop">
+      <img class="ic-card__img" src="../assets/icons/kid/pintotop.svg" alt="pintotop" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">pintotop</div>
+    </div>
+
+    <div class="ic-card" title="plan" onclick="copy(this)" data-name="plan">
+      <img class="ic-card__img" src="../assets/icons/kid/plan.svg" alt="plan" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">plan</div>
+    </div>
+
+    <div class="ic-card" title="plug" onclick="copy(this)" data-name="plug">
+      <img class="ic-card__img" src="../assets/icons/kid/plug.svg" alt="plug" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">plug</div>
+    </div>
+
+    <div class="ic-card" title="png16" onclick="copy(this)" data-name="png16">
+      <img class="ic-card__img" src="../assets/icons/kid/png16.svg" alt="png16" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">png16</div>
+    </div>
+
+    <div class="ic-card" title="points" onclick="copy(this)" data-name="points">
+      <img class="ic-card__img" src="../assets/icons/kid/points.svg" alt="points" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">points</div>
+    </div>
+
+    <div class="ic-card" title="ppt16" onclick="copy(this)" data-name="ppt16">
+      <img class="ic-card__img" src="../assets/icons/kid/ppt16.svg" alt="ppt16" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">ppt16</div>
+    </div>
+
+    <div class="ic-card" title="problemfeedback" onclick="copy(this)" data-name="problemfeedback">
+      <img class="ic-card__img" src="../assets/icons/kid/problemfeedback.svg" alt="problemfeedback" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">problemfeedback</div>
+    </div>
+
+    <div class="ic-card" title="public" onclick="copy(this)" data-name="public">
+      <img class="ic-card__img" src="../assets/icons/kid/public.svg" alt="public" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">public</div>
+    </div>
+
+    <div class="ic-card" title="pushto" onclick="copy(this)" data-name="pushto">
+      <img class="ic-card__img" src="../assets/icons/kid/pushto.svg" alt="pushto" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">pushto</div>
+    </div>
+
+    <div class="ic-card" title="putaway" onclick="copy(this)" data-name="putaway">
+      <img class="ic-card__img" src="../assets/icons/kid/putaway.svg" alt="putaway" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">putaway</div>
+    </div>
+
+    <div class="ic-card" title="qwen" onclick="copy(this)" data-name="qwen">
+      <img class="ic-card__img" src="../assets/icons/kid/qwen.svg" alt="qwen" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">qwen</div>
+    </div>
+
+    <div class="ic-card" title="readfile" onclick="copy(this)" data-name="readfile">
+      <img class="ic-card__img" src="../assets/icons/kid/readfile.svg" alt="readfile" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">readfile</div>
+    </div>
+
+    <div class="ic-card" title="refresh" onclick="copy(this)" data-name="refresh">
+      <img class="ic-card__img" src="../assets/icons/kid/refresh.svg" alt="refresh" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">refresh</div>
+    </div>
+
+    <div class="ic-card" title="rightsidebar" onclick="copy(this)" data-name="rightsidebar">
+      <img class="ic-card__img" src="../assets/icons/kid/rightsidebar.svg" alt="rightsidebar" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">rightsidebar</div>
+    </div>
+
+    <div class="ic-card" title="robot" onclick="copy(this)" data-name="robot">
+      <img class="ic-card__img" src="../assets/icons/kid/robot.svg" alt="robot" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">robot</div>
+    </div>
+
+    <div class="ic-card" title="rule" onclick="copy(this)" data-name="rule">
+      <img class="ic-card__img" src="../assets/icons/kid/rule.svg" alt="rule" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">rule</div>
+    </div>
+
+    <div class="ic-card" title="rulessearch" onclick="copy(this)" data-name="rulessearch">
+      <img class="ic-card__img" src="../assets/icons/kid/rulessearch.svg" alt="rulessearch" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">rulessearch</div>
+    </div>
+
+    <div class="ic-card" title="safe" onclick="copy(this)" data-name="safe">
+      <img class="ic-card__img" src="../assets/icons/kid/safe.svg" alt="safe" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">safe</div>
+    </div>
+
+    <div class="ic-card" title="saved" onclick="copy(this)" data-name="saved">
+      <img class="ic-card__img" src="../assets/icons/kid/saved.svg" alt="saved" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">saved</div>
+    </div>
+
+    <div class="ic-card" title="scheduledtasks" onclick="copy(this)" data-name="scheduledtasks">
+      <img class="ic-card__img" src="../assets/icons/kid/scheduledtasks.svg" alt="scheduledtasks" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">scheduledtasks</div>
+    </div>
+
+    <div class="ic-card" title="search" onclick="copy(this)" data-name="search">
+      <img class="ic-card__img" src="../assets/icons/kid/search.svg" alt="search" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">search</div>
+    </div>
+
+    <div class="ic-card" title="send" onclick="copy(this)" data-name="send">
+      <img class="ic-card__img" src="../assets/icons/kid/send.svg" alt="send" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">send</div>
+    </div>
+
+    <div class="ic-card" title="sendmessage" onclick="copy(this)" data-name="sendmessage">
+      <img class="ic-card__img" src="../assets/icons/kid/sendmessage.svg" alt="sendmessage" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">sendmessage</div>
+    </div>
+
+    <div class="ic-card" title="setting" onclick="copy(this)" data-name="setting">
+      <img class="ic-card__img" src="../assets/icons/kid/setting.svg" alt="setting" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">setting</div>
+    </div>
+
+    <div class="ic-card" title="share" onclick="copy(this)" data-name="share">
+      <img class="ic-card__img" src="../assets/icons/kid/share.svg" alt="share" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">share</div>
+    </div>
+
+    <div class="ic-card" title="share02" onclick="copy(this)" data-name="share02">
+      <img class="ic-card__img" src="../assets/icons/kid/share02.svg" alt="share02" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">share02</div>
+    </div>
+
+    <div class="ic-card" title="skill" onclick="copy(this)" data-name="skill">
+      <img class="ic-card__img" src="../assets/icons/kid/skill.svg" alt="skill" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">skill</div>
+    </div>
+
+    <div class="ic-card" title="skillmanagement" onclick="copy(this)" data-name="skillmanagement">
+      <img class="ic-card__img" src="../assets/icons/kid/skillmanagement.svg" alt="skillmanagement" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">skillmanagement</div>
+    </div>
+
+    <div class="ic-card" title="skip" onclick="copy(this)" data-name="skip">
+      <img class="ic-card__img" src="../assets/icons/kid/skip.svg" alt="skip" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">skip</div>
+    </div>
+
+    <div class="ic-card" title="snack" onclick="copy(this)" data-name="snack">
+      <img class="ic-card__img" src="../assets/icons/kid/snack.svg" alt="snack" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">snack</div>
+    </div>
+
+    <div class="ic-card" title="star" onclick="copy(this)" data-name="star">
+      <img class="ic-card__img" src="../assets/icons/kid/star.svg" alt="star" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">star</div>
+    </div>
+
+    <div class="ic-card" title="statepoint" onclick="copy(this)" data-name="statepoint">
+      <img class="ic-card__img" src="../assets/icons/kid/statepoint.svg" alt="statepoint" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">statepoint</div>
+    </div>
+
+    <div class="ic-card" title="stop" onclick="copy(this)" data-name="stop">
+      <img class="ic-card__img" src="../assets/icons/kid/stop.svg" alt="stop" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">stop</div>
+    </div>
+
+    <div class="ic-card" title="stop2" onclick="copy(this)" data-name="stop2">
+      <img class="ic-card__img" src="../assets/icons/kid/stop2.svg" alt="stop2" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">stop2</div>
+    </div>
+
+    <div class="ic-card" title="subscription" onclick="copy(this)" data-name="subscription">
+      <img class="ic-card__img" src="../assets/icons/kid/subscription.svg" alt="subscription" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">subscription</div>
+    </div>
+
+    <div class="ic-card" title="success" onclick="copy(this)" data-name="success">
+      <img class="ic-card__img" src="../assets/icons/kid/success.svg" alt="success" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">success</div>
+    </div>
+
+    <div class="ic-card" title="success02" onclick="copy(this)" data-name="success02">
+      <img class="ic-card__img" src="../assets/icons/kid/success02.svg" alt="success02" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">success02</div>
+    </div>
+
+    <div class="ic-card" title="thinking" onclick="copy(this)" data-name="thinking">
+      <img class="ic-card__img" src="../assets/icons/kid/thinking.svg" alt="thinking" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">thinking</div>
+    </div>
+
+    <div class="ic-card" title="time" onclick="copy(this)" data-name="time">
+      <img class="ic-card__img" src="../assets/icons/kid/time.svg" alt="time" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">time</div>
+    </div>
+
+    <div class="ic-card" title="tips" onclick="copy(this)" data-name="tips">
+      <img class="ic-card__img" src="../assets/icons/kid/tips.svg" alt="tips" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">tips</div>
+    </div>
+
+    <div class="ic-card" title="tool" onclick="copy(this)" data-name="tool">
+      <img class="ic-card__img" src="../assets/icons/kid/tool.svg" alt="tool" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">tool</div>
+    </div>
+
+    <div class="ic-card" title="txt" onclick="copy(this)" data-name="txt">
+      <img class="ic-card__img" src="../assets/icons/kid/txt.svg" alt="txt" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">txt</div>
+    </div>
+
+    <div class="ic-card" title="undo" onclick="copy(this)" data-name="undo">
+      <img class="ic-card__img" src="../assets/icons/kid/undo.svg" alt="undo" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">undo</div>
+    </div>
+
+    <div class="ic-card" title="undo2" onclick="copy(this)" data-name="undo2">
+      <img class="ic-card__img" src="../assets/icons/kid/undo2.svg" alt="undo2" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">undo2</div>
+    </div>
+
+    <div class="ic-card" title="unknow16" onclick="copy(this)" data-name="unknow16">
+      <img class="ic-card__img" src="../assets/icons/kid/unknow16.svg" alt="unknow16" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">unknow16</div>
+    </div>
+
+    <div class="ic-card" title="updated" onclick="copy(this)" data-name="updated">
+      <img class="ic-card__img" src="../assets/icons/kid/updated.svg" alt="updated" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">updated</div>
+    </div>
+
+    <div class="ic-card" title="upload" onclick="copy(this)" data-name="upload">
+      <img class="ic-card__img" src="../assets/icons/kid/upload.svg" alt="upload" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">upload</div>
+    </div>
+
+    <div class="ic-card" title="upload02" onclick="copy(this)" data-name="upload02">
+      <img class="ic-card__img" src="../assets/icons/kid/upload02.svg" alt="upload02" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">upload02</div>
+    </div>
+
+    <div class="ic-card" title="uploadfile" onclick="copy(this)" data-name="uploadfile">
+      <img class="ic-card__img" src="../assets/icons/kid/uploadfile.svg" alt="uploadfile" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">uploadfile</div>
+    </div>
+
+    <div class="ic-card" title="uploadtocloud" onclick="copy(this)" data-name="uploadtocloud">
+      <img class="ic-card__img" src="../assets/icons/kid/uploadtocloud.svg" alt="uploadtocloud" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">uploadtocloud</div>
+    </div>
+
+    <div class="ic-card" title="url" onclick="copy(this)" data-name="url">
+      <img class="ic-card__img" src="../assets/icons/kid/url.svg" alt="url" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">url</div>
+    </div>
+
+    <div class="ic-card" title="user" onclick="copy(this)" data-name="user">
+      <img class="ic-card__img" src="../assets/icons/kid/user.svg" alt="user" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">user</div>
+    </div>
+
+    <div class="ic-card" title="video02" onclick="copy(this)" data-name="video02">
+      <img class="ic-card__img" src="../assets/icons/kid/video02.svg" alt="video02" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">video02</div>
+    </div>
+
+    <div class="ic-card" title="videoplaying" onclick="copy(this)" data-name="videoplaying">
+      <img class="ic-card__img" src="../assets/icons/kid/videoplaying.svg" alt="videoplaying" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">videoplaying</div>
+    </div>
+
+    <div class="ic-card" title="voice" onclick="copy(this)" data-name="voice">
+      <img class="ic-card__img" src="../assets/icons/kid/voice.svg" alt="voice" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">voice</div>
+    </div>
+
+    <div class="ic-card" title="waitingforgeneration" onclick="copy(this)" data-name="waitingforgeneration">
+      <img class="ic-card__img" src="../assets/icons/kid/waitingforgeneration.svg" alt="waitingforgeneration" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">waitingforgeneration</div>
+    </div>
+
+    <div class="ic-card" title="wallet" onclick="copy(this)" data-name="wallet">
+      <img class="ic-card__img" src="../assets/icons/kid/wallet.svg" alt="wallet" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">wallet</div>
+    </div>
+
+    <div class="ic-card" title="warn" onclick="copy(this)" data-name="warn">
+      <img class="ic-card__img" src="../assets/icons/kid/warn.svg" alt="warn" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">warn</div>
+    </div>
+
+    <div class="ic-card" title="webp" onclick="copy(this)" data-name="webp">
+      <img class="ic-card__img" src="../assets/icons/kid/webp.svg" alt="webp" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">webp</div>
+    </div>
+
+    <div class="ic-card" title="word6" onclick="copy(this)" data-name="word6">
+      <img class="ic-card__img" src="../assets/icons/kid/word6.svg" alt="word6" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">word6</div>
+    </div>
+
+    <div class="ic-card" title="wrench" onclick="copy(this)" data-name="wrench">
+      <img class="ic-card__img" src="../assets/icons/kid/wrench.svg" alt="wrench" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">wrench</div>
+    </div>
+
+    <div class="ic-card" title="xmind16" onclick="copy(this)" data-name="xmind16">
+      <img class="ic-card__img" src="../assets/icons/kid/xmind16.svg" alt="xmind16" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">xmind16</div>
+    </div>
+
+    <div class="ic-card" title="zip16" onclick="copy(this)" data-name="zip16">
+      <img class="ic-card__img" src="../assets/icons/kid/zip16.svg" alt="zip16" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">zip16</div>
+    </div>
+
+    <div class="ic-card" title="zoomin" onclick="copy(this)" data-name="zoomin">
+      <img class="ic-card__img" src="../assets/icons/kid/zoomin.svg" alt="zoomin" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">zoomin</div>
+    </div>
+
+    <div class="ic-card" title="zoomout" onclick="copy(this)" data-name="zoomout">
+      <img class="ic-card__img" src="../assets/icons/kid/zoomout.svg" alt="zoomout" onerror="this.style.opacity=0.2">
+      <div class="ic-card__name">zoomout</div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script>
+    function filter(q) {
+      const cards = document.querySelectorAll('.ic-card');
+      let n = 0;
+      cards.forEach(c => {
+        const match = c.dataset.name.includes(q.toLowerCase());
+        c.classList.toggle('hidden', !match);
+        if (match) n++;
+      });
+      document.getElementById('count').textContent = n + ' 个';
+    }
+    function copy(el) {
+      const name = el.dataset.name;
+      navigator.clipboard?.writeText(name).catch(()=>{});
+      el.classList.add('copied');
+      setTimeout(() => el.classList.remove('copied'), 800);
+      const t = document.getElementById('toast');
+      t.textContent = '已复制: ' + name;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 1500);
+    }
+  </script>
+</body>
+</html>

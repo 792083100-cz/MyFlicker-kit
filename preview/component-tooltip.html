@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tooltip</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <link rel="stylesheet" href="../components.css" />
+  <style data-preview-shell>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      letter-spacing: var(--body-sm-letter-spacing);
+      min-height: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+
+    body { padding: var(--spacer-32); }
+    img, svg, video, canvas { max-width: 100%; }
+    a { color: var(--text-default); text-decoration: none; }
+
+    .row { display: flex; gap: var(--spacer-12); flex-wrap: wrap; align-items: center; }
+    .col { display: flex; flex-direction: column; gap: var(--spacer-12); }
+    .stack-8  { display: flex; flex-direction: column; gap: var(--spacer-8); }
+    .stack-12 { display: flex; flex-direction: column; gap: var(--spacer-12); }
+    .stack-16 { display: flex; flex-direction: column; gap: var(--spacer-16); }
+    .stack-24 { display: flex; flex-direction: column; gap: var(--spacer-24); }
+    .stack-40 { display: flex; flex-direction: column; gap: var(--spacer-40); }
+
+    .pv-header { margin-bottom: var(--spacer-32); padding-bottom: var(--spacer-16); border-bottom: 1px solid var(--border-neutral-l1); }
+    .pv-header h1 { font-size: var(--heading-lg-font-size); line-height: var(--heading-lg-line-height); font-weight: var(--heading-lg-font-weight); margin-bottom: var(--spacer-4); }
+    .pv-header p { color: var(--text-secondary); font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); }
+    .pv-section { margin-bottom: var(--spacer-40); }
+    .pv-section__title { font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); margin-bottom: var(--spacer-12); color: var(--text-default); }
+    .pv-section__sub { font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); color: var(--text-tertiary); margin-bottom: var(--spacer-16); }
+
+    /* Demo trigger button */
+    .demo-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacer-6);
+      padding: var(--spacer-6) var(--spacer-12);
+      background: var(--bg-base-secondary);
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-8);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      color: var(--text-secondary);
+      cursor: default;
+      user-select: none;
+    }
+
+    /* Wrapper to show tooltip inline (static demo, no hover logic) */
+    .tooltip-demo-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: var(--spacer-24);
+    }
+
+    .tooltip-demo-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--spacer-8);
+    }
+
+    .tooltip-demo-item .label {
+      font-size: var(--body-xs-font-size);
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* Token annotation table */
+    .token-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+    }
+    .token-table th {
+      text-align: left;
+      padding: var(--spacer-8) var(--spacer-12);
+      background: var(--bg-base-secondary);
+      border-bottom: 1px solid var(--border-neutral-l1);
+      color: var(--text-tertiary);
+      font-weight: var(--font-weight-medium, 500);
+    }
+    .token-table td {
+      padding: var(--spacer-8) var(--spacer-12);
+      border-bottom: 1px solid var(--border-neutral-l1);
+      vertical-align: middle;
+    }
+    .token-table tr:last-child td { border-bottom: none; }
+    code {
+      font-family: "SF Mono", "Fira Mono", monospace;
+      font-size: 12px;
+      background: var(--bg-base-secondary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--text-accent, var(--text-default));
+    }
+
+    /* Color swatch */
+    .swatch {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1px solid var(--border-neutral-l1);
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="pv-header">
+    <h1>Tooltip</h1>
+    <p>Small contextual label that surfaces additional information. Class: <code>.mf-tooltip</code></p>
+  </div>
+
+  <!-- ── 1. Basic tooltip ── -->
+  <div class="pv-section">
+    <div class="pv-section__title">Basic</div>
+    <div class="pv-section__sub">Default tooltip — text only, inline-flex, padding 6 × 8.</div>
+
+    <div class="tooltip-demo-row">
+      <div class="tooltip-demo-item">
+        <span class="label">Short label</span>
+        <span class="mf-tooltip">Save changes</span>
+      </div>
+
+      <div class="tooltip-demo-item">
+        <span class="label">Medium label</span>
+        <span class="mf-tooltip">Copy to clipboard</span>
+      </div>
+
+      <div class="tooltip-demo-item">
+        <span class="label">Longer label</span>
+        <span class="mf-tooltip">This action cannot be undone</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 2. With leading icon ── -->
+  <div class="pv-section">
+    <div class="pv-section__title">With Icon</div>
+    <div class="pv-section__sub">Icon placed inside the flex container before the label text.</div>
+
+    <div class="tooltip-demo-row">
+      <div class="tooltip-demo-item">
+        <span class="label">Info icon</span>
+        <span class="mf-tooltip">
+          <svg width="14" height="14" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-asset-icon="../assets/icons/kid/info2.svg"><path fill="currentColor" fill-rule="evenodd" d="M960 512A448 448 0 1 1 64 512 448 448 0 0 1 960 512Z"></path><path fill="#242323" d="M448 320A64 64 0 0 1 576 320V512A64 64 0 0 1 448 512V320zM448 704A64 64 0 1 1 576 704 64 64 0 0 1 448 704z"></path></svg>
+          Learn more
+        </span>
+      </div>
+
+      <div class="tooltip-demo-item">
+        <span class="label">Warning icon</span>
+        <span class="mf-tooltip">
+          <svg width="14" height="14" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-asset-icon="../assets/icons/kid/warn.svg"><path fill="currentColor" fill-rule="evenodd" d="M960 512A448 448 0 1 0 64 512 448 448 0 0 0 960 512Z"></path><path fill="#242323" d="M448 704A64 64 0 1 0 576 704V512A64 64 0 0 0 448 512V704zM448 320A64 64 0 1 0 576 320 64 64 0 0 0 448 320z"></path></svg>
+          Destructive action
+        </span>
+      </div>
+
+      <div class="tooltip-demo-item">
+        <span class="label">Keyboard shortcut</span>
+        <span class="mf-tooltip">
+          <svg width="14" height="14" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" data-asset-icon="../assets/icons/kid/light.svg"><path fill="currentColor" d="M838.4 438.336C838.4 272 695.808 131.008 512 131.008 328.192 131.008 185.6 272 185.6 438.336 185.6 554.432 243.2 645.76 333.888 707.584 366.848 729.984 393.856 765.056 403.84 807.552H598.4A165.248 165.248 0 0 1 670.528 707.328C773.952 641.408 838.4 557.376 838.4 438.336zM915.2 438.336C915.2 592.448 828.672 697.6 711.808 772.032 686.976 787.84 670.848 814.656 670.848 844.032L669.888 852.224A40.32 40.32 0 0 1 630.4 884.288H371.904A40.448 40.448 0 0 1 331.392 843.84 87.424 87.424 0 0 0 299.456 777.728L290.688 771.2C182.08 697.28 108.8 583.488 108.8 438.336 108.8 226.176 289.28 54.208 512 54.208S915.2 226.176 915.2 438.336zM639.872 931.456A38.4 38.4 0 1 1 639.872 1008.192H384.128A38.4 38.4 0 1 1 384.128 931.392H639.872z"></path><path fill="currentColor" d="M601.92 462.08A38.4 38.4 0 0 1 633.28 532.096C587.072 552.832 547.456 565.312 507.2 565.312 466.368 565.312 429.44 552.32 388.736 531.2A38.4 38.4 0 1 1 424.064 463.04C459.52 481.408 483.84 488.448 507.264 488.512 531.392 488.512 559.36 481.152 601.92 462.016Z"></path></svg>
+          ⌘ + K to open
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 3. Max width wrapping ── -->
+  <div class="pv-section">
+    <div class="pv-section__title">Multi-line (max-width)</div>
+    <div class="pv-section__sub">Add <code>max-width</code> and <code>white-space: normal</code> to allow text to wrap.</div>
+
+    <div class="tooltip-demo-row">
+      <div class="tooltip-demo-item">
+        <span class="label">240px max</span>
+        <span class="mf-tooltip" style="max-width: 240px; white-space: normal;">
+          Drag and drop files here, or click to select. Supports PNG, JPG, SVG up to 10 MB.
+        </span>
+      </div>
+
+      <div class="tooltip-demo-item">
+        <span class="label">200px max</span>
+        <span class="mf-tooltip" style="max-width: 200px; white-space: normal;">
+          This tooltip text is long enough to require wrapping on two lines.
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 4. Popover sibling ── -->
+  <div class="pv-section">
+    <div class="pv-section__title">Popover — <code>.mf-popover</code></div>
+    <div class="pv-section__sub">Larger surface for richer content. Uses <code>--radius-12</code> and <code>--bg-base-default</code>.</div>
+
+    <div class="tooltip-demo-row">
+      <div class="tooltip-demo-item">
+        <span class="label">Basic popover</span>
+        <div class="mf-popover" style="max-width: 280px;">
+          <div style="font-weight: 500; margin-bottom: var(--spacer-4); color: var(--text-default);">What is a popover?</div>
+          <div style="color: var(--text-secondary); font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height);">A floating panel that contains structured content such as descriptions, actions, or form controls.</div>
+        </div>
+      </div>
+
+      <div class="tooltip-demo-item">
+        <span class="label">With action</span>
+        <div class="mf-popover" style="max-width: 240px;">
+          <div style="font-weight: 500; margin-bottom: var(--spacer-8); color: var(--text-default);">Delete this file?</div>
+          <div style="color: var(--text-secondary); font-size: var(--body-sm-font-size); margin-bottom: var(--spacer-12);">This cannot be undone once confirmed.</div>
+          <div style="display: flex; gap: var(--spacer-8);">
+            <button style="flex:1; padding: 6px 12px; background: var(--bg-base-secondary); border: 1px solid var(--border-neutral-l1); border-radius: var(--radius-8); font-size: var(--body-sm-font-size); color: var(--text-default); cursor: pointer;">Cancel</button>
+            <button style="flex:1; padding: 6px 12px; background: var(--color-danger-600, #E53E3E); border: none; border-radius: var(--radius-8); font-size: var(--body-sm-font-size); color: #fff; cursor: pointer;">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 5. Token Reference ── -->
+  <div class="pv-section">
+    <div class="pv-section__title">Token Reference</div>
+    <div class="pv-section__sub">All CSS custom properties consumed by <code>.mf-tooltip</code>.</div>
+
+    <table class="token-table">
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Token</th>
+          <th>Light value</th>
+          <th>Dark value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>background</code></td>
+          <td><code>--bg-tooltip</code></td>
+          <td><span class="swatch" style="background:#242323; border-color:#555;"></span>#242323 (inverted)</td>
+          <td><span class="swatch" style="background:#2D2F32; border-color:#555;"></span>#2D2F32</td>
+        </tr>
+        <tr>
+          <td><code>color</code></td>
+          <td><code>--text-white</code></td>
+          <td><span class="swatch" style="background:#FFFFFF;"></span>#FFFFFF</td>
+          <td><span class="swatch" style="background:#FFFFFF;"></span>#FFFFFF</td>
+        </tr>
+        <tr>
+          <td><code>border-radius</code></td>
+          <td><code>--radius-8</code></td>
+          <td>8px</td>
+          <td>8px</td>
+        </tr>
+        <tr>
+          <td><code>padding</code></td>
+          <td><code>--spacer-6</code> / <code>--spacer-8</code></td>
+          <td>6px 8px</td>
+          <td>6px 8px</td>
+        </tr>
+        <tr>
+          <td><code>gap</code></td>
+          <td><code>--spacer-6</code></td>
+          <td>6px</td>
+          <td>6px</td>
+        </tr>
+        <tr>
+          <td><code>font-size</code></td>
+          <td><code>--body-sm-font-size</code></td>
+          <td>13px</td>
+          <td>13px</td>
+        </tr>
+        <tr>
+          <td><code>box-shadow</code></td>
+          <td>—</td>
+          <td colspan="2"><code>0 12px 32px color-mix(in srgb, var(--text-default) 16%, transparent)</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

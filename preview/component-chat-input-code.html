@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chat Input · Code Mode — MyFlicker Design System</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <link rel="stylesheet" href="../components.css" />
+  <style data-preview-shell>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: var(--bg-base-secondary);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      min-height: 100%;
+      -webkit-font-smoothing: antialiased;
+    }
+    body { padding: var(--spacer-40) var(--spacer-48) var(--spacer-64); max-width: 1120px; margin: 0 auto; }
+    .pv-header { margin-bottom: var(--spacer-40); padding-bottom: var(--spacer-20); border-bottom: 1px solid var(--border-neutral-l1); }
+    .pv-header h1 { font-size: var(--heading-lg-font-size); line-height: var(--heading-lg-line-height); font-weight: var(--heading-lg-font-weight); margin-bottom: var(--spacer-4); }
+    .pv-header p  { color: var(--text-secondary); font-size: var(--body-sm-font-size); }
+    .pv-section { padding: var(--spacer-32) 0; border-top: 1px solid var(--border-neutral-l1); }
+    .pv-header + .pv-section { border-top: 0; padding-top: 0; }
+    .pv-section__title { font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); color: var(--text-default); margin-bottom: var(--spacer-20); }
+    .pv-section__sub  { font-size: var(--body-sm-font-size); color: var(--text-tertiary); margin-bottom: var(--spacer-16); }
+    .canvas { background: var(--bg-base-default); border-radius: var(--radius-12); padding: var(--spacer-48) var(--spacer-32); display: flex; justify-content: center; }
+  </style>
+</head>
+<body>
+
+  <div class="pv-header">
+    <h1>Chat Input · Code Mode</h1>
+    <p>Code 模式对话输入框 — 复用 Work 模式框架，toolbar 与项目区做差异化</p>
+  </div>
+
+  <!-- ─────────────────────────────────────────────
+       Section 1: Default — Code 模式默认态
+  ───────────────────────────────────────────── -->
+  <div class="pv-section">
+    <div class="pv-section__title">Default</div>
+    <div class="pv-section__sub">
+      前置图标（Claude / 盾牌 / 显示器 / 文件夹）统一 16px + 一级色；下拉箭头统一 16px + 三级色
+    </div>
+    <div class="canvas">
+      <div style="width: 800px;">
+
+        <div class="mf-chat-input-wrap">
+
+          <div class="mf-chat-input">
+            <textarea class="mf-chat-input__textarea" placeholder="和我一起做点什么，@关联对象，# 添加上下文，/ 调用指令"></textarea>
+
+            <div class="mf-chat-input__toolbar">
+              <div class="mf-chat-input__toolbar-left">
+
+                <!-- + 附件（一级色，16px） -->
+                <button class="mf-chat-input__btn" title="添加附件" style="color: var(--text-default);">
+                  <span class="icon icon--mask i-add" style="width:16px;height:16px;"></span>
+                </button>
+
+                <!-- 模式：Claude Code ▾ -->
+                <button class="mf-chat-input__model">
+                  <span class="icon icon--mask i-claude" style="width:16px;height:16px;flex:0 0 16px;color: var(--text-default);"></span>
+                  <span style="color: var(--text-default);">Claude Code</span>
+                  <span class="icon icon--mask i-arrowdown mf-chat-input__model-arrow" style="width:16px;height:16px;flex:0 0 16px;color: var(--text-tertiary);"></span>
+                </button>
+
+                <!-- 模型：Claude Sonnet 4.6 ▾ -->
+                <button class="mf-chat-input__model">
+                  <span style="color: var(--text-default);">Claude Sonnet 4.6</span>
+                  <span class="icon icon--mask i-arrowdown mf-chat-input__model-arrow" style="width:16px;height:16px;flex:0 0 16px;color: var(--text-tertiary);"></span>
+                </button>
+
+                <!-- 权限：执行前询问 ▾ -->
+                <button class="mf-chat-input__model">
+                  <span class="icon icon--mask i-safe" style="width:16px;height:16px;flex:0 0 16px;color: var(--text-default);"></span>
+                  <span style="color: var(--text-default);">执行前询问</span>
+                  <span class="icon icon--mask i-arrowdown mf-chat-input__model-arrow" style="width:16px;height:16px;flex:0 0 16px;color: var(--text-tertiary);"></span>
+                </button>
+              </div>
+
+              <div class="mf-chat-input__toolbar-right">
+                <button class="mf-chat-input__btn" title="上下文">
+                  <span class="icon icon--mask i-context"></span>
+                </button>
+                <button class="mf-chat-input__btn" title="联网">
+                  <span class="icon icon--mask i-earth"></span>
+                </button>
+                <button class="mf-chat-input__send" title="发送">
+                  <span class="icon icon--mask i-send"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 项目区：本机 · MyFlicker Kit（整栏统一文字三级色） -->
+          <div class="mf-chat-input__project-area">
+            <button class="mf-chat-input__project-bar">
+              <span class="icon icon--mask i-computer" style="width:16px;height:16px;flex:0 0 16px;"></span>
+              <span>本机</span>
+              <span class="icon icon--mask i-arrowdown mf-chat-input__model-arrow" style="width:16px;height:16px;flex:0 0 16px;"></span>
+            </button>
+            <button class="mf-chat-input__project-bar">
+              <span class="icon icon--mask i-closefolder" style="width:16px;height:16px;flex:0 0 16px;"></span>
+              <span>MyFlicker Kit</span>
+              <span class="icon icon--mask i-arrowdown mf-chat-input__model-arrow" style="width:16px;height:16px;flex:0 0 16px;"></span>
+            </button>
+          </div>
+
+          <p class="mf-chat-input__notice">当前模型为公有云模型，请勿外泄公司内部信息</p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────
+       Section 2: With Text
+  ───────────────────────────────────────────── -->
+  <div class="pv-section">
+    <div class="pv-section__title">With Text</div>
+    <div class="pv-section__sub">用户已输入内容，textarea 高度自适应</div>
+    <div class="canvas">
+      <div style="width: 800px;">
+
+        <div class="mf-chat-input-wrap">
+          <div class="mf-chat-input">
+            <textarea class="mf-chat-input__textarea" placeholder="和我一起做点什么，@关联对象，# 添加上下文，/ 调用指令">在 components.css 中新增 code 模式输入框样式，复用 work 模式的容器结构，只对 toolbar 与项目区做差异化处理。</textarea>
+
+            <div class="mf-chat-input__toolbar">
+              <div class="mf-chat-input__toolbar-left">
+                <button class="mf-chat-input__btn" title="添加附件" style="color: var(--text-default);">
+                  <span class="icon icon--mask i-add" style="width:16px;height:16px;"></span>
+                </button>
+                <button class="mf-chat-input__model">
+                  <span class="icon icon--mask i-claude" style="width:16px;height:16px;flex:0 0 16px;color: var(--text-default);"></span>
+                  <span style="color: var(--text-default);">Claude Code</span>
+                  <span class="icon icon--mask i-arrowdown mf-chat-input__model-arrow" style="width:16px;height:16px;flex:0 0 16px;color: var(--text-tertiary);"></span>
+                </button>
+                <button class="mf-chat-input__model">
+                  <span style="color: var(--text-default);">Claude Sonnet 4.6</span>
+                  <span class="icon icon--mask i-arrowdown mf-chat-input__model-arrow" style="width:16px;height:16px;flex:0 0 16px;color: var(--text-tertiary);"></span>
+                </button>
+                <button class="mf-chat-input__model">
+                  <span class="icon icon--mask i-safe" style="width:16px;height:16px;flex:0 0 16px;color: var(--text-default);"></span>
+                  <span style="color: var(--text-default);">执行前询问</span>
+                  <span class="icon icon--mask i-arrowdown mf-chat-input__model-arrow" style="width:16px;height:16px;flex:0 0 16px;color: var(--text-tertiary);"></span>
+                </button>
+              </div>
+              <div class="mf-chat-input__toolbar-right">
+                <button class="mf-chat-input__btn" title="上下文">
+                  <span class="icon icon--mask i-context"></span>
+                </button>
+                <button class="mf-chat-input__btn" title="联网">
+                  <span class="icon icon--mask i-earth"></span>
+                </button>
+                <button class="mf-chat-input__send" title="发送">
+                  <span class="icon icon--mask i-send"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mf-chat-input__project-area">
+            <button class="mf-chat-input__project-bar">
+              <span class="icon icon--mask i-computer" style="width:16px;height:16px;flex:0 0 16px;"></span>
+              <span>本机</span>
+              <span class="icon icon--mask i-arrowdown mf-chat-input__model-arrow" style="width:16px;height:16px;flex:0 0 16px;"></span>
+            </button>
+            <button class="mf-chat-input__project-bar">
+              <span class="icon icon--mask i-closefolder" style="width:16px;height:16px;flex:0 0 16px;"></span>
+              <span>MyFlicker Kit</span>
+              <span class="icon icon--mask i-arrowdown mf-chat-input__model-arrow" style="width:16px;height:16px;flex:0 0 16px;"></span>
+            </button>
+          </div>
+
+          <p class="mf-chat-input__notice">当前模型为公有云模型，请勿外泄公司内部信息</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function autoResize(el) {
+      el.style.height = 'auto';
+      const maxH = 336;
+      const scrollH = el.scrollHeight;
+      el.style.height = Math.min(scrollH, maxH) + 'px';
+      el.style.overflowY = scrollH > maxH ? 'auto' : 'hidden';
+    }
+    document.querySelectorAll('.mf-chat-input__textarea').forEach(function(ta) {
+      autoResize(ta);
+      ta.addEventListener('input', function() { autoResize(this); });
+    });
+  </script>
+</body>
+</html>

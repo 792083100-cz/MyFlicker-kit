@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Button</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style data-preview-shell>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html,
+    body {
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      letter-spacing: var(--body-sm-letter-spacing);
+      min-height: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+
+    body { padding: var(--spacer-32); }
+    img, svg, video, canvas { max-width: 100%; }
+    a { color: var(--text-default); text-decoration: none; }
+    a:hover { color: var(--text-default-hover); }
+    hr { border: 0; border-top: 1px solid var(--border-neutral-l1); margin: var(--spacer-24) 0; }
+
+    .h1 { font-family: var(--heading-2xl-font-family); font-size: var(--heading-2xl-font-size); line-height: var(--heading-2xl-line-height); font-weight: var(--heading-2xl-font-weight); color: var(--text-default); }
+    .h2 { font-family: var(--heading-md-font-family); font-size: var(--heading-md-font-size); line-height: var(--heading-md-line-height); font-weight: var(--heading-md-font-weight); color: var(--text-default); }
+    .h3 { font-family: var(--heading-sm-font-family); font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); color: var(--text-default); }
+    .eyebrow { font-size: var(--body-xs-font-size); line-height: var(--body-xs-line-height); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: var(--body-xs-letter-spacing); }
+    .text-secondary { color: var(--text-secondary); }
+    .text-tertiary { color: var(--text-tertiary); }
+
+    .row { display: flex; gap: var(--spacer-12); flex-wrap: wrap; align-items: center; }
+    .col { display: flex; flex-direction: column; gap: var(--spacer-12); }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacer-24); }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacer-24); }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacer-24); }
+    .stack-8 { display: flex; flex-direction: column; gap: var(--spacer-8); }
+    .stack-12 { display: flex; flex-direction: column; gap: var(--spacer-12); }
+    .stack-16 { display: flex; flex-direction: column; gap: var(--spacer-16); }
+    .stack-24 { display: flex; flex-direction: column; gap: var(--spacer-24); }
+    .stack-40 { display: flex; flex-direction: column; gap: var(--spacer-40); }
+
+    .pv-header { margin-bottom: var(--spacer-32); padding-bottom: var(--spacer-16); border-bottom: 1px solid var(--border-neutral-l1); }
+    .pv-header h1 { font-size: var(--heading-lg-font-size); line-height: var(--heading-lg-line-height); font-weight: var(--heading-lg-font-weight); margin-bottom: var(--spacer-4); }
+    .pv-header p { color: var(--text-secondary); font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); }
+    .pv-section { margin-bottom: var(--spacer-32); }
+    .pv-section__title { font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); margin-bottom: var(--spacer-12); color: var(--text-default); }
+    .pv-section__sub { font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); color: var(--text-tertiary); margin-bottom: var(--spacer-12); }
+
+    @media (max-width: 720px) {
+      body { padding: var(--spacer-16); }
+      .grid-2,
+      .grid-3,
+      .grid-4 { grid-template-columns: 1fr; }
+    }
+  </style>
+  <link rel="stylesheet" href="../components.css" />
+  <style>
+    body {
+      width: min(100%, 1184px);
+      margin: 0 auto;
+      padding: var(--spacer-40) var(--spacer-32) var(--spacer-48);
+    }
+    .pv-header {
+      margin-bottom: var(--spacer-24);
+      padding-bottom: var(--spacer-20);
+    }
+    .pv-header p { max-width: 920px; }
+    .pv-section {
+      margin-bottom: var(--spacer-32);
+      padding-top: var(--spacer-24);
+      border-top: 1px solid var(--border-neutral-l1);
+    }
+    .pv-header + .pv-section {
+      padding-top: 0;
+      border-top: 0;
+    }
+    .pv-section__title {
+      margin-bottom: var(--spacer-16);
+      letter-spacing: var(--body-md-letter-spacing);
+    }
+    .matrix {
+      display: grid;
+      grid-template-columns: 128px repeat(4, minmax(112px, 1fr));
+      gap: var(--spacer-8) var(--spacer-16);
+      align-items: center;
+      overflow-x: auto;
+      padding: var(--spacer-16);
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-8);
+      background: var(--bg-base-secondary);
+    }
+    .matrix > div {
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+    }
+    .matrix__col-h,
+    .matrix__row-h {
+      font-size: var(--body-xs-font-size);
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: var(--body-md-letter-spacing);
+    }
+    .matrix__row-h { justify-self: start; }
+    .matrix__col-h {
+      min-height: 20px;
+      justify-self: start;
+      align-items: flex-start;
+    }
+    .size-tag {
+      display: inline-flex; align-items: center; padding: 0 var(--spacer-6); height: 18px;
+      white-space: nowrap;
+      background: var(--bg-overlay-l1); color: var(--text-tertiary);
+      border: 1px solid var(--border-neutral-l1); border-radius: var(--radius-4);
+      font-size: var(--body-xs-font-size); font-family: var(--code-editor-font-family);
+      margin-bottom: var(--spacer-12);
+    }
+    .hierarchy-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(360px, 1fr));
+      gap: var(--spacer-8) var(--spacer-32);
+      max-width: 920px;
+    }
+    .hierarchy-list .row {
+      display: grid;
+      grid-template-columns: 160px auto;
+      gap: var(--spacer-12);
+      align-items: center;
+      justify-items: start;
+    }
+    .hierarchy-list .size-tag {
+      justify-self: start;
+      margin: 0;
+    }
+    .hierarchy-list .mf-btn { justify-self: start; }
+    .demo-surface {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--spacer-8) var(--spacer-16);
+      padding: var(--spacer-16);
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-8);
+      background: var(--bg-base-secondary);
+    }
+    .demo-stack {
+      align-items: flex-start;
+      padding: var(--spacer-16);
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-8);
+      background: var(--bg-base-secondary);
+    }
+    .preview-toolbar {
+      min-height: 56px;
+      padding: var(--spacer-12) var(--spacer-16) !important;
+      border-radius: var(--radius-8);
+    }
+    @media (max-width: 760px) {
+      body { padding: var(--spacer-24) var(--spacer-16) var(--spacer-40); }
+      .hierarchy-list { grid-template-columns: 1fr; }
+      .matrix { grid-template-columns: 116px repeat(4, minmax(104px, 1fr)); }
+    }
+    .group { padding: var(--spacer-16); border: 1px dashed var(--border-neutral-l1); border-radius: var(--radius-8); margin-bottom: var(--spacer-24); }
+    .group__title { font-size: var(--body-xs-font-size); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: var(--body-md-letter-spacing); margin-bottom: var(--spacer-12); }
+/* Inline asset icon normalization: keep uploaded HTML independent from external SVG styling. */
+    [data-asset-icon] {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent !important;
+      -webkit-mask: none !important;
+      mask: none !important;
+    }
+
+    [data-asset-icon] > svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      flex: 0 0 auto;
+    }
+
+    .asset-inline-icon {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="pv-header">
+    <h1>Button</h1>
+    <p>
+      Eight variants × three sizes × four states. <strong style="color: var(--text-default);">At most one Brand button per page</strong> — every other primary action falls back to the neutral inverted <code>--primary</code> button. Use Tertiary / Link inside dense toolbars or rows.
+    </p>
+  </div>
+
+  <!-- ======== Variant rules ======== -->
+  <div class="pv-section">
+    <div class="pv-section__title">Hierarchy</div>
+    <p class="text-secondary" style="font-size: var(--body-sm-font-size); margin-bottom: var(--spacer-16);">
+      Read top → bottom: order of emphasis on a page.
+    </p>
+    <div class="stack-12 hierarchy-list">
+      <div class="row"><span class="size-tag" style="margin:0;">Brand · max 1 per page</span><button class="mf-btn mf-btn--brand"><span class="icon icon--14 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Generate spec</span></button></div>
+      <div class="row"><span class="size-tag" style="margin:0;">Primary · neutral</span><button class="mf-btn mf-btn--primary"><span>Save changes</span></button></div>
+      <div class="row"><span class="size-tag" style="margin:0;">Secondary</span><button class="mf-btn mf-btn--secondary"><span>Cancel</span></button></div>
+      <div class="row"><span class="size-tag" style="margin:0;">Tertiary · ghost</span><button class="mf-btn mf-btn--tertiary"><span>Skip</span></button></div>
+      <div class="row"><span class="size-tag" style="margin:0;">Danger · strong</span><button class="mf-btn mf-btn--danger-strong"><span>Delete</span></button></div>
+      <div class="row"><span class="size-tag" style="margin:0;">Danger · subtle</span><button class="mf-btn mf-btn--danger-subtle"><span>Disconnect</span></button></div>
+      <div class="row"><span class="size-tag" style="margin:0;">Warning</span><button class="mf-btn mf-btn--warning"><span>Force restart</span></button></div>
+      <div class="row"><span class="size-tag" style="margin:0;">Link</span><button class="mf-btn mf-btn--link"><span>Read the docs</span></button></div>
+    </div>
+  </div>
+
+  <!-- ======== Sm matrix ======== -->
+  <div class="pv-section">
+    <div class="pv-section__title">Variant × State (Sm · 24px)</div>
+    <span class="size-tag">Sm</span>
+    <div class="matrix">
+      <div></div>
+      <div class="matrix__col-h">Default</div>
+      <div class="matrix__col-h">Hover</div>
+      <div class="matrix__col-h">Active</div>
+      <div class="matrix__col-h">Disabled</div>
+
+      <div class="matrix__row-h">Primary</div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--primary"><span class="icon icon--12 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--primary" style="background:var(--bg-invert-hover);border-color:var(--bg-invert-hover);"><span class="icon icon--12 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--primary" style="background:var(--bg-invert-active);border-color:var(--bg-invert-active);"><span class="icon icon--12 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--primary" disabled><span class="icon icon--12 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+
+      <div class="matrix__row-h">Secondary</div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--secondary"><span class="icon icon--12 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--secondary" style="color:var(--text-tertiary);"><span class="icon icon--12 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--secondary" style="color:var(--text-secondary);"><span class="icon icon--12 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--secondary" disabled><span class="icon icon--12 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+
+      <div class="matrix__row-h">Tertiary</div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--tertiary"><span class="icon icon--12 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--tertiary" style="color:var(--text-secondary);"><span class="icon icon--12 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--tertiary" style="color:var(--text-tertiary);"><span class="icon icon--12 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--tertiary" disabled><span class="icon icon--12 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+
+      <div class="matrix__row-h">Danger · Strong</div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--danger-strong"><span class="icon icon--12 icon--delete" aria-hidden="true" data-asset-icon="../assets/icons/kid/delete.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M772.224 294.4H251.776V853.312A46.912 46.912 0 0 0 298.688 900.288H725.312A46.976 46.976 0 0 0 772.224 853.312V294.4ZM388.224 725.312V469.312A38.4 38.4 0 0 1 465.024 469.312V725.312A38.4 38.4 0 1 1 388.288 725.312ZM558.912 725.312V469.312A38.4 38.4 0 0 1 635.712 469.312V725.312A38.4 38.4 0 0 1 558.976 725.312ZM644.224 170.624A46.976 46.976 0 0 0 597.312 123.712H426.688A46.976 46.976 0 0 0 379.776 170.624V217.6H644.224V170.624ZM721.024 217.6H896A38.4 38.4 0 0 1 896 294.4H849.088V853.312A123.712 123.712 0 0 1 725.312 977.088H298.688A123.776 123.776 0 0 1 174.912 853.312V294.4H128A38.4 38.4 0 0 1 128 217.6H302.912V170.624A123.84 123.84 0 0 1 426.688 46.976H597.312A123.776 123.776 0 0 1 721.088 170.624V217.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--danger-strong" style="background:var(--status-error-hover);border-color:var(--status-error-hover);"><span class="icon icon--12 icon--delete" aria-hidden="true" data-asset-icon="../assets/icons/kid/delete.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M772.224 294.4H251.776V853.312A46.912 46.912 0 0 0 298.688 900.288H725.312A46.976 46.976 0 0 0 772.224 853.312V294.4ZM388.224 725.312V469.312A38.4 38.4 0 0 1 465.024 469.312V725.312A38.4 38.4 0 1 1 388.288 725.312ZM558.912 725.312V469.312A38.4 38.4 0 0 1 635.712 469.312V725.312A38.4 38.4 0 0 1 558.976 725.312ZM644.224 170.624A46.976 46.976 0 0 0 597.312 123.712H426.688A46.976 46.976 0 0 0 379.776 170.624V217.6H644.224V170.624ZM721.024 217.6H896A38.4 38.4 0 0 1 896 294.4H849.088V853.312A123.712 123.712 0 0 1 725.312 977.088H298.688A123.776 123.776 0 0 1 174.912 853.312V294.4H128A38.4 38.4 0 0 1 128 217.6H302.912V170.624A123.84 123.84 0 0 1 426.688 46.976H597.312A123.776 123.776 0 0 1 721.088 170.624V217.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--danger-strong" style="background:var(--status-error-active);border-color:var(--status-error-active);"><span class="icon icon--12 icon--delete" aria-hidden="true" data-asset-icon="../assets/icons/kid/delete.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M772.224 294.4H251.776V853.312A46.912 46.912 0 0 0 298.688 900.288H725.312A46.976 46.976 0 0 0 772.224 853.312V294.4ZM388.224 725.312V469.312A38.4 38.4 0 0 1 465.024 469.312V725.312A38.4 38.4 0 1 1 388.288 725.312ZM558.912 725.312V469.312A38.4 38.4 0 0 1 635.712 469.312V725.312A38.4 38.4 0 0 1 558.976 725.312ZM644.224 170.624A46.976 46.976 0 0 0 597.312 123.712H426.688A46.976 46.976 0 0 0 379.776 170.624V217.6H644.224V170.624ZM721.024 217.6H896A38.4 38.4 0 0 1 896 294.4H849.088V853.312A123.712 123.712 0 0 1 725.312 977.088H298.688A123.776 123.776 0 0 1 174.912 853.312V294.4H128A38.4 38.4 0 0 1 128 217.6H302.912V170.624A123.84 123.84 0 0 1 426.688 46.976H597.312A123.776 123.776 0 0 1 721.088 170.624V217.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--danger-strong" disabled><span class="icon icon--12 icon--delete" aria-hidden="true" data-asset-icon="../assets/icons/kid/delete.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M772.224 294.4H251.776V853.312A46.912 46.912 0 0 0 298.688 900.288H725.312A46.976 46.976 0 0 0 772.224 853.312V294.4ZM388.224 725.312V469.312A38.4 38.4 0 0 1 465.024 469.312V725.312A38.4 38.4 0 1 1 388.288 725.312ZM558.912 725.312V469.312A38.4 38.4 0 0 1 635.712 469.312V725.312A38.4 38.4 0 0 1 558.976 725.312ZM644.224 170.624A46.976 46.976 0 0 0 597.312 123.712H426.688A46.976 46.976 0 0 0 379.776 170.624V217.6H644.224V170.624ZM721.024 217.6H896A38.4 38.4 0 0 1 896 294.4H849.088V853.312A123.712 123.712 0 0 1 725.312 977.088H298.688A123.776 123.776 0 0 1 174.912 853.312V294.4H128A38.4 38.4 0 0 1 128 217.6H302.912V170.624A123.84 123.84 0 0 1 426.688 46.976H597.312A123.776 123.776 0 0 1 721.088 170.624V217.6Z"></path></svg></span><span>Button</span></button></div>
+
+      <div class="matrix__row-h">Danger · Subtle</div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--danger-subtle"><span class="icon icon--12 icon--delete" aria-hidden="true" data-asset-icon="../assets/icons/kid/delete.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M772.224 294.4H251.776V853.312A46.912 46.912 0 0 0 298.688 900.288H725.312A46.976 46.976 0 0 0 772.224 853.312V294.4ZM388.224 725.312V469.312A38.4 38.4 0 0 1 465.024 469.312V725.312A38.4 38.4 0 1 1 388.288 725.312ZM558.912 725.312V469.312A38.4 38.4 0 0 1 635.712 469.312V725.312A38.4 38.4 0 0 1 558.976 725.312ZM644.224 170.624A46.976 46.976 0 0 0 597.312 123.712H426.688A46.976 46.976 0 0 0 379.776 170.624V217.6H644.224V170.624ZM721.024 217.6H896A38.4 38.4 0 0 1 896 294.4H849.088V853.312A123.712 123.712 0 0 1 725.312 977.088H298.688A123.776 123.776 0 0 1 174.912 853.312V294.4H128A38.4 38.4 0 0 1 128 217.6H302.912V170.624A123.84 123.84 0 0 1 426.688 46.976H597.312A123.776 123.776 0 0 1 721.088 170.624V217.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--danger-subtle" style="background:var(--status-error-surface-l2);"><span class="icon icon--12 icon--delete" aria-hidden="true" data-asset-icon="../assets/icons/kid/delete.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M772.224 294.4H251.776V853.312A46.912 46.912 0 0 0 298.688 900.288H725.312A46.976 46.976 0 0 0 772.224 853.312V294.4ZM388.224 725.312V469.312A38.4 38.4 0 0 1 465.024 469.312V725.312A38.4 38.4 0 1 1 388.288 725.312ZM558.912 725.312V469.312A38.4 38.4 0 0 1 635.712 469.312V725.312A38.4 38.4 0 0 1 558.976 725.312ZM644.224 170.624A46.976 46.976 0 0 0 597.312 123.712H426.688A46.976 46.976 0 0 0 379.776 170.624V217.6H644.224V170.624ZM721.024 217.6H896A38.4 38.4 0 0 1 896 294.4H849.088V853.312A123.712 123.712 0 0 1 725.312 977.088H298.688A123.776 123.776 0 0 1 174.912 853.312V294.4H128A38.4 38.4 0 0 1 128 217.6H302.912V170.624A123.84 123.84 0 0 1 426.688 46.976H597.312A123.776 123.776 0 0 1 721.088 170.624V217.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--danger-subtle" style="background:var(--status-error-surface-l3);"><span class="icon icon--12 icon--delete" aria-hidden="true" data-asset-icon="../assets/icons/kid/delete.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M772.224 294.4H251.776V853.312A46.912 46.912 0 0 0 298.688 900.288H725.312A46.976 46.976 0 0 0 772.224 853.312V294.4ZM388.224 725.312V469.312A38.4 38.4 0 0 1 465.024 469.312V725.312A38.4 38.4 0 1 1 388.288 725.312ZM558.912 725.312V469.312A38.4 38.4 0 0 1 635.712 469.312V725.312A38.4 38.4 0 0 1 558.976 725.312ZM644.224 170.624A46.976 46.976 0 0 0 597.312 123.712H426.688A46.976 46.976 0 0 0 379.776 170.624V217.6H644.224V170.624ZM721.024 217.6H896A38.4 38.4 0 0 1 896 294.4H849.088V853.312A123.712 123.712 0 0 1 725.312 977.088H298.688A123.776 123.776 0 0 1 174.912 853.312V294.4H128A38.4 38.4 0 0 1 128 217.6H302.912V170.624A123.84 123.84 0 0 1 426.688 46.976H597.312A123.776 123.776 0 0 1 721.088 170.624V217.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--danger-subtle" disabled><span class="icon icon--12 icon--delete" aria-hidden="true" data-asset-icon="../assets/icons/kid/delete.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M772.224 294.4H251.776V853.312A46.912 46.912 0 0 0 298.688 900.288H725.312A46.976 46.976 0 0 0 772.224 853.312V294.4ZM388.224 725.312V469.312A38.4 38.4 0 0 1 465.024 469.312V725.312A38.4 38.4 0 1 1 388.288 725.312ZM558.912 725.312V469.312A38.4 38.4 0 0 1 635.712 469.312V725.312A38.4 38.4 0 0 1 558.976 725.312ZM644.224 170.624A46.976 46.976 0 0 0 597.312 123.712H426.688A46.976 46.976 0 0 0 379.776 170.624V217.6H644.224V170.624ZM721.024 217.6H896A38.4 38.4 0 0 1 896 294.4H849.088V853.312A123.712 123.712 0 0 1 725.312 977.088H298.688A123.776 123.776 0 0 1 174.912 853.312V294.4H128A38.4 38.4 0 0 1 128 217.6H302.912V170.624A123.84 123.84 0 0 1 426.688 46.976H597.312A123.776 123.776 0 0 1 721.088 170.624V217.6Z"></path></svg></span><span>Button</span></button></div>
+
+      <div class="matrix__row-h">Warning</div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--warning"><span class="icon icon--12 icon--warning-simple" aria-hidden="true" data-asset-icon="../assets/icons/kid/warn.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M960 512A448 448 0 1 1 64 512 448 448 0 0 1 960 512ZM448 320A64 64 0 0 1 576 320V512A64 64 0 0 1 448 512V320zM448 704A64 64 0 1 1 576 704 64 64 0 0 1 448 704z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--warning" style="background:var(--status-warning-hover);border-color:var(--status-warning-hover);"><span class="icon icon--12 icon--warning-simple" aria-hidden="true" data-asset-icon="../assets/icons/kid/warn.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M960 512A448 448 0 1 1 64 512 448 448 0 0 1 960 512ZM448 320A64 64 0 0 1 576 320V512A64 64 0 0 1 448 512V320zM448 704A64 64 0 1 1 576 704 64 64 0 0 1 448 704z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--warning" style="background:var(--status-warning-active);border-color:var(--status-warning-active);"><span class="icon icon--12 icon--warning-simple" aria-hidden="true" data-asset-icon="../assets/icons/kid/warn.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M960 512A448 448 0 1 1 64 512 448 448 0 0 1 960 512ZM448 320A64 64 0 0 1 576 320V512A64 64 0 0 1 448 512V320zM448 704A64 64 0 1 1 576 704 64 64 0 0 1 448 704z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--warning" disabled><span class="icon icon--12 icon--warning-simple" aria-hidden="true" data-asset-icon="../assets/icons/kid/warn.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M960 512A448 448 0 1 1 64 512 448 448 0 0 1 960 512ZM448 320A64 64 0 0 1 576 320V512A64 64 0 0 1 448 512V320zM448 704A64 64 0 1 1 576 704 64 64 0 0 1 448 704z"></path></svg></span><span>Button</span></button></div>
+
+      <div class="matrix__row-h">Brand</div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--brand"><span class="icon icon--12 icon--add" aria-hidden="true" data-asset-icon="../assets/icons/kid/add.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M512 89.6A38.4 38.4 0 0 1 550.4 128V473.6H896A38.4 38.4 0 1 1 896 550.4H550.4V896A38.4 38.4 0 1 1 473.6 896V550.4H128A38.4 38.4 0 1 1 128 473.6H473.6V128A38.4 38.4 0 0 1 512 89.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--brand" style="background:var(--bg-brand-hover);border-color:var(--bg-brand-hover);"><span class="icon icon--12 icon--add" aria-hidden="true" data-asset-icon="../assets/icons/kid/add.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M512 89.6A38.4 38.4 0 0 1 550.4 128V473.6H896A38.4 38.4 0 1 1 896 550.4H550.4V896A38.4 38.4 0 1 1 473.6 896V550.4H128A38.4 38.4 0 1 1 128 473.6H473.6V128A38.4 38.4 0 0 1 512 89.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--brand" style="background:var(--bg-brand-active);border-color:var(--bg-brand-active);"><span class="icon icon--12 icon--add" aria-hidden="true" data-asset-icon="../assets/icons/kid/add.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M512 89.6A38.4 38.4 0 0 1 550.4 128V473.6H896A38.4 38.4 0 1 1 896 550.4H550.4V896A38.4 38.4 0 1 1 473.6 896V550.4H128A38.4 38.4 0 1 1 128 473.6H473.6V128A38.4 38.4 0 0 1 512 89.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--brand" disabled><span class="icon icon--12 icon--add" aria-hidden="true" data-asset-icon="../assets/icons/kid/add.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M512 89.6A38.4 38.4 0 0 1 550.4 128V473.6H896A38.4 38.4 0 1 1 896 550.4H550.4V896A38.4 38.4 0 1 1 473.6 896V550.4H128A38.4 38.4 0 1 1 128 473.6H473.6V128A38.4 38.4 0 0 1 512 89.6Z"></path></svg></span><span>Button</span></button></div>
+
+      <div class="matrix__row-h">Link</div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--link"><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--link" style="text-decoration:underline;"><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--link" style="color:var(--text-secondary);"><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--sm mf-btn--link" disabled><span>Button</span></button></div>
+    </div>
+  </div>
+
+  <!-- ======== Default matrix ======== -->
+  <div class="pv-section">
+    <div class="pv-section__title">Variant × State (Default · 28px)</div>
+    <span class="size-tag">Default</span>
+    <div class="matrix">
+      <div></div>
+      <div class="matrix__col-h">Default</div>
+      <div class="matrix__col-h">Hover</div>
+      <div class="matrix__col-h">Active</div>
+      <div class="matrix__col-h">Disabled</div>
+
+      <div class="matrix__row-h">Primary</div>
+      <div><button class="mf-btn mf-btn--primary"><span class="icon icon--14 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--primary" style="background:var(--bg-invert-hover);border-color:var(--bg-invert-hover);"><span class="icon icon--14 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--primary" style="background:var(--bg-invert-active);border-color:var(--bg-invert-active);"><span class="icon icon--14 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--primary" disabled><span class="icon icon--14 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+
+      <div class="matrix__row-h">Secondary</div>
+      <div><button class="mf-btn mf-btn--secondary"><span class="icon icon--14 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--secondary" style="color:var(--text-tertiary);"><span class="icon icon--14 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--secondary" style="color:var(--text-secondary);"><span class="icon icon--14 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--secondary" disabled><span class="icon icon--14 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+
+      <div class="matrix__row-h">Tertiary</div>
+      <div><button class="mf-btn mf-btn--tertiary"><span class="icon icon--14 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--tertiary" style="color:var(--text-secondary);"><span class="icon icon--14 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--tertiary" style="color:var(--text-tertiary);"><span class="icon icon--14 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--tertiary" disabled><span class="icon icon--14 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+
+      <div class="matrix__row-h">Danger · Strong</div>
+      <div><button class="mf-btn mf-btn--danger-strong"><span class="icon icon--14 icon--delete" aria-hidden="true" data-asset-icon="../assets/icons/kid/delete.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M772.224 294.4H251.776V853.312A46.912 46.912 0 0 0 298.688 900.288H725.312A46.976 46.976 0 0 0 772.224 853.312V294.4ZM388.224 725.312V469.312A38.4 38.4 0 0 1 465.024 469.312V725.312A38.4 38.4 0 1 1 388.288 725.312ZM558.912 725.312V469.312A38.4 38.4 0 0 1 635.712 469.312V725.312A38.4 38.4 0 0 1 558.976 725.312ZM644.224 170.624A46.976 46.976 0 0 0 597.312 123.712H426.688A46.976 46.976 0 0 0 379.776 170.624V217.6H644.224V170.624ZM721.024 217.6H896A38.4 38.4 0 0 1 896 294.4H849.088V853.312A123.712 123.712 0 0 1 725.312 977.088H298.688A123.776 123.776 0 0 1 174.912 853.312V294.4H128A38.4 38.4 0 0 1 128 217.6H302.912V170.624A123.84 123.84 0 0 1 426.688 46.976H597.312A123.776 123.776 0 0 1 721.088 170.624V217.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--danger-strong" style="background:var(--status-error-hover);border-color:var(--status-error-hover);"><span class="icon icon--14 icon--delete" aria-hidden="true" data-asset-icon="../assets/icons/kid/delete.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M772.224 294.4H251.776V853.312A46.912 46.912 0 0 0 298.688 900.288H725.312A46.976 46.976 0 0 0 772.224 853.312V294.4ZM388.224 725.312V469.312A38.4 38.4 0 0 1 465.024 469.312V725.312A38.4 38.4 0 1 1 388.288 725.312ZM558.912 725.312V469.312A38.4 38.4 0 0 1 635.712 469.312V725.312A38.4 38.4 0 0 1 558.976 725.312ZM644.224 170.624A46.976 46.976 0 0 0 597.312 123.712H426.688A46.976 46.976 0 0 0 379.776 170.624V217.6H644.224V170.624ZM721.024 217.6H896A38.4 38.4 0 0 1 896 294.4H849.088V853.312A123.712 123.712 0 0 1 725.312 977.088H298.688A123.776 123.776 0 0 1 174.912 853.312V294.4H128A38.4 38.4 0 0 1 128 217.6H302.912V170.624A123.84 123.84 0 0 1 426.688 46.976H597.312A123.776 123.776 0 0 1 721.088 170.624V217.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--danger-strong" style="background:var(--status-error-active);border-color:var(--status-error-active);"><span class="icon icon--14 icon--delete" aria-hidden="true" data-asset-icon="../assets/icons/kid/delete.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M772.224 294.4H251.776V853.312A46.912 46.912 0 0 0 298.688 900.288H725.312A46.976 46.976 0 0 0 772.224 853.312V294.4ZM388.224 725.312V469.312A38.4 38.4 0 0 1 465.024 469.312V725.312A38.4 38.4 0 1 1 388.288 725.312ZM558.912 725.312V469.312A38.4 38.4 0 0 1 635.712 469.312V725.312A38.4 38.4 0 0 1 558.976 725.312ZM644.224 170.624A46.976 46.976 0 0 0 597.312 123.712H426.688A46.976 46.976 0 0 0 379.776 170.624V217.6H644.224V170.624ZM721.024 217.6H896A38.4 38.4 0 0 1 896 294.4H849.088V853.312A123.712 123.712 0 0 1 725.312 977.088H298.688A123.776 123.776 0 0 1 174.912 853.312V294.4H128A38.4 38.4 0 0 1 128 217.6H302.912V170.624A123.84 123.84 0 0 1 426.688 46.976H597.312A123.776 123.776 0 0 1 721.088 170.624V217.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--danger-strong" disabled><span class="icon icon--14 icon--delete" aria-hidden="true" data-asset-icon="../assets/icons/kid/delete.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M772.224 294.4H251.776V853.312A46.912 46.912 0 0 0 298.688 900.288H725.312A46.976 46.976 0 0 0 772.224 853.312V294.4ZM388.224 725.312V469.312A38.4 38.4 0 0 1 465.024 469.312V725.312A38.4 38.4 0 1 1 388.288 725.312ZM558.912 725.312V469.312A38.4 38.4 0 0 1 635.712 469.312V725.312A38.4 38.4 0 0 1 558.976 725.312ZM644.224 170.624A46.976 46.976 0 0 0 597.312 123.712H426.688A46.976 46.976 0 0 0 379.776 170.624V217.6H644.224V170.624ZM721.024 217.6H896A38.4 38.4 0 0 1 896 294.4H849.088V853.312A123.712 123.712 0 0 1 725.312 977.088H298.688A123.776 123.776 0 0 1 174.912 853.312V294.4H128A38.4 38.4 0 0 1 128 217.6H302.912V170.624A123.84 123.84 0 0 1 426.688 46.976H597.312A123.776 123.776 0 0 1 721.088 170.624V217.6Z"></path></svg></span><span>Button</span></button></div>
+
+      <div class="matrix__row-h">Danger · Subtle</div>
+      <div><button class="mf-btn mf-btn--danger-subtle"><span class="icon icon--14 icon--delete" aria-hidden="true" data-asset-icon="../assets/icons/kid/delete.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M772.224 294.4H251.776V853.312A46.912 46.912 0 0 0 298.688 900.288H725.312A46.976 46.976 0 0 0 772.224 853.312V294.4ZM388.224 725.312V469.312A38.4 38.4 0 0 1 465.024 469.312V725.312A38.4 38.4 0 1 1 388.288 725.312ZM558.912 725.312V469.312A38.4 38.4 0 0 1 635.712 469.312V725.312A38.4 38.4 0 0 1 558.976 725.312ZM644.224 170.624A46.976 46.976 0 0 0 597.312 123.712H426.688A46.976 46.976 0 0 0 379.776 170.624V217.6H644.224V170.624ZM721.024 217.6H896A38.4 38.4 0 0 1 896 294.4H849.088V853.312A123.712 123.712 0 0 1 725.312 977.088H298.688A123.776 123.776 0 0 1 174.912 853.312V294.4H128A38.4 38.4 0 0 1 128 217.6H302.912V170.624A123.84 123.84 0 0 1 426.688 46.976H597.312A123.776 123.776 0 0 1 721.088 170.624V217.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--danger-subtle" style="background:var(--status-error-surface-l2);"><span class="icon icon--14 icon--delete" aria-hidden="true" data-asset-icon="../assets/icons/kid/delete.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M772.224 294.4H251.776V853.312A46.912 46.912 0 0 0 298.688 900.288H725.312A46.976 46.976 0 0 0 772.224 853.312V294.4ZM388.224 725.312V469.312A38.4 38.4 0 0 1 465.024 469.312V725.312A38.4 38.4 0 1 1 388.288 725.312ZM558.912 725.312V469.312A38.4 38.4 0 0 1 635.712 469.312V725.312A38.4 38.4 0 0 1 558.976 725.312ZM644.224 170.624A46.976 46.976 0 0 0 597.312 123.712H426.688A46.976 46.976 0 0 0 379.776 170.624V217.6H644.224V170.624ZM721.024 217.6H896A38.4 38.4 0 0 1 896 294.4H849.088V853.312A123.712 123.712 0 0 1 725.312 977.088H298.688A123.776 123.776 0 0 1 174.912 853.312V294.4H128A38.4 38.4 0 0 1 128 217.6H302.912V170.624A123.84 123.84 0 0 1 426.688 46.976H597.312A123.776 123.776 0 0 1 721.088 170.624V217.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--danger-subtle" style="background:var(--status-error-surface-l3);"><span class="icon icon--14 icon--delete" aria-hidden="true" data-asset-icon="../assets/icons/kid/delete.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M772.224 294.4H251.776V853.312A46.912 46.912 0 0 0 298.688 900.288H725.312A46.976 46.976 0 0 0 772.224 853.312V294.4ZM388.224 725.312V469.312A38.4 38.4 0 0 1 465.024 469.312V725.312A38.4 38.4 0 1 1 388.288 725.312ZM558.912 725.312V469.312A38.4 38.4 0 0 1 635.712 469.312V725.312A38.4 38.4 0 0 1 558.976 725.312ZM644.224 170.624A46.976 46.976 0 0 0 597.312 123.712H426.688A46.976 46.976 0 0 0 379.776 170.624V217.6H644.224V170.624ZM721.024 217.6H896A38.4 38.4 0 0 1 896 294.4H849.088V853.312A123.712 123.712 0 0 1 725.312 977.088H298.688A123.776 123.776 0 0 1 174.912 853.312V294.4H128A38.4 38.4 0 0 1 128 217.6H302.912V170.624A123.84 123.84 0 0 1 426.688 46.976H597.312A123.776 123.776 0 0 1 721.088 170.624V217.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--danger-subtle" disabled><span class="icon icon--14 icon--delete" aria-hidden="true" data-asset-icon="../assets/icons/kid/delete.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M772.224 294.4H251.776V853.312A46.912 46.912 0 0 0 298.688 900.288H725.312A46.976 46.976 0 0 0 772.224 853.312V294.4ZM388.224 725.312V469.312A38.4 38.4 0 0 1 465.024 469.312V725.312A38.4 38.4 0 1 1 388.288 725.312ZM558.912 725.312V469.312A38.4 38.4 0 0 1 635.712 469.312V725.312A38.4 38.4 0 0 1 558.976 725.312ZM644.224 170.624A46.976 46.976 0 0 0 597.312 123.712H426.688A46.976 46.976 0 0 0 379.776 170.624V217.6H644.224V170.624ZM721.024 217.6H896A38.4 38.4 0 0 1 896 294.4H849.088V853.312A123.712 123.712 0 0 1 725.312 977.088H298.688A123.776 123.776 0 0 1 174.912 853.312V294.4H128A38.4 38.4 0 0 1 128 217.6H302.912V170.624A123.84 123.84 0 0 1 426.688 46.976H597.312A123.776 123.776 0 0 1 721.088 170.624V217.6Z"></path></svg></span><span>Button</span></button></div>
+
+      <div class="matrix__row-h">Warning</div>
+      <div><button class="mf-btn mf-btn--warning"><span class="icon icon--14 icon--warning-simple" aria-hidden="true" data-asset-icon="../assets/icons/kid/warn.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M960 512A448 448 0 1 1 64 512 448 448 0 0 1 960 512ZM448 320A64 64 0 0 1 576 320V512A64 64 0 0 1 448 512V320zM448 704A64 64 0 1 1 576 704 64 64 0 0 1 448 704z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--warning" style="background:var(--status-warning-hover);border-color:var(--status-warning-hover);"><span class="icon icon--14 icon--warning-simple" aria-hidden="true" data-asset-icon="../assets/icons/kid/warn.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M960 512A448 448 0 1 1 64 512 448 448 0 0 1 960 512ZM448 320A64 64 0 0 1 576 320V512A64 64 0 0 1 448 512V320zM448 704A64 64 0 1 1 576 704 64 64 0 0 1 448 704z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--warning" style="background:var(--status-warning-active);border-color:var(--status-warning-active);"><span class="icon icon--14 icon--warning-simple" aria-hidden="true" data-asset-icon="../assets/icons/kid/warn.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M960 512A448 448 0 1 1 64 512 448 448 0 0 1 960 512ZM448 320A64 64 0 0 1 576 320V512A64 64 0 0 1 448 512V320zM448 704A64 64 0 1 1 576 704 64 64 0 0 1 448 704z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--warning" disabled><span class="icon icon--14 icon--warning-simple" aria-hidden="true" data-asset-icon="../assets/icons/kid/warn.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M960 512A448 448 0 1 1 64 512 448 448 0 0 1 960 512ZM448 320A64 64 0 0 1 576 320V512A64 64 0 0 1 448 512V320zM448 704A64 64 0 1 1 576 704 64 64 0 0 1 448 704z"></path></svg></span><span>Button</span></button></div>
+
+      <div class="matrix__row-h">Brand</div>
+      <div><button class="mf-btn mf-btn--brand"><span class="icon icon--14 icon--add" aria-hidden="true" data-asset-icon="../assets/icons/kid/add.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M512 89.6A38.4 38.4 0 0 1 550.4 128V473.6H896A38.4 38.4 0 1 1 896 550.4H550.4V896A38.4 38.4 0 1 1 473.6 896V550.4H128A38.4 38.4 0 1 1 128 473.6H473.6V128A38.4 38.4 0 0 1 512 89.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--brand" style="background:var(--bg-brand-hover);border-color:var(--bg-brand-hover);"><span class="icon icon--14 icon--add" aria-hidden="true" data-asset-icon="../assets/icons/kid/add.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M512 89.6A38.4 38.4 0 0 1 550.4 128V473.6H896A38.4 38.4 0 1 1 896 550.4H550.4V896A38.4 38.4 0 1 1 473.6 896V550.4H128A38.4 38.4 0 1 1 128 473.6H473.6V128A38.4 38.4 0 0 1 512 89.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--brand" style="background:var(--bg-brand-active);border-color:var(--bg-brand-active);"><span class="icon icon--14 icon--add" aria-hidden="true" data-asset-icon="../assets/icons/kid/add.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M512 89.6A38.4 38.4 0 0 1 550.4 128V473.6H896A38.4 38.4 0 1 1 896 550.4H550.4V896A38.4 38.4 0 1 1 473.6 896V550.4H128A38.4 38.4 0 1 1 128 473.6H473.6V128A38.4 38.4 0 0 1 512 89.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--brand" disabled><span class="icon icon--14 icon--add" aria-hidden="true" data-asset-icon="../assets/icons/kid/add.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M512 89.6A38.4 38.4 0 0 1 550.4 128V473.6H896A38.4 38.4 0 1 1 896 550.4H550.4V896A38.4 38.4 0 1 1 473.6 896V550.4H128A38.4 38.4 0 1 1 128 473.6H473.6V128A38.4 38.4 0 0 1 512 89.6Z"></path></svg></span><span>Button</span></button></div>
+
+      <div class="matrix__row-h">Link</div>
+      <div><button class="mf-btn mf-btn--link"><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--link" style="text-decoration:underline;"><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--link" style="color:var(--text-secondary);"><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--link" disabled><span>Button</span></button></div>
+    </div>
+  </div>
+
+  <!-- ======== Large matrix ======== -->
+  <div class="pv-section">
+    <div class="pv-section__title">Variant × State (Large · 32px)</div>
+    <span class="size-tag">Large</span>
+    <div class="matrix">
+      <div></div>
+      <div class="matrix__col-h">Default</div>
+      <div class="matrix__col-h">Hover</div>
+      <div class="matrix__col-h">Active</div>
+      <div class="matrix__col-h">Disabled</div>
+
+      <div class="matrix__row-h">Primary</div>
+      <div><button class="mf-btn mf-btn--lg mf-btn--primary"><span class="icon icon--16 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--lg mf-btn--primary" style="background:var(--bg-invert-hover);border-color:var(--bg-invert-hover);"><span class="icon icon--16 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--lg mf-btn--primary" style="background:var(--bg-invert-active);border-color:var(--bg-invert-active);"><span class="icon icon--16 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--lg mf-btn--primary" disabled><span class="icon icon--16 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+
+      <div class="matrix__row-h">Secondary</div>
+      <div><button class="mf-btn mf-btn--lg mf-btn--secondary"><span class="icon icon--16 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--lg mf-btn--secondary" style="color:var(--text-tertiary);"><span class="icon icon--16 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--lg mf-btn--secondary" style="color:var(--text-secondary);"><span class="icon icon--16 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--lg mf-btn--secondary" disabled><span class="icon icon--16 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span><span>Button</span></button></div>
+
+      <div class="matrix__row-h">Brand</div>
+      <div><button class="mf-btn mf-btn--lg mf-btn--brand"><span class="icon icon--16 icon--add" aria-hidden="true" data-asset-icon="../assets/icons/kid/add.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M512 89.6A38.4 38.4 0 0 1 550.4 128V473.6H896A38.4 38.4 0 1 1 896 550.4H550.4V896A38.4 38.4 0 1 1 473.6 896V550.4H128A38.4 38.4 0 1 1 128 473.6H473.6V128A38.4 38.4 0 0 1 512 89.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--lg mf-btn--brand" style="background:var(--bg-brand-hover);border-color:var(--bg-brand-hover);"><span class="icon icon--16 icon--add" aria-hidden="true" data-asset-icon="../assets/icons/kid/add.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M512 89.6A38.4 38.4 0 0 1 550.4 128V473.6H896A38.4 38.4 0 1 1 896 550.4H550.4V896A38.4 38.4 0 1 1 473.6 896V550.4H128A38.4 38.4 0 1 1 128 473.6H473.6V128A38.4 38.4 0 0 1 512 89.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--lg mf-btn--brand" style="background:var(--bg-brand-active);border-color:var(--bg-brand-active);"><span class="icon icon--16 icon--add" aria-hidden="true" data-asset-icon="../assets/icons/kid/add.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M512 89.6A38.4 38.4 0 0 1 550.4 128V473.6H896A38.4 38.4 0 1 1 896 550.4H550.4V896A38.4 38.4 0 1 1 473.6 896V550.4H128A38.4 38.4 0 1 1 128 473.6H473.6V128A38.4 38.4 0 0 1 512 89.6Z"></path></svg></span><span>Button</span></button></div>
+      <div><button class="mf-btn mf-btn--lg mf-btn--brand" disabled><span class="icon icon--16 icon--add" aria-hidden="true" data-asset-icon="../assets/icons/kid/add.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M512 89.6A38.4 38.4 0 0 1 550.4 128V473.6H896A38.4 38.4 0 1 1 896 550.4H550.4V896A38.4 38.4 0 1 1 473.6 896V550.4H128A38.4 38.4 0 1 1 128 473.6H473.6V128A38.4 38.4 0 0 1 512 89.6Z"></path></svg></span><span>Button</span></button></div>
+    </div>
+  </div>
+
+  <!-- ======== Icon-only buttons ======== -->
+  <div class="pv-section">
+    <div class="pv-section__title">Icon button</div>
+    <div class="row demo-surface">
+      <button class="mf-btn mf-btn--sm mf-btn--icon mf-btn--primary" aria-label="Confirm"><span class="icon icon--12 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span></button>
+      <button class="mf-btn mf-btn--md mf-btn--icon mf-btn--primary" aria-label="Confirm"><span class="icon icon--14 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span></button>
+      <button class="mf-btn mf-btn--lg mf-btn--icon mf-btn--primary" aria-label="Confirm"><span class="icon icon--16 icon--check" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span></button>
+      <span style="width:16px;"></span>
+      <button class="mf-btn mf-btn--sm mf-btn--icon mf-btn--secondary" aria-label="Settings"><span class="icon icon--12 icon--settings" aria-hidden="true" data-asset-icon="../assets/icons/kid/setting.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M622.976 512A110.976 110.976 0 1 0 401.088 512 110.976 110.976 0 0 0 622.976 512ZM699.776 512A187.776 187.776 0 1 1 324.352 512 187.776 187.776 0 0 1 699.84 512Z"></path><path fill="currentColor" d="M900.288 512C900.288 503.104 898.176 493.184 890.88 477.184 883.2 460.416 871.424 440.064 853.888 409.728L771.84 268.288C754.304 238.208 742.528 217.92 731.84 203.008 721.6 188.8 714.048 181.888 706.304 177.472 698.624 173.056 688.832 169.984 671.36 168.32 653.056 166.4 629.632 166.336 594.688 166.336H429.376C394.432 166.4 371.008 166.528 352.704 168.32 335.232 169.984 325.44 173.056 317.76 177.472 310.08 181.952 302.528 188.8 292.288 203.008 281.6 217.92 269.76 238.08 252.224 268.288L170.24 409.728C152.64 440.064 140.864 460.416 133.248 477.184 125.952 493.184 123.776 503.104 123.776 512S125.952 530.816 133.248 546.816C140.928 563.584 152.64 583.936 170.176 614.272L252.224 755.712C269.76 785.856 281.6 806.08 292.288 820.992 302.528 835.2 310.016 842.112 317.76 846.528 325.44 850.944 335.232 854.016 352.64 855.68 371.008 857.6 394.432 857.664 429.376 857.664H594.688C629.632 857.6 653.056 857.472 671.36 855.68 688.832 854.016 698.624 850.944 706.304 846.528 713.984 842.048 721.6 835.2 731.84 820.992 742.528 806.08 754.304 785.792 771.84 755.712L853.888 614.272C871.424 583.936 883.2 563.584 890.88 546.816 898.176 530.816 900.288 520.896 900.288 512ZM977.088 512C977.152 535.68 970.752 556.8 960.832 578.624 951.168 599.616 937.088 623.808 920.32 652.864L838.272 794.24C821.504 823.04 807.552 847.168 794.112 865.792 780.16 885.248 765.056 901.312 744.64 913.088 724.16 924.8 702.72 929.856 678.912 932.16 656 934.464 628.16 934.4 594.688 934.4H429.376C395.968 934.4 368.128 934.4 345.216 932.16 321.408 929.92 299.968 924.8 279.488 913.088 259.008 901.312 243.904 885.248 229.952 865.856 216.512 847.232 202.56 823.104 185.792 794.24L103.744 652.8C86.912 623.808 72.96 599.68 63.36 578.624 53.376 556.864 46.976 535.68 46.976 512 46.976 488.32 53.376 467.2 63.36 445.376 72.96 424.384 87.04 400.192 103.744 371.136L185.792 229.76C202.56 200.96 216.512 176.896 229.952 158.208 243.84 138.752 259.008 122.688 279.488 110.912 299.968 99.2 321.408 94.144 345.216 91.84 368.128 89.536 395.968 89.6 429.376 89.6H594.688C628.16 89.6 656 89.6 678.912 91.84 702.72 94.08 724.16 99.2 744.64 110.912 765.12 122.688 780.16 138.752 794.112 158.144 807.552 176.832 821.504 200.896 838.272 229.76L920.32 371.2C937.152 400.192 951.168 424.32 960.768 445.376 970.688 467.136 977.152 488.256 977.152 512Z"></path></svg></span></button>
+      <button class="mf-btn mf-btn--md mf-btn--icon mf-btn--secondary" aria-label="Settings"><span class="icon icon--14 icon--settings" aria-hidden="true" data-asset-icon="../assets/icons/kid/setting.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M622.976 512A110.976 110.976 0 1 0 401.088 512 110.976 110.976 0 0 0 622.976 512ZM699.776 512A187.776 187.776 0 1 1 324.352 512 187.776 187.776 0 0 1 699.84 512Z"></path><path fill="currentColor" d="M900.288 512C900.288 503.104 898.176 493.184 890.88 477.184 883.2 460.416 871.424 440.064 853.888 409.728L771.84 268.288C754.304 238.208 742.528 217.92 731.84 203.008 721.6 188.8 714.048 181.888 706.304 177.472 698.624 173.056 688.832 169.984 671.36 168.32 653.056 166.4 629.632 166.336 594.688 166.336H429.376C394.432 166.4 371.008 166.528 352.704 168.32 335.232 169.984 325.44 173.056 317.76 177.472 310.08 181.952 302.528 188.8 292.288 203.008 281.6 217.92 269.76 238.08 252.224 268.288L170.24 409.728C152.64 440.064 140.864 460.416 133.248 477.184 125.952 493.184 123.776 503.104 123.776 512S125.952 530.816 133.248 546.816C140.928 563.584 152.64 583.936 170.176 614.272L252.224 755.712C269.76 785.856 281.6 806.08 292.288 820.992 302.528 835.2 310.016 842.112 317.76 846.528 325.44 850.944 335.232 854.016 352.64 855.68 371.008 857.6 394.432 857.664 429.376 857.664H594.688C629.632 857.6 653.056 857.472 671.36 855.68 688.832 854.016 698.624 850.944 706.304 846.528 713.984 842.048 721.6 835.2 731.84 820.992 742.528 806.08 754.304 785.792 771.84 755.712L853.888 614.272C871.424 583.936 883.2 563.584 890.88 546.816 898.176 530.816 900.288 520.896 900.288 512ZM977.088 512C977.152 535.68 970.752 556.8 960.832 578.624 951.168 599.616 937.088 623.808 920.32 652.864L838.272 794.24C821.504 823.04 807.552 847.168 794.112 865.792 780.16 885.248 765.056 901.312 744.64 913.088 724.16 924.8 702.72 929.856 678.912 932.16 656 934.464 628.16 934.4 594.688 934.4H429.376C395.968 934.4 368.128 934.4 345.216 932.16 321.408 929.92 299.968 924.8 279.488 913.088 259.008 901.312 243.904 885.248 229.952 865.856 216.512 847.232 202.56 823.104 185.792 794.24L103.744 652.8C86.912 623.808 72.96 599.68 63.36 578.624 53.376 556.864 46.976 535.68 46.976 512 46.976 488.32 53.376 467.2 63.36 445.376 72.96 424.384 87.04 400.192 103.744 371.136L185.792 229.76C202.56 200.96 216.512 176.896 229.952 158.208 243.84 138.752 259.008 122.688 279.488 110.912 299.968 99.2 321.408 94.144 345.216 91.84 368.128 89.536 395.968 89.6 429.376 89.6H594.688C628.16 89.6 656 89.6 678.912 91.84 702.72 94.08 724.16 99.2 744.64 110.912 765.12 122.688 780.16 138.752 794.112 158.144 807.552 176.832 821.504 200.896 838.272 229.76L920.32 371.2C937.152 400.192 951.168 424.32 960.768 445.376 970.688 467.136 977.152 488.256 977.152 512Z"></path></svg></span></button>
+      <button class="mf-btn mf-btn--lg mf-btn--icon mf-btn--secondary" aria-label="Settings"><span class="icon icon--16 icon--settings" aria-hidden="true" data-asset-icon="../assets/icons/kid/setting.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M622.976 512A110.976 110.976 0 1 0 401.088 512 110.976 110.976 0 0 0 622.976 512ZM699.776 512A187.776 187.776 0 1 1 324.352 512 187.776 187.776 0 0 1 699.84 512Z"></path><path fill="currentColor" d="M900.288 512C900.288 503.104 898.176 493.184 890.88 477.184 883.2 460.416 871.424 440.064 853.888 409.728L771.84 268.288C754.304 238.208 742.528 217.92 731.84 203.008 721.6 188.8 714.048 181.888 706.304 177.472 698.624 173.056 688.832 169.984 671.36 168.32 653.056 166.4 629.632 166.336 594.688 166.336H429.376C394.432 166.4 371.008 166.528 352.704 168.32 335.232 169.984 325.44 173.056 317.76 177.472 310.08 181.952 302.528 188.8 292.288 203.008 281.6 217.92 269.76 238.08 252.224 268.288L170.24 409.728C152.64 440.064 140.864 460.416 133.248 477.184 125.952 493.184 123.776 503.104 123.776 512S125.952 530.816 133.248 546.816C140.928 563.584 152.64 583.936 170.176 614.272L252.224 755.712C269.76 785.856 281.6 806.08 292.288 820.992 302.528 835.2 310.016 842.112 317.76 846.528 325.44 850.944 335.232 854.016 352.64 855.68 371.008 857.6 394.432 857.664 429.376 857.664H594.688C629.632 857.6 653.056 857.472 671.36 855.68 688.832 854.016 698.624 850.944 706.304 846.528 713.984 842.048 721.6 835.2 731.84 820.992 742.528 806.08 754.304 785.792 771.84 755.712L853.888 614.272C871.424 583.936 883.2 563.584 890.88 546.816 898.176 530.816 900.288 520.896 900.288 512ZM977.088 512C977.152 535.68 970.752 556.8 960.832 578.624 951.168 599.616 937.088 623.808 920.32 652.864L838.272 794.24C821.504 823.04 807.552 847.168 794.112 865.792 780.16 885.248 765.056 901.312 744.64 913.088 724.16 924.8 702.72 929.856 678.912 932.16 656 934.464 628.16 934.4 594.688 934.4H429.376C395.968 934.4 368.128 934.4 345.216 932.16 321.408 929.92 299.968 924.8 279.488 913.088 259.008 901.312 243.904 885.248 229.952 865.856 216.512 847.232 202.56 823.104 185.792 794.24L103.744 652.8C86.912 623.808 72.96 599.68 63.36 578.624 53.376 556.864 46.976 535.68 46.976 512 46.976 488.32 53.376 467.2 63.36 445.376 72.96 424.384 87.04 400.192 103.744 371.136L185.792 229.76C202.56 200.96 216.512 176.896 229.952 158.208 243.84 138.752 259.008 122.688 279.488 110.912 299.968 99.2 321.408 94.144 345.216 91.84 368.128 89.536 395.968 89.6 429.376 89.6H594.688C628.16 89.6 656 89.6 678.912 91.84 702.72 94.08 724.16 99.2 744.64 110.912 765.12 122.688 780.16 138.752 794.112 158.144 807.552 176.832 821.504 200.896 838.272 229.76L920.32 371.2C937.152 400.192 951.168 424.32 960.768 445.376 970.688 467.136 977.152 488.256 977.152 512Z"></path></svg></span></button>
+      <span style="width:16px;"></span>
+      <button class="mf-btn mf-btn--sm mf-btn--icon mf-btn--tertiary" aria-label="Close"><span class="icon icon--12 icon--close" aria-hidden="true" data-asset-icon="../assets/icons/kid/close.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M756.48 810.688 213.312 267.52A38.4 38.4 0 1 1 267.648 213.312L810.688 756.48A38.4 38.4 0 1 1 756.48 810.688Z"></path><path fill="currentColor" d="M756.48 213.312A38.4 38.4 0 1 1 810.624 267.584L267.648 810.688A38.4 38.4 0 1 1 213.376 756.416L756.48 213.312Z"></path></svg></span></button>
+      <button class="mf-btn mf-btn--md mf-btn--icon mf-btn--tertiary" aria-label="Close"><span class="icon icon--14 icon--close" aria-hidden="true" data-asset-icon="../assets/icons/kid/close.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M756.48 810.688 213.312 267.52A38.4 38.4 0 1 1 267.648 213.312L810.688 756.48A38.4 38.4 0 1 1 756.48 810.688Z"></path><path fill="currentColor" d="M756.48 213.312A38.4 38.4 0 1 1 810.624 267.584L267.648 810.688A38.4 38.4 0 1 1 213.376 756.416L756.48 213.312Z"></path></svg></span></button>
+      <button class="mf-btn mf-btn--lg mf-btn--icon mf-btn--tertiary" aria-label="Close"><span class="icon icon--16 icon--close" aria-hidden="true" data-asset-icon="../assets/icons/kid/close.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M756.48 810.688 213.312 267.52A38.4 38.4 0 1 1 267.648 213.312L810.688 756.48A38.4 38.4 0 1 1 756.48 810.688Z"></path><path fill="currentColor" d="M756.48 213.312A38.4 38.4 0 1 1 810.624 267.584L267.648 810.688A38.4 38.4 0 1 1 213.376 756.416L756.48 213.312Z"></path></svg></span></button>
+    </div>
+  </div>
+
+  <!-- ======== Button group ======== -->
+  <div class="pv-section">
+    <div class="pv-section__title">Button group</div>
+    <div class="stack-12 demo-stack">
+      <div class="mf-btn-group">
+        <button class="mf-btn mf-btn--secondary"><span class="icon icon--14 icon--split" aria-hidden="true" data-asset-icon="../assets/icons/kid/expandtotheright.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M294.4 128A38.4 38.4 0 0 1 332.8 166.4V857.6A38.4 38.4 0 0 1 256 857.6V166.4A38.4 38.4 0 0 1 294.4 128ZM630.272 672A38.4 38.4 0 1 1 576 617.728L676.864 516.864 576 416A38.4 38.4 0 1 1 630.272 361.728L758.272 489.728A38.336 38.336 0 0 1 758.272 544L630.272 672Z"></path></svg></span><span>Grid</span></button>
+        <button class="mf-btn mf-btn--secondary" style="color:var(--text-tertiary);"><span class="icon icon--14 icon--list-filter" aria-hidden="true" data-asset-icon="../assets/icons/kid/filter.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M550.4 572.608C550.4 543.616 560.64 515.392 579.648 493.44L856.96 170.496A2.88 2.88 0 0 0 857.6 169.088 4.032 4.032 0 0 0 857.216 166.912C857.152 166.592 856.96 166.464 856.96 166.4H167.04L166.72 166.912A4.096 4.096 0 0 0 166.4 169.088 3.2 3.2 0 0 0 167.04 170.496H166.912L444.48 493.44C463.424 515.392 473.6 543.616 473.6 572.608V815.168A3.584 3.584 0 0 0 474.304 817.344H474.368L550.08 857.152 550.4 855.552V572.672ZM627.2 855.552C627.2 868.608 624.128 881.6 617.984 893.184A78.08 78.08 0 0 1 591.68 922.112 75.52 75.52 0 0 1 515.328 925.76L438.592 885.312A77.568 77.568 0 0 1 407.872 855.872 80.32 80.32 0 0 1 397.504 825.792L396.864 815.04V572.608A45.568 45.568 0 0 0 390.656 549.76L386.24 543.36 108.8 220.48A79.744 79.744 0 0 1 90.496 180.544 80.896 80.896 0 0 1 96 137.024C101.76 123.392 111.36 111.36 123.84 102.848L133.568 97.28C143.744 92.288 154.88 89.6 166.4 89.6H857.728C873.088 89.664 887.808 94.4 900.288 102.912A78.1 78.1 0 0 1 928.128 137.152 80.896 80.896 0 0 1 921.856 211.52L915.264 220.48 637.824 543.424A44.928 44.928 0 0 0 627.2 572.608V855.552Z"></path></svg></span><span>List</span></button>
+        <button class="mf-btn mf-btn--secondary"><span class="icon icon--14 icon--layer-blur" aria-hidden="true" data-asset-icon="../assets/icons/kid/layers.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M938.304 686.976A38.4 38.4 0 0 1 977.088 724.992 81.152 81.152 0 0 1 929.28 799.552L563.328 965.888A123.968 123.968 0 0 1 473.408 970.752L461.12 965.952 94.208 799.168 93.952 799.04A81.088 81.088 0 0 1 46.976 725.248 38.4 38.4 0 0 1 123.712 725.44 4.6 4.6 0 0 0 124.352 727.744C124.8 728.384 125.44 728.96 126.208 729.28L492.864 896A47.04 47.04 0 0 0 531.456 896L897.6 729.6H897.792A4.288 4.288 0 0 0 899.584 727.936 4.224 4.224 0 0 0 900.224 725.632 38.4 38.4 0 0 1 938.368 686.976ZM938.304 473.6A38.464 38.464 0 0 1 977.088 511.68 81.088 81.088 0 0 1 929.28 586.24L563.392 752.64A123.904 123.904 0 0 1 473.408 757.44L461.12 752.64 94.208 585.792 93.952 585.728A81.152 81.152 0 0 1 46.976 511.872 38.4 38.4 0 0 1 123.712 512.064 4.6 4.6 0 0 0 124.352 514.368C124.8 515.072 125.44 515.648 126.272 515.968H126.144L492.864 682.688A47.104 47.104 0 0 0 531.456 682.688L897.6 516.288H897.792A4.224 4.224 0 0 0 900.288 512.384 38.4 38.4 0 0 1 938.24 473.6ZM47.104 298.432A81.088 81.088 0 0 1 95.04 224.448L460.672 58.24A123.904 123.904 0 0 1 563.328 58.112L929.92 224.896H929.792A81.216 81.216 0 0 1 977.792 298.88 81.088 81.088 0 0 1 929.792 372.8L563.712 539.2V539.264A123.904 123.904 0 0 1 473.472 544.128L461.056 539.264 94.976 372.48V372.416A81.024 81.024 0 0 1 47.168 298.432ZM124.544 300.8 126.464 302.4 126.848 302.592 492.928 469.376 497.664 471.232A46.912 46.912 0 0 0 531.84 469.376L898.048 302.976 898.432 302.72A4.224 4.224 0 0 0 900.288 296.576 4.224 4.224 0 0 0 898.432 295.04L898.048 294.848 531.52 127.936H531.456A46.976 46.976 0 0 0 497.216 126.144L492.544 127.936 126.848 294.4 126.4 294.656A4.224 4.224 0 0 0 124.608 300.8Z"></path></svg></span><span>Board</span></button>
+      </div>
+      <div class="mf-btn-group">
+        <button class="mf-btn mf-btn--sm mf-btn--secondary mf-btn--icon" aria-label="Bold"><strong>B</strong></button>
+        <button class="mf-btn mf-btn--sm mf-btn--secondary mf-btn--icon" aria-label="Italic"><em>I</em></button>
+        <button class="mf-btn mf-btn--sm mf-btn--secondary mf-btn--icon" aria-label="Underline"><span style="text-decoration:underline;">U</span></button>
+        <button class="mf-btn mf-btn--sm mf-btn--secondary mf-btn--icon" aria-label="Strike"><span style="text-decoration:line-through;">S</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== Page rule ======== -->
+  <div class="pv-section">
+    <div class="pv-section__title">Page composition rule</div>
+    <p class="text-secondary" style="font-size: var(--body-sm-font-size); margin-bottom: var(--spacer-12);">
+      A page may contain at most one Brand button. The toolbar example below: <em>Generate spec</em> is the brand CTA; the rest are neutral.
+    </p>
+    <div class="mf-card preview-toolbar" style="display:flex; gap: var(--spacer-8); align-items:center;">
+      <span style="flex:1; color:var(--text-default); font-weight: var(--font-weight-strong);">design-tokens.css</span>
+      <button class="mf-btn mf-btn--tertiary"><span class="icon icon--14 icon--copy" aria-hidden="true" data-asset-icon="../assets/icons/kid/copy.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M187.712 426.624C187.712 400.704 208.64 379.712 234.624 379.712H661.312C687.232 379.712 708.224 400.768 708.224 426.624V853.312A46.976 46.976 0 0 1 661.312 900.288H234.624A46.912 46.912 0 0 1 187.712 853.312V426.624ZM379.712 234.624C379.712 208.96 400.896 187.712 426.624 187.712H853.312C879.04 187.712 900.224 208.96 900.224 234.624V661.312A47.232 47.232 0 0 1 853.312 708.288 38.4 38.4 0 1 0 853.312 785.088 123.968 123.968 0 0 0 977.024 661.312V234.624A123.968 123.968 0 0 0 853.312 110.976H426.624A123.968 123.968 0 0 0 302.848 234.624 38.464 38.464 0 0 0 379.648 234.624ZM110.912 853.312A123.648 123.648 0 0 0 234.56 977.088H661.312A123.712 123.712 0 0 0 785.024 853.312V426.624A123.712 123.712 0 0 0 661.312 302.976H234.624A123.712 123.712 0 0 0 110.848 426.624V853.312Z"></path></svg></span><span>Copy</span></button>
+      <button class="mf-btn mf-btn--secondary"><span class="icon icon--14 icon--download" aria-hidden="true" data-asset-icon="../assets/icons/kid/download.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M213.312 857.6H810.688A46.976 46.976 0 0 0 857.6 810.688V640A38.4 38.4 0 1 1 934.4 640V810.688A123.776 123.776 0 0 1 810.688 934.4H213.312A123.776 123.776 0 0 1 89.6 810.688V640A38.4 38.4 0 1 1 166.4 640V810.688A46.976 46.976 0 0 0 213.312 857.6ZM752.512 399.488A38.4 38.4 0 0 1 752.512 453.824L539.136 667.136A38.336 38.336 0 0 1 484.864 667.136L271.488 453.76A38.4 38.4 0 0 1 325.824 399.488L473.6 547.328V128A38.4 38.4 0 1 1 550.4 128V547.392L698.24 399.552A38.4 38.4 0 0 1 752.448 399.488Z"></path></svg></span><span>Export</span></button>
+      <button class="mf-btn mf-btn--brand"><span class="icon icon--14 icon--add" aria-hidden="true" data-asset-icon="../assets/icons/kid/add.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M512 89.6A38.4 38.4 0 0 1 550.4 128V473.6H896A38.4 38.4 0 1 1 896 550.4H550.4V896A38.4 38.4 0 1 1 473.6 896V550.4H128A38.4 38.4 0 1 1 128 473.6H473.6V128A38.4 38.4 0 0 1 512 89.6Z"></path></svg></span><span>Generate spec</span></button>
+    </div>
+  </div>
+
+</body>
+</html>

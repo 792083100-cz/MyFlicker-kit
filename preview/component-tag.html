@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tag</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style data-preview-shell>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html,
+    body {
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      letter-spacing: var(--body-sm-letter-spacing);
+      min-height: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+
+    body { padding: var(--spacer-32); }
+    img, svg, video, canvas { max-width: 100%; }
+    a { color: var(--text-default); text-decoration: none; }
+    a:hover { color: var(--text-default-hover); }
+    hr { border: 0; border-top: 1px solid var(--border-neutral-l1); margin: var(--spacer-24) 0; }
+
+    .h1 { font-family: var(--heading-2xl-font-family); font-size: var(--heading-2xl-font-size); line-height: var(--heading-2xl-line-height); font-weight: var(--heading-2xl-font-weight); color: var(--text-default); }
+    .h2 { font-family: var(--heading-md-font-family); font-size: var(--heading-md-font-size); line-height: var(--heading-md-line-height); font-weight: var(--heading-md-font-weight); color: var(--text-default); }
+    .h3 { font-family: var(--heading-sm-font-family); font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); color: var(--text-default); }
+    .eyebrow { font-size: var(--body-xs-font-size); line-height: var(--body-xs-line-height); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: var(--body-xs-letter-spacing); }
+    .text-secondary { color: var(--text-secondary); }
+    .text-tertiary { color: var(--text-tertiary); }
+
+    .row { display: flex; gap: var(--spacer-12); flex-wrap: wrap; align-items: center; }
+    .col { display: flex; flex-direction: column; gap: var(--spacer-12); }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacer-24); }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacer-24); }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacer-24); }
+    .stack-8 { display: flex; flex-direction: column; gap: var(--spacer-8); }
+    .stack-12 { display: flex; flex-direction: column; gap: var(--spacer-12); }
+    .stack-16 { display: flex; flex-direction: column; gap: var(--spacer-16); }
+    .stack-24 { display: flex; flex-direction: column; gap: var(--spacer-24); }
+    .stack-40 { display: flex; flex-direction: column; gap: var(--spacer-40); }
+
+    .pv-header { margin-bottom: var(--spacer-32); padding-bottom: var(--spacer-16); border-bottom: 1px solid var(--border-neutral-l1); }
+    .pv-header h1 { font-size: var(--heading-lg-font-size); line-height: var(--heading-lg-line-height); font-weight: var(--heading-lg-font-weight); margin-bottom: var(--spacer-4); }
+    .pv-header p { color: var(--text-secondary); font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); }
+    .pv-section { margin-bottom: var(--spacer-32); }
+    .pv-section__title { font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); margin-bottom: var(--spacer-12); color: var(--text-default); }
+    .pv-section__sub { font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); color: var(--text-tertiary); margin-bottom: var(--spacer-12); }
+
+    @media (max-width: 720px) {
+      body { padding: var(--spacer-16); }
+      .grid-2,
+      .grid-3,
+      .grid-4 { grid-template-columns: 1fr; }
+    }
+  </style>
+  <link rel="stylesheet" href="../components.css" />
+  <style>
+</style>
+</head>
+<body>
+  <div class="pv-header">
+    <h1>Tag</h1>
+    <p>Status badges in default, success, warning, danger and brand variants.</p>
+  </div>
+
+  <div class="pv-section">
+    <div class="pv-section__title">Tags</div>
+    <div class="row">
+      <span class="mf-tag">Default</span>
+      <span class="mf-tag mf-tag--success">Active</span>
+      <span class="mf-tag mf-tag--warning">Pending</span>
+      <span class="mf-tag mf-tag--danger">Failed</span>
+      <span class="mf-tag mf-tag--brand"><span style="width:var(--spacer-6);height:var(--spacer-6);border-radius:var(--radius-full);background:currentColor;display:inline-block;margin-right:var(--spacer-6);"></span>Live</span>
+      <span class="mf-tag mf-tag--info">Info</span>
+    </div>
+  </div>
+
+  <!-- ── With Icon ── -->
+  <div class="pv-section">
+    <div class="pv-section__title">With Icon</div>
+    <div class="row">
+      <span class="mf-tag">
+        <span class="icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span>
+        Verified
+      </span>
+      <span class="mf-tag mf-tag--success">
+        <span class="icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span>
+        Synced
+      </span>
+      <span class="mf-tag mf-tag--warning">
+        <span class="icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/star.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M704.256 328.832 924.672 361.088A59.52 59.52 0 0 1 948.288 369.792L955.328 374.848 961.344 380.736A64 64 0 0 1 970.752 394.752L973.952 402.624 976 410.88A60.992 60.992 0 0 1 964.224 458.816L958.464 465.216 799.168 620.352A52.352 52.352 0 0 0 784.128 666.496L821.632 885.632A61.12 61.12 0 0 1 797.44 945.664 61.12 61.12 0 0 1 732.928 950.08L536.064 846.656A52.16 52.16 0 0 0 493.44 844.032L487.68 846.592 290.688 950.144H290.752A61.12 61.12 0 0 1 202.048 885.76L239.616 666.56A52.16 52.16 0 0 0 224.64 620.352L65.28 465.28V465.216A60.992 60.992 0 0 1 49.792 402.56L52.928 394.688A60.992 60.992 0 0 1 68.48 374.784L75.392 369.664A61.056 61.056 0 0 1 99.2 361.024L319.36 328.832H319.424A52.16 52.16 0 0 0 358.656 300.352L457.216 100.672 461.44 93.44A61.056 61.056 0 0 1 479.68 75.904L487.232 71.936A61.056 61.056 0 0 1 511.872 66.752L520.32 67.328A61.056 61.056 0 0 1 536.576 71.936L544.064 75.904 551.04 80.896A60.992 60.992 0 0 1 562.24 93.376L566.592 100.672 665.152 300.352 668.288 305.728A52.224 52.224 0 0 0 704.256 328.832Z"></path></svg></span>
+        Featured
+      </span>
+      <span class="mf-tag mf-tag--danger">
+        <span class="icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/fire.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M174.976 640C174.976 582.4 196.224 525.12 226.112 487.936A38.4 38.4 0 0 1 294.4 512 68.288 68.288 0 0 0 430.976 512C430.976 464.64 416 448.64 392.32 401.28 365.056 346.688 361.472 292.544 380.48 239.808 398.72 188.928 436.992 142.72 486.72 99.2A38.4 38.4 0 0 1 549.632 120.512C569.152 217.984 628.096 312.512 706.624 375.424 798.848 449.216 849.088 540.48 849.088 640A337.088 337.088 0 0 1 174.976 640ZM507.712 512A145.024 145.024 0 0 1 260.032 614.592L254.72 608.64C252.8 618.88 251.712 629.44 251.712 640A260.416 260.416 0 0 0 512 900.288 260.288 260.288 0 0 0 772.288 640C772.288 568.96 737.088 498.112 658.688 435.328A531.84 531.84 0 0 1 492.672 201.472C473.28 224 460.032 245.44 452.736 265.92 441.28 297.6 442.496 329.92 461.056 366.848 479.872 404.736 507.648 441.6 507.648 512Z"></path></svg></span>
+        Hot
+      </span>
+      <span class="mf-tag mf-tag--brand">
+        <span class="icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/lock.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M857.6 554.624A46.976 46.976 0 0 0 810.688 507.712H213.312A46.976 46.976 0 0 0 166.4 554.624V853.312C166.4 879.232 187.392 900.224 213.312 900.288H810.688A46.976 46.976 0 0 0 857.6 853.312V554.624ZM686.912 298.624A174.976 174.976 0 0 0 337.088 298.624V430.976H686.912V298.624ZM763.712 430.976H810.752C879.04 430.976 934.336 486.336 934.4 554.624V853.312A123.712 123.712 0 0 1 810.688 977.088H213.312A123.712 123.712 0 0 1 89.6 853.312V554.624C89.6 486.4 145.024 430.976 213.312 430.976H260.224V298.624A251.776 251.776 0 0 1 763.776 298.624V430.976Z"></path></svg></span>
+        Private
+      </span>
+      <span class="mf-tag">
+        <span class="icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/star.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M704.256 328.832 924.672 361.088A59.52 59.52 0 0 1 948.288 369.792L955.328 374.848 961.344 380.736A64 64 0 0 1 970.752 394.752L973.952 402.624 976 410.88A60.992 60.992 0 0 1 964.224 458.816L958.464 465.216 799.168 620.352A52.352 52.352 0 0 0 784.128 666.496L821.632 885.632A61.12 61.12 0 0 1 797.44 945.664 61.12 61.12 0 0 1 732.928 950.08L536.064 846.656A52.16 52.16 0 0 0 493.44 844.032L487.68 846.592 290.688 950.144H290.752A61.12 61.12 0 0 1 202.048 885.76L239.616 666.56A52.16 52.16 0 0 0 224.64 620.352L65.28 465.28V465.216A60.992 60.992 0 0 1 49.792 402.56L52.928 394.688A60.992 60.992 0 0 1 68.48 374.784L75.392 369.664A61.056 61.056 0 0 1 99.2 361.024L319.36 328.832H319.424A52.16 52.16 0 0 0 358.656 300.352L457.216 100.672 461.44 93.44A61.056 61.056 0 0 1 479.68 75.904L487.232 71.936A61.056 61.056 0 0 1 511.872 66.752L520.32 67.328A61.056 61.056 0 0 1 536.576 71.936L544.064 75.904 551.04 80.896A60.992 60.992 0 0 1 562.24 93.376L566.592 100.672 665.152 300.352 668.288 305.728A52.224 52.224 0 0 0 704.256 328.832Z"></path></svg></span>
+        Favorite
+      </span>
+      <span class="mf-tag mf-tag--info">
+        <span class="icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span>
+        Info
+      </span>
+    </div>
+  </div>
+
+  <!-- ── Closable ── -->
+  <div class="pv-section">
+    <div class="pv-section__title">Closable</div>
+    <div class="row">
+      <span class="mf-tag mf-tag--closable">Design
+        <button class="tag-remove" type="button" aria-label="Remove Design"><span class="icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/close.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M756.48 810.688 213.312 267.52A38.4 38.4 0 1 1 267.648 213.312L810.688 756.48A38.4 38.4 0 1 1 756.48 810.688Z"></path><path fill="currentColor" d="M756.48 213.312A38.4 38.4 0 1 1 810.624 267.584L267.648 810.688A38.4 38.4 0 1 1 213.376 756.416L756.48 213.312Z"></path></svg></span></button>
+      </span>
+      <span class="mf-tag mf-tag--success mf-tag--closable">Active
+        <button class="tag-remove" type="button" aria-label="Remove Active"><span class="icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/close.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M756.48 810.688 213.312 267.52A38.4 38.4 0 1 1 267.648 213.312L810.688 756.48A38.4 38.4 0 1 1 756.48 810.688Z"></path><path fill="currentColor" d="M756.48 213.312A38.4 38.4 0 1 1 810.624 267.584L267.648 810.688A38.4 38.4 0 1 1 213.376 756.416L756.48 213.312Z"></path></svg></span></button>
+      </span>
+      <span class="mf-tag mf-tag--warning mf-tag--closable">Pending
+        <button class="tag-remove" type="button" aria-label="Remove Pending"><span class="icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/close.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M756.48 810.688 213.312 267.52A38.4 38.4 0 1 1 267.648 213.312L810.688 756.48A38.4 38.4 0 1 1 756.48 810.688Z"></path><path fill="currentColor" d="M756.48 213.312A38.4 38.4 0 1 1 810.624 267.584L267.648 810.688A38.4 38.4 0 1 1 213.376 756.416L756.48 213.312Z"></path></svg></span></button>
+      </span>
+      <span class="mf-tag mf-tag--danger mf-tag--closable">Failed
+        <button class="tag-remove" type="button" aria-label="Remove Failed"><span class="icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/close.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M756.48 810.688 213.312 267.52A38.4 38.4 0 1 1 267.648 213.312L810.688 756.48A38.4 38.4 0 1 1 756.48 810.688Z"></path><path fill="currentColor" d="M756.48 213.312A38.4 38.4 0 1 1 810.624 267.584L267.648 810.688A38.4 38.4 0 1 1 213.376 756.416L756.48 213.312Z"></path></svg></span></button>
+      </span>
+      <span class="mf-tag mf-tag--brand mf-tag--closable">Live
+        <button class="tag-remove" type="button" aria-label="Remove Live"><span class="icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/close.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M756.48 810.688 213.312 267.52A38.4 38.4 0 1 1 267.648 213.312L810.688 756.48A38.4 38.4 0 1 1 756.48 810.688Z"></path><path fill="currentColor" d="M756.48 213.312A38.4 38.4 0 1 1 810.624 267.584L267.648 810.688A38.4 38.4 0 1 1 213.376 756.416L756.48 213.312Z"></path></svg></span></button>
+      </span>
+      <span class="mf-tag mf-tag--info mf-tag--closable">Info
+        <button class="tag-remove" type="button" aria-label="Remove Info"><span class="icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/close.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M756.48 810.688 213.312 267.52A38.4 38.4 0 1 1 267.648 213.312L810.688 756.48A38.4 38.4 0 1 1 756.48 810.688Z"></path><path fill="currentColor" d="M756.48 213.312A38.4 38.4 0 1 1 810.624 267.584L267.648 810.688A38.4 38.4 0 1 1 213.376 756.416L756.48 213.312Z"></path></svg></span></button>
+      </span>
+    </div>
+  </div>
+
+  <!-- ── Icon + Closable ── -->
+  <div class="pv-section">
+    <div class="pv-section__title">Icon + Closable</div>
+    <div class="row">
+      <span class="mf-tag mf-tag--closable">
+        <span class="icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span>
+        Verified
+        <button class="tag-remove" type="button" aria-label="Remove Verified"><span class="icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/close.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M756.48 810.688 213.312 267.52A38.4 38.4 0 1 1 267.648 213.312L810.688 756.48A38.4 38.4 0 1 1 756.48 810.688Z"></path><path fill="currentColor" d="M756.48 213.312A38.4 38.4 0 1 1 810.624 267.584L267.648 810.688A38.4 38.4 0 1 1 213.376 756.416L756.48 213.312Z"></path></svg></span></button>
+      </span>
+      <span class="mf-tag mf-tag--success mf-tag--closable">
+        <span class="icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/star.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M704.256 328.832 924.672 361.088A59.52 59.52 0 0 1 948.288 369.792L955.328 374.848 961.344 380.736A64 64 0 0 1 970.752 394.752L973.952 402.624 976 410.88A60.992 60.992 0 0 1 964.224 458.816L958.464 465.216 799.168 620.352A52.352 52.352 0 0 0 784.128 666.496L821.632 885.632A61.12 61.12 0 0 1 797.44 945.664 61.12 61.12 0 0 1 732.928 950.08L536.064 846.656A52.16 52.16 0 0 0 493.44 844.032L487.68 846.592 290.688 950.144H290.752A61.12 61.12 0 0 1 202.048 885.76L239.616 666.56A52.16 52.16 0 0 0 224.64 620.352L65.28 465.28V465.216A60.992 60.992 0 0 1 49.792 402.56L52.928 394.688A60.992 60.992 0 0 1 68.48 374.784L75.392 369.664A61.056 61.056 0 0 1 99.2 361.024L319.36 328.832H319.424A52.16 52.16 0 0 0 358.656 300.352L457.216 100.672 461.44 93.44A61.056 61.056 0 0 1 479.68 75.904L487.232 71.936A61.056 61.056 0 0 1 511.872 66.752L520.32 67.328A61.056 61.056 0 0 1 536.576 71.936L544.064 75.904 551.04 80.896A60.992 60.992 0 0 1 562.24 93.376L566.592 100.672 665.152 300.352 668.288 305.728A52.224 52.224 0 0 0 704.256 328.832Z"></path></svg></span>
+        Featured
+        <button class="tag-remove" type="button" aria-label="Remove Featured"><span class="icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/close.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M756.48 810.688 213.312 267.52A38.4 38.4 0 1 1 267.648 213.312L810.688 756.48A38.4 38.4 0 1 1 756.48 810.688Z"></path><path fill="currentColor" d="M756.48 213.312A38.4 38.4 0 1 1 810.624 267.584L267.648 810.688A38.4 38.4 0 1 1 213.376 756.416L756.48 213.312Z"></path></svg></span></button>
+      </span>
+      <span class="mf-tag mf-tag--danger mf-tag--closable">
+        <span class="icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/fire.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M174.976 640C174.976 582.4 196.224 525.12 226.112 487.936A38.4 38.4 0 0 1 294.4 512 68.288 68.288 0 0 0 430.976 512C430.976 464.64 416 448.64 392.32 401.28 365.056 346.688 361.472 292.544 380.48 239.808 398.72 188.928 436.992 142.72 486.72 99.2A38.4 38.4 0 0 1 549.632 120.512C569.152 217.984 628.096 312.512 706.624 375.424 798.848 449.216 849.088 540.48 849.088 640A337.088 337.088 0 0 1 174.976 640ZM507.712 512A145.024 145.024 0 0 1 260.032 614.592L254.72 608.64C252.8 618.88 251.712 629.44 251.712 640A260.416 260.416 0 0 0 512 900.288 260.288 260.288 0 0 0 772.288 640C772.288 568.96 737.088 498.112 658.688 435.328A531.84 531.84 0 0 1 492.672 201.472C473.28 224 460.032 245.44 452.736 265.92 441.28 297.6 442.496 329.92 461.056 366.848 479.872 404.736 507.648 441.6 507.648 512Z"></path></svg></span>
+        Hot
+        <button class="tag-remove" type="button" aria-label="Remove Hot"><span class="icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/close.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M756.48 810.688 213.312 267.52A38.4 38.4 0 1 1 267.648 213.312L810.688 756.48A38.4 38.4 0 1 1 756.48 810.688Z"></path><path fill="currentColor" d="M756.48 213.312A38.4 38.4 0 1 1 810.624 267.584L267.648 810.688A38.4 38.4 0 1 1 213.376 756.416L756.48 213.312Z"></path></svg></span></button>
+      </span>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      document.querySelectorAll(".tag-remove").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var tag = button.closest(".mf-tag");
+          if (tag) tag.remove();
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>

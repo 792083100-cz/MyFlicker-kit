@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyFlicker · Chat — 对话态</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../../colors_and_type.css" />
+  <link rel="stylesheet" href="../../components.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── icon (CSS mask — 继承 currentColor) ── */
+    .icon {
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      width: 16px; height: 16px;
+      -webkit-mask-size: contain; mask-size: contain;
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      -webkit-mask-position: center; mask-position: center;
+      background-color: currentColor;
+    }
+    .icon--20 { width: 20px; height: 20px; }
+    .icon--14 { width: 14px; height: 14px; }
+    .icon--12 { width: 12px; height: 12px; }
+
+    /* kid icon instances */
+    .i-newchat            { -webkit-mask-image: url(../../assets/icons/kid/edit.svg);              mask-image: url(../../assets/icons/kid/edit.svg); }
+    .i-search             { -webkit-mask-image: url(../../assets/icons/kid/search.svg);             mask-image: url(../../assets/icons/kid/search.svg); }
+    .i-schedule           { -webkit-mask-image: url(../../assets/icons/kid/scheduledtasks.svg);     mask-image: url(../../assets/icons/kid/scheduledtasks.svg); }
+    .i-skill              { -webkit-mask-image: url(../../assets/icons/kid/skill.svg);              mask-image: url(../../assets/icons/kid/skill.svg); }
+    .i-knowledge          { -webkit-mask-image: url(../../assets/icons/kid/knowledge.svg);          mask-image: url(../../assets/icons/kid/knowledge.svg); }
+    .i-closefolder        { -webkit-mask-image: url(../../assets/icons/kid/closefolder.svg);        mask-image: url(../../assets/icons/kid/closefolder.svg); }
+    .i-openfolder         { -webkit-mask-image: url(../../assets/icons/kid/openfolder.svg);         mask-image: url(../../assets/icons/kid/openfolder.svg); }
+    .i-leftsidebar        { -webkit-mask-image: url(../../assets/icons/kid/leftsidebar.svg);        mask-image: url(../../assets/icons/kid/leftsidebar.svg); }
+    .i-unfold { -webkit-mask-image: url(../../assets/icons/kid/myflicker_system_unfold.svg); mask-image: url(../../assets/icons/kid/myflicker_system_unfold.svg); }
+    .i-arrowdown          { -webkit-mask-image: url(../../assets/icons/kid/arrowdown.svg);          mask-image: url(../../assets/icons/kid/arrowdown.svg); }
+    .i-add                { -webkit-mask-image: url(../../assets/icons/kid/add.svg);                mask-image: url(../../assets/icons/kid/add.svg); }
+    .i-addgroup           { -webkit-mask-image: url(../../assets/icons/kid/addgroup.svg);           mask-image: url(../../assets/icons/kid/addgroup.svg); }
+    .i-more               { -webkit-mask-image: url(../../assets/icons/kid/more.svg);               mask-image: url(../../assets/icons/kid/more.svg); }
+    .i-setting            { -webkit-mask-image: url(../../assets/icons/kid/setting.svg);            mask-image: url(../../assets/icons/kid/setting.svg); }
+    .i-points             { -webkit-mask-image: url(../../assets/icons/kid/points.svg);             mask-image: url(../../assets/icons/kid/points.svg); }
+    .i-generating         { -webkit-mask-image: url(../../assets/icons/kid/generating.svg);         mask-image: url(../../assets/icons/kid/generating.svg); }
+    .i-error2             { -webkit-mask-image: url(../../assets/icons/kid/error2.svg);             mask-image: url(../../assets/icons/kid/error2.svg); }
+    .i-draft              { -webkit-mask-image: url(../../assets/icons/kid/draft.svg);              mask-image: url(../../assets/icons/kid/draft.svg); }
+    .i-pintotop           { -webkit-mask-image: url(../../assets/icons/kid/pintotop.svg);           mask-image: url(../../assets/icons/kid/pintotop.svg); }
+    .i-generationcompleted{ -webkit-mask-image: url(../../assets/icons/kid/generationcompleted.svg);mask-image: url(../../assets/icons/kid/generationcompleted.svg); }
+    .i-share              { -webkit-mask-image: url(../../assets/icons/kid/share02.svg);             mask-image: url(../../assets/icons/kid/share02.svg); }
+    .i-copy               { -webkit-mask-image: url(../../assets/icons/kid/copy.svg);               mask-image: url(../../assets/icons/kid/copy.svg); }
+    .i-send               { -webkit-mask-image: url(../../assets/icons/kid/send.svg);               mask-image: url(../../assets/icons/kid/send.svg); }
+    .i-flash              { -webkit-mask-image: url(../../assets/icons/kid/flash.svg);              mask-image: url(../../assets/icons/kid/flash.svg); }
+    .i-attach             { -webkit-mask-image: url(../../assets/icons/kid/addfiles.svg);           mask-image: url(../../assets/icons/kid/addfiles.svg); }
+    .i-assets             { -webkit-mask-image: url(../../assets/icons/kid/assets.svg);             mask-image: url(../../assets/icons/kid/assets.svg); }
+    .i-link               { -webkit-mask-image: url(../../assets/icons/kid/link.svg);               mask-image: url(../../assets/icons/kid/link.svg); }
+    .i-arrowright         { -webkit-mask-image: url(../../assets/icons/kid/arrowright.svg);         mask-image: url(../../assets/icons/kid/arrowright.svg); }
+    .i-inspiration        { -webkit-mask-image: url(../../assets/icons/kid/inspiration.svg);        mask-image: url(../../assets/icons/kid/inspiration.svg); }
+    .i-closure            { -webkit-mask-image: url(../../assets/icons/kid/closure.svg);             mask-image: url(../../assets/icons/kid/closure.svg); }
+    .i-pdf                { -webkit-mask-image: url(../../assets/icons/kid/pdf.svg);                 mask-image: url(../../assets/icons/kid/pdf.svg); }
+    .i-txt2               { -webkit-mask-image: url(../../assets/icons/kid/txt2.svg);                mask-image: url(../../assets/icons/kid/txt2.svg); }
+    .i-word               { -webkit-mask-image: url(../../assets/icons/kid/word.svg);                mask-image: url(../../assets/icons/kid/word.svg); }
+
+    /* ── App Shell ── */
+    .app-shell {
+      display: flex;
+      height: 100vh; width: 100%;
+      background: var(--bg-brand-subtle);
+      gap: 4px;
+    }
+
+    /* ── icon-btn ── */
+    .icon-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px;
+      border-radius: var(--radius-4); border: none; background: transparent;
+      cursor: pointer; color: var(--text-tertiary);
+      transition: background 120ms, color 120ms; flex-shrink: 0;
+    }
+    .icon-btn:hover { background: var(--fill-default); color: var(--text-default); }
+    .icon-btn--28 { width: 28px; height: 28px; border-radius: var(--radius-8); }
+
+    /* ════════════════════════════════════════
+       MAIN AREA — chat-main
+    ════════════════════════════════════════ */
+    .chat-main {
+      flex: 1; display: flex; flex-direction: column;
+      min-width: 0;
+      background: var(--bg-base-default);
+      border-radius: 8px; overflow: hidden;
+      margin: 8px 8px 8px 0;
+      height: calc(100vh - 16px);
+    }
+
+    /* ── Topbar ── */
+    .chat-topbar {
+      height: 40px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 16px; gap: 8px;
+    }
+    .chat-topbar__title {
+      font-size: var(--body-sm-font-size);
+      font-weight: 500;
+      color: var(--text-default);
+      flex: 1; min-width: 0;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .chat-topbar__right { display: flex; align-items: center; gap: 4px; }
+
+    /* topbar 文字图标按钮 */
+    .topbar-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      height: 28px; padding: 0 6px;
+      border: none; border-radius: var(--radius-4);
+      background: transparent; cursor: pointer;
+      font-size: var(--body-sm-font-size); color: var(--text-secondary);
+      transition: background 120ms, color 120ms;
+    }
+    .topbar-btn:hover { background: var(--fill-default); color: var(--text-default); }
+
+    /* ── Message Area ── */
+    .chat-messages {
+      flex: 1; overflow-y: auto; position: relative;
+      display: flex; flex-direction: column;
+      padding: 24px 24px 0;
+      gap: 0;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--border-neutral-l1); border-radius: 2px; }
+
+    /* ── Conversation Anchor Rail (左侧锚点导航) ── */
+    .anchor-rail {
+      position: absolute;
+      left: 12px; top: 50%;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 4px;
+      padding: 4px 0;
+      pointer-events: auto;
+      z-index: 10;
+    }
+    .anchor-dot {
+      display: block;
+      width: 26px; height: 2px;
+      border-radius: 1px;
+      background: var(--text-tertiary);
+      opacity: 0.4;
+      transform: scaleX(0.2308);
+      transform-origin: left;
+      transition: transform 150ms ease-out, background-color 150ms, opacity 150ms;
+      cursor: pointer; border: none;
+    }
+    .anchor-dot.is-active {
+      background: var(--text-default);
+      opacity: 0.6;
+      transform: scaleX(1);
+    }
+    .anchor-dot:hover {
+      background: var(--text-default);
+      opacity: 1;
+      transform: scaleX(1);
+    }
+
+    /* ── Message body column ── */
+    .message-list-body-column {
+      max-width: 800px; width: 100%;
+      margin: 0 auto;
+      display: flex; flex-direction: column; gap: 0;
+    }
+
+    /* ── Single message ── */
+    .msg { display: flex; gap: 12px; align-items: flex-start; padding: 16px 0; }
+    .msg--user { flex-direction: row-reverse; }
+    .msg__avatar { flex-shrink: 0; margin-top: 2px; }
+    .msg__bubble { display: flex; flex-direction: column; gap: 4px; max-width: 560px; }
+    .msg--user .msg__bubble { align-items: flex-end; }
+
+    .msg__name {
+      font-size: var(--body-xs-font-size); line-height: var(--body-xs-line-height);
+      color: var(--text-tertiary); font-weight: 500;
+    }
+
+    .msg__text {
+      background: var(--bg-base-secondary);
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-12);
+      padding: 12px 16px;
+      font-size: var(--body-sm-font-size); line-height: 1.6;
+      color: var(--text-default);
+    }
+    .msg--user .msg__text {
+      background: var(--bg-brand-subtle); border-color: var(--bg-brand-subtle); color: var(--text-default);
+      border-radius: var(--radius-12) var(--radius-4) var(--radius-12) var(--radius-12);
+    }
+    .msg--ai .msg__text {
+      background: transparent; border: none; padding: 0;
+      border-radius: 0;
+    }
+
+    /* ── Tool process block ── */
+    .msg__tool-process {
+      display: flex; align-items: center; gap: 6px;
+      width: 100%;
+      padding: 8px 0;
+      margin-bottom: 4px;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border-neutral-l1);
+      border-radius: 0;
+      font-size: var(--body-xs-font-size); line-height: 1.5;
+      color: var(--text-secondary);
+      cursor: pointer; user-select: none;
+      transition: color 120ms;
+    }
+    .msg__tool-process:hover { color: var(--text-default); }
+    .msg__tool-process .icon { color: var(--text-tertiary); }
+
+    /* ════════════════════════════════════
+       AI message body — Markdown 排版规范
+       行高 150%，小字号 13px 基准
+    ════════════════════════════════════ */
+    .msg__body {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-default);
+    }
+
+    /* ── 标题 ── */
+    .msg__body h1 { font-size: 18px; font-weight: 600; line-height: 1.5; margin-top: 9px; margin-bottom: 7px; }
+    .msg__body h2 { font-size: 16px; font-weight: 600; line-height: 1.5; margin-top: 8px; margin-bottom: 6px; }
+    .msg__body h3 { font-size: 14px; font-weight: 600; line-height: 1.5; margin-top: 7px; margin-bottom: 5px; }
+    .msg__body h4,
+    .msg__body h5,
+    .msg__body h6 { font-size: 13px; font-weight: 600; line-height: 1.5; margin-top: 6px; margin-bottom: 5px; }
+
+    /* ── 段落 ── */
+    .msg__body p { font-size: 13px; line-height: 1.5; margin-top: 3px; margin-bottom: 0; }
+    .msg__body p:first-child { margin-top: 0; }
+    .msg__body p + p { margin-top: 4px; }
+
+    /* ── 列表 ── */
+    .msg__body ul,
+    .msg__body ol { font-size: 13px; line-height: 1.5; margin-top: 3px; margin-bottom: 3px; padding-left: 20px; }
+    .msg__body ul:first-child, .msg__body ol:first-child { margin-top: 0; }
+    .msg__body ul:last-child, .msg__body ol:last-child { margin-bottom: 0; }
+    .msg__body li { margin-top: 3px; margin-bottom: 3px; }
+    .msg__body li:first-child { margin-top: 0; }
+    .msg__body li:last-child { margin-bottom: 0; }
+
+    /* ── 引用 blockquote ── */
+    .msg__body blockquote {
+      margin-top: 3px; margin-bottom: 3px;
+      padding: 2px 12px;
+      border-left: 3px solid var(--border-neutral-l2);
+      color: var(--text-secondary);
+    }
+
+    /* ── 行内代码 ── */
+    .msg__body code {
+      background: var(--bg-overlay-l1);
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-4);
+      padding: 1px 5px;
+      font-family: var(--code-editor-font-family);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* ── 代码块 ── */
+    .msg__body pre {
+      margin-top: 8px; margin-bottom: 8px;
+      background: var(--bg-brand-subtle);
+      border-radius: var(--radius-8);
+      overflow: hidden;
+    }
+    .msg__body pre code {
+      display: block;
+      padding: 14px 16px;
+      font-family: var(--code-editor-font-family);
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      white-space: pre;
+      overflow-x: auto;
+    }
+    /* 代码块顶部语言标签栏 */
+    .msg__body .code-block { margin-top: 8px; margin-bottom: 8px; border-radius: var(--radius-8); overflow: hidden; border: 1px solid var(--border-neutral-l1); }
+    .msg__body .code-block__header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 12px;
+      background: var(--bg-brand-subtle-hover);
+      font-size: 12px; color: var(--text-secondary);
+    }
+    .msg__body .code-block__copy {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 12px; color: var(--text-secondary);
+      background: transparent; border: none; cursor: pointer;
+      transition: color 120ms;
+    }
+    .msg__body .code-block__copy:hover { color: var(--text-default); }
+    .msg__body .code-block pre { margin: 0; border-radius: 0; }
+
+    /* ── 表格 ── */
+    .msg__body table {
+      width: 100%;
+      margin-top: 8px; margin-bottom: 8px;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .msg__body th {
+      padding: 6px 12px;
+      background: var(--bg-base-secondary);
+      border: 1px solid var(--border-neutral-l1);
+      font-weight: 500; text-align: left;
+      color: var(--text-default);
+    }
+    .msg__body td {
+      padding: 6px 12px;
+      border: 1px solid var(--border-neutral-l1);
+      color: var(--text-default);
+    }
+    .msg__body tr:hover td { background: var(--bg-overlay-l1); }
+
+    /* ── 图片 ── */
+    .msg__body img {
+      max-width: 100%;
+      border-radius: var(--radius-8);
+      margin-top: 8px; margin-bottom: 8px;
+      display: block;
+    }
+
+    /* ── 分隔线 hr ── */
+    .msg__body hr {
+      margin-top: 16px; margin-bottom: 16px;
+      border: none;
+      border-top: 1px solid var(--border-neutral-l1);
+    }
+
+    /* ── 加粗 / 斜体 ── */
+    .msg__body strong { font-weight: 600; }
+    .msg__body em { font-style: italic; }
+
+    /* ── Message footer actions (copy / share) ── */
+    .msg__footer {
+      display: flex; align-items: center; gap: 0;
+      margin-top: 6px;
+      opacity: 0; transition: opacity 120ms;
+    }
+    .msg:hover .msg__footer { opacity: 1; }
+
+    /* ── Thinking / loading state ── */
+    .msg__thinking {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 2px 0;
+      background: transparent; border: none;
+      font-size: var(--body-sm-font-size);
+    }
+    .thinking-mascot {
+      width: 24px; height: 24px; flex-shrink: 0;
+      object-fit: contain;
+      animation: mascot-float 2.4s ease-in-out infinite;
+    }
+    @keyframes mascot-float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-3px); }
+    }
+    .thinking-label {
+      color: var(--text-tertiary);
+      background: linear-gradient(
+        90deg,
+        var(--text-tertiary) 0%,
+        var(--text-tertiary) 30%,
+        var(--text-default) 50%,
+        var(--text-tertiary) 70%,
+        var(--text-tertiary) 100%
+      );
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer-scan 2s linear infinite;
+    }
+    @keyframes shimmer-scan {
+      0%   { background-position: 150% center; }
+      100% { background-position: -50% center; }
+    }
+
+    /* ── Suggestions row ── */
+    .suggestions-wrap { flex-shrink: 0; padding: 12px 24px 0; }
+    .suggestions-inner {
+      max-width: 800px; width: 100%; margin: 0 auto;
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+
+    /* ── Chat input area ── */
+    .chat-input-wrap { flex-shrink: 0; padding: 12px 24px 8px; }
+    .chat-input-inner { max-width: 800px; margin: 0 auto; }
+
+    /* ── mf-chat-input 业务组件规范覆盖 v1.2.0 ── */
+    .mf-chat-input { padding: 12px !important; }
+    .mf-chat-input__textarea { max-height: 336px !important; overflow-y: hidden; resize: none; }
+    .mf-chat-input__textarea.is-overflow { overflow-y: auto; }
+    .mf-chat-input__model-arrow { width: 16px !important; height: 16px !important; flex: 0 0 16px !important; }
+
+    :root {
+      --spacer-6: 6px; --spacer-10: 10px;
+      --spacer-16: 16px; --spacer-20: 20px;
+      --radius-16: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ════════════════════════════════════════
+       SIDEBAR — .mf-aside 业务组件
+  ════════════════════════════════════════ -->
+  <aside class="mf-aside">
+
+    <div class="mf-aside__header">
+      <div class="mf-aside__workspace">
+        <img class="mf-aside__workspace-avatar" src="../../assets/icons/workspace-myflicker.svg" alt="workspace" />
+        <span class="mf-aside__workspace-name">个人空间</span>
+        <span class="icon i-unfold mf-aside__workspace-unfold"></span>
+      </div>
+      <button class="mf-aside__collapse" aria-label="收起侧边栏">
+        <span class="icon i-leftsidebar"></span>
+      </button>
+    </div>
+
+    <nav class="mf-aside__nav">
+      <div class="mf-aside__nav-item is-active">
+        <span class="icon i-newchat"></span>
+        <span class="mf-aside__nav-item__label">新对话</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-search"></span>
+        <span class="mf-aside__nav-item__label">搜索</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-schedule"></span>
+        <span class="mf-aside__nav-item__label">定时任务</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-skill"></span>
+        <span class="mf-aside__nav-item__label">技能</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-knowledge"></span>
+        <span class="mf-aside__nav-item__label">知识</span>
+      </div>
+    </nav>
+
+    <div class="mf-aside__body">
+
+      <div class="mf-aside__section-label is-always-show">
+        <span>分组</span>
+        <div class="mf-aside__section-label-actions">
+          <button class="mf-aside__icon-btn" aria-label="新建分组">
+            <span class="icon i-addgroup"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="mf-aside__group">
+        <div class="mf-aside__group-icon">
+          <span class="icon i-openfolder"></span>
+        </div>
+        <span class="mf-aside__group-name">设计系统项目</span>
+        <div class="mf-aside__group-actions">
+          <button class="mf-aside__icon-btn" aria-label="新建会话"><span class="icon i-add"></span></button>
+          <button class="mf-aside__icon-btn" aria-label="更多"><span class="icon i-more"></span></button>
+        </div>
+      </div>
+      <div class="mf-aside__group-sessions">
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status">
+            <span class="icon i-generationcompleted" style="color:var(--text-secondary);"></span>
+          </span>
+          <span class="mf-aside__session-title">组件 Token 绑定机制</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">14:30</span>
+            <button class="mf-aside__icon-btn" aria-label="更多"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status"></span>
+          <span class="mf-aside__session-title">AI 对话页 UI Kit</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">昨天</span>
+            <button class="mf-aside__icon-btn" aria-label="更多"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+      </div>
+
+      <div class="mf-aside__group" style="margin-top:4px;">
+        <div class="mf-aside__group-icon"><span class="icon i-closefolder"></span></div>
+        <span class="mf-aside__group-name">个人任务</span>
+        <div class="mf-aside__group-actions">
+          <button class="mf-aside__icon-btn" aria-label="新建会话"><span class="icon i-add"></span></button>
+          <button class="mf-aside__icon-btn" aria-label="更多"><span class="icon i-more"></span></button>
+        </div>
+      </div>
+
+      <div class="mf-aside__section-label">
+        <span>对话</span>
+        <div class="mf-aside__section-label-actions">
+          <button class="mf-aside__icon-btn" aria-label="新建对话"><span class="icon i-add"></span></button>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:4px;">
+
+        <!-- 当前活跃会话 -->
+        <div class="mf-aside__session is-active">
+          <span class="mf-aside__session-status">
+            <span class="icon i-generating" style="color:var(--text-brand);"></span>
+          </span>
+          <span class="mf-aside__session-title">生成述职相关自评报告与快手派自评</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">16:22</span>
+            <button class="mf-aside__icon-btn" aria-label="更多"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status">
+            <span class="icon i-pintotop" style="color:var(--text-tertiary);"></span>
+          </span>
+          <span class="mf-aside__session-title">帮我顶会议</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">今天</span>
+            <button class="mf-aside__icon-btn" aria-label="更多"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status"></span>
+          <span class="mf-aside__session-title">订机票去杭州</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">昨天</span>
+            <button class="mf-aside__icon-btn" aria-label="更多"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status">
+            <span class="icon i-draft" style="color:var(--text-tertiary);"></span>
+          </span>
+          <span class="mf-aside__session-title">设计规范草稿</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">2026/7/13</span>
+            <button class="mf-aside__icon-btn" aria-label="更多"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+
+      </div>
+
+    </div><!-- /mf-aside__body -->
+
+    <div class="mf-aside__footer">
+      <button class="mf-aside__footer-setting">
+        <span class="icon i-setting"></span>
+        <span>设置</span>
+      </button>
+      <div class="mf-aside__footer-credit">
+        <img src="../../assets/icons/points-gradient.svg" width="14" height="14" style="flex-shrink:0;" />
+        <span>积分：剩余 92%</span>
+      </div>
+    </div>
+
+  </aside><!-- /mf-aside -->
+
+  <!-- ════════════════════════════════════════
+       MAIN AREA — 对话态
+  ════════════════════════════════════════ -->
+  <main class="chat-main">
+
+    <!-- Topbar：标题 + 分享 + 资源 -->
+    <div class="chat-topbar">
+      <span class="chat-topbar__title">生成述职相关自评报告与快手派自评</span>
+      <div class="chat-topbar__right">
+        <button class="topbar-btn" aria-label="分享">
+          <span class="icon icon--14 i-share"></span>
+          <span>分享</span>
+        </button>
+        <button class="topbar-btn" aria-label="资产">
+          <span class="icon icon--14 i-assets"></span>
+          <span>资产</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 消息列表 -->
+    <div class="chat-messages">
+
+      <!-- 左侧锚点导航条（ConversationAnchorRail） -->
+      <nav class="anchor-rail" aria-label="对话锚点导航">
+        <button class="anchor-dot is-active" aria-label="跳转到第 1 条消息" title="生成述职相关自评报告"></button>
+        <button class="anchor-dot" aria-label="跳转到第 2 条消息" title="好的，还需要补充哪些方向"></button>
+      </nav>
+
+      <!-- 消息内容列 -->
+      <div class="message-list-body-column">
+
+        <!-- ── Round 1：用户消息 ── -->
+        <div class="msg msg--user" data-message-key="user_1">
+          <div class="msg__bubble">
+            <div class="msg__text">
+              帮我生成述职相关的自评报告与快手派自评，要求语言专业，突出技术深度和业务贡献，不超过 600 字
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Round 1：AI 回复 ── -->
+        <div class="msg msg--ai" data-message-key="ai_1">
+          <div class="msg__bubble" style="max-width:640px;width:100%;">
+            <div class="msg__text">
+              <!-- 执行过程折叠行 -->
+              <button class="msg__tool-process" aria-label="展开执行过程">
+                <span>已处理</span>
+                <span style="color:var(--text-tertiary);font-size:11px;">25min36s</span>
+                <span class="icon i-arrowright icon--14" style="color:var(--text-tertiary);"></span>
+              </button>
+              <!-- AI 正文 -->
+              <div class="msg__body">
+                <h2>自评报告（述职版）</h2>
+                <p>本报告期内，我主导了 MyFlicker 前端设计系统从 0 到 1 的建设，覆盖 Token 体系、组件库、UI Kit 三个层级，累计输出 15 个基础组件契约文档及 3 个业务组件规范，直接支撑了产品侧 10+ 页面的快速交付。</p>
+
+                <h3>技术深度</h3>
+                <p>建立了以 CSS 自定义属性为核心的 Light-mode 设计语言，引入语义 Token 分层机制，确保组件与底层颜色系统解耦，有效降低了主题切换成本。通过机器可读的 JSON 契约将组件标注与实现对齐，推动设计-研发协同效率提升约 30%。</p>
+
+                <h3>业务贡献</h3>
+                <ul>
+                  <li>交付 Chat 对话页 UI Kit（欢迎态 + 对话态），支持 AI 场景下的自然语言驱动式迭代</li>
+                  <li>已作为标准范本纳入团队工程规范，后续产品研发可直接复用</li>
+                  <li>推动设计-研发协同效率提升约 <strong>30%</strong></li>
+                </ul>
+
+                <p>以下是 Token 层级设计片段，供参考：</p>
+
+                <div class="code-block">
+                  <div class="code-block__header">
+                    <span>python</span>
+                    <button class="code-block__copy">
+                      <span class="icon i-copy" style="width:12px;height:12px;background-color:#95999e;"></span>
+                      复制代码
+                    </button>
+                  </div>
+                  <pre><code>def fibonacci_sequence(n):
+    """生成斐波那契数列前n项"""
+    sequence = []
+    a, b = 0, 1
+    for _ in range(n):
+        sequence.append(a)
+        a, b = b, a + b
+    return sequence</code></pre>
+                </div>
+
+                <blockquote>生成后请对照这里进行验证，不对题，继续输出正文部分</blockquote>
+
+                <h4>快手派自评</h4>
+                <p>遵循极简主义，拒绝重复造轮子；以规范驱动效率，以文档沉淀价值。</p>
+
+                <hr />
+
+                <p>这是表格名称</p>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>日期</th>
+                      <th>描述</th>
+                      <th>华氏度</th>
+                      <th>空气质量</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>2026-07-17</td>
+                      <td>晴，微风</td>
+                      <td>86°F</td>
+                      <td>良</td>
+                    </tr>
+                    <tr>
+                      <td>2026-07-18</td>
+                      <td>多云转阴</td>
+                      <td>79°F</td>
+                      <td>优</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- Footer 操作行：hover 时渐显 -->
+            <div class="msg__footer">
+              <button class="icon-btn icon-btn--28" aria-label="复制" title="复制">
+                <span class="icon i-copy"></span>
+              </button>
+              <button class="icon-btn icon-btn--28" aria-label="分享" title="分享">
+                <span class="icon i-share"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Round 2：用户消息 ── -->
+        <div class="msg msg--user" data-message-key="user_2">
+          <div class="msg__bubble">
+            <div class="msg__text">
+              好的，还需要补充哪些量化指标让整体报告更有说服力？
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Round 2：AI 生成中（loading） ── -->
+        <div class="msg msg--ai" data-message-key="ai_2">
+          <div class="msg__bubble" style="max-width:640px;width:100%;">
+            <div class="msg__text">
+              <div class="msg__thinking">
+                <img class="thinking-mascot" src="../../assets/Final.webp" alt="thinking" />
+                <span class="thinking-label">内容输出中，请耐心等待…</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /message-list-body-column -->
+
+    </div><!-- /chat-messages -->
+
+    <!-- 底部输入框 -->
+    <div class="chat-input-wrap">
+      <div class="chat-input-inner">
+        <div class="mf-chat-input-wrap">
+          <div class="mf-chat-input">
+            <textarea class="mf-chat-input__textarea" rows="1" placeholder="和我一起做点什么，@关联对象，/ 调用技能"></textarea>
+            <div class="mf-chat-input__toolbar">
+              <div class="mf-chat-input__toolbar-left">
+                <button class="mf-chat-input__btn" aria-label="添加">
+                  <span class="icon i-add"></span>
+                </button>
+                <button class="mf-chat-input__action">
+                  <span class="icon i-skill"></span>
+                  <span>技能</span>
+                </button>
+                <button class="mf-chat-input__action">
+                  <span class="icon i-inspiration"></span>
+                  <span>灵感触发</span>
+                </button>
+              </div>
+              <div class="mf-chat-input__toolbar-right">
+                <button class="mf-chat-input__model">
+                  <img src="../../assets/icons/brand/claude.svg" width="14" height="14" alt="Claude" style="flex-shrink:0;">
+                  <span>Claude Sonnet 4.6</span>
+                  <span class="icon i-arrowdown mf-chat-input__model-arrow"></span>
+                </button>
+                <button class="mf-chat-input__send" aria-label="发送">
+                  <span class="icon i-send"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <p class="mf-chat-input__notice">当前模型为公有云模型，请勿外泄公司内部信息</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+<script>
+  /* mf-chat-input textarea auto-resize — chat-input v1.2.0 */
+  document.querySelectorAll('.mf-chat-input__textarea').forEach(function(ta) {
+    function resize() {
+      ta.style.height = 'auto';
+      var next = Math.min(ta.scrollHeight, 336);
+      ta.style.height = next + 'px';
+      ta.classList.toggle('is-overflow', ta.scrollHeight > 336);
+    }
+    ta.addEventListener('input', resize);
+    resize();
+  });
+</script>
+
+</body>
+</html>

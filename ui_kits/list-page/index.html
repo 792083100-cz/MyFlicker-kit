@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>原型：技能管理列表页 — MyFlicker</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../../colors_and_type.css" />
+  <link rel="stylesheet" href="../../components.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── icon (CSS mask) — 相对路径版，供 ui_kits/ 下使用 ── */
+    .icon {
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      width: 16px; height: 16px;
+      -webkit-mask-size: contain; mask-size: contain;
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      -webkit-mask-position: center; mask-position: center;
+      background-color: currentColor;
+    }
+    .icon--20 { width: 20px; height: 20px; }
+    .i-newchat   { -webkit-mask-image: url(../../assets/icons/kid/edit.svg);              mask-image: url(../../assets/icons/kid/edit.svg); }
+    .i-search    { -webkit-mask-image: url(../../assets/icons/kid/search.svg);             mask-image: url(../../assets/icons/kid/search.svg); }
+    .i-schedule  { -webkit-mask-image: url(../../assets/icons/kid/scheduledtasks.svg);     mask-image: url(../../assets/icons/kid/scheduledtasks.svg); }
+    .i-skill     { -webkit-mask-image: url(../../assets/icons/kid/skill.svg);              mask-image: url(../../assets/icons/kid/skill.svg); }
+    .i-knowledge { -webkit-mask-image: url(../../assets/icons/kid/knowledge.svg);          mask-image: url(../../assets/icons/kid/knowledge.svg); }
+    .i-closefolder { -webkit-mask-image: url(../../assets/icons/kid/closefolder.svg);      mask-image: url(../../assets/icons/kid/closefolder.svg); }
+    .i-openfolder  { -webkit-mask-image: url(../../assets/icons/kid/openfolder.svg);       mask-image: url(../../assets/icons/kid/openfolder.svg); }
+    .i-leftsidebar { -webkit-mask-image: url(../../assets/icons/kid/leftsidebar.svg);      mask-image: url(../../assets/icons/kid/leftsidebar.svg); }
+    .i-unfold    { -webkit-mask-image: url(../../assets/icons/kid/myflicker_system_unfold.svg); mask-image: url(../../assets/icons/kid/myflicker_system_unfold.svg); }
+    .i-add       { -webkit-mask-image: url(../../assets/icons/kid/add.svg);                mask-image: url(../../assets/icons/kid/add.svg); }
+    .i-addgroup  { -webkit-mask-image: url(../../assets/icons/kid/addgroup.svg);           mask-image: url(../../assets/icons/kid/addgroup.svg); }
+    .i-more      { -webkit-mask-image: url(../../assets/icons/kid/more.svg);               mask-image: url(../../assets/icons/kid/more.svg); }
+    .i-setting   { -webkit-mask-image: url(../../assets/icons/kid/setting.svg);            mask-image: url(../../assets/icons/kid/setting.svg); }
+    .i-generating        { -webkit-mask-image: url(../../assets/icons/kid/generating.svg);         mask-image: url(../../assets/icons/kid/generating.svg); }
+    .i-generationcompleted { -webkit-mask-image: url(../../assets/icons/kid/generationcompleted.svg); mask-image: url(../../assets/icons/kid/generationcompleted.svg); }
+    .i-draft     { -webkit-mask-image: url(../../assets/icons/kid/draft.svg);              mask-image: url(../../assets/icons/kid/draft.svg); }
+    .i-pintotop  { -webkit-mask-image: url(../../assets/icons/kid/pintotop.svg);           mask-image: url(../../assets/icons/kid/pintotop.svg); }
+    .i-arrowright { -webkit-mask-image: url(../../assets/icons/kid/arrowright.svg);         mask-image: url(../../assets/icons/kid/arrowright.svg); }
+
+    /* ── 列宽（业务专用）── */
+    .mf-table__col-skill-desc { width: 36%; }
+    .mf-table__col-tags       { width: 13%; }
+    .mf-table__col-deploy     { width: 11%; }
+    .mf-table__col-visible    { width: 15%; }
+    .mf-table__col-public     { width: 7%; }
+    .mf-table__col-ops        { width: 10%; }
+
+    /* ── skill-cell 别名（兼容旧 HTML，指向通用 mf-item-cell）── */
+    .skill-cell         { display: flex; align-items: center; gap: var(--spacer-10); min-width: 0; }
+    .skill-cell__icon   { width: 36px; height: 36px; border-radius: var(--radius-8); border: 1px solid var(--border-neutral-l1); flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--bg-base-secondary); font-size: 18px; line-height: 1; }
+    .skill-cell__meta   { display: flex; flex-direction: column; gap: var(--spacer-2); min-width: 0; }
+    .skill-cell__name-row { display: flex; align-items: center; gap: var(--spacer-6); }
+    .skill-cell__name   { font-size: var(--body-sm-font-size); font-weight: var(--font-weight-medium); color: var(--text-default); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .skill-cell__desc   { font-size: 12px; color: var(--text-tertiary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 18px; }
+
+    /* ── mf-tabs--pill：去掉基础组件默认 padding ── */
+    .mf-tabs--pill { padding: 0; }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ════════════════ SIDEBAR ════════════════ -->
+  <aside class="mf-aside">
+    <div class="mf-aside__header">
+      <div class="mf-aside__workspace">
+        <img class="mf-aside__workspace-avatar" src="../../assets/icons/workspace-myflicker.svg" alt="workspace" />
+        <span class="mf-aside__workspace-name">个人空间</span>
+        <span class="icon i-unfold mf-aside__workspace-unfold"></span>
+      </div>
+      <button class="mf-aside__collapse" aria-label="收起侧边栏">
+        <span class="icon i-leftsidebar"></span>
+      </button>
+    </div>
+
+    <nav class="mf-aside__nav">
+      <div class="mf-aside__nav-item">
+        <span class="icon i-newchat"></span>
+        <span class="mf-aside__nav-item__label">新对话</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-search"></span>
+        <span class="mf-aside__nav-item__label">搜索</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-schedule"></span>
+        <span class="mf-aside__nav-item__label">定时任务</span>
+      </div>
+      <div class="mf-aside__nav-item is-active">
+        <span class="icon i-skill"></span>
+        <span class="mf-aside__nav-item__label">技能</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-knowledge"></span>
+        <span class="mf-aside__nav-item__label">知识</span>
+      </div>
+    </nav>
+
+    <div class="mf-aside__body">
+      <div class="mf-aside__section-label is-always-show">
+        <span>分组</span>
+        <div class="mf-aside__section-label-actions">
+          <button class="mf-aside__icon-btn"><span class="icon i-addgroup"></span></button>
+        </div>
+      </div>
+      <div class="mf-aside__group">
+        <div class="mf-aside__group-icon"><span class="icon i-openfolder"></span></div>
+        <span class="mf-aside__group-name">设计系统项目</span>
+        <div class="mf-aside__group-actions">
+          <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+          <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+        </div>
+      </div>
+      <div class="mf-aside__group-sessions">
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status"><span class="icon i-generating" style="color:var(--text-brand);"></span></span>
+          <span class="mf-aside__session-title">组件 Token 绑定机制</span>
+          <span class="mf-aside__session-meta"><span class="mf-aside__session-time">14:30</span><button class="mf-aside__icon-btn"><span class="icon i-more"></span></button></span>
+        </div>
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status"></span>
+          <span class="mf-aside__session-title">AI 对话页 UI Kit</span>
+          <span class="mf-aside__session-meta"><span class="mf-aside__session-time">昨天</span><button class="mf-aside__icon-btn"><span class="icon i-more"></span></button></span>
+        </div>
+      </div>
+      <div class="mf-aside__group" style="margin-top:4px;">
+        <div class="mf-aside__group-icon"><span class="icon i-closefolder"></span></div>
+        <span class="mf-aside__group-name">个人任务</span>
+        <div class="mf-aside__group-actions">
+          <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+          <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+        </div>
+      </div>
+      <div class="mf-aside__section-label">
+        <span>对话</span>
+        <div class="mf-aside__section-label-actions">
+          <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status"><span class="icon i-pintotop" style="color:var(--text-tertiary);"></span></span>
+          <span class="mf-aside__session-title">帮我顶会议</span>
+          <span class="mf-aside__session-meta"><span class="mf-aside__session-time">今天</span><button class="mf-aside__icon-btn"><span class="icon i-more"></span></button></span>
+        </div>
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status"></span>
+          <span class="mf-aside__session-title">订机票</span>
+          <span class="mf-aside__session-meta"><span class="mf-aside__session-time">昨天</span><button class="mf-aside__icon-btn"><span class="icon i-more"></span></button></span>
+        </div>
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status"><span class="icon i-draft" style="color:var(--text-tertiary);"></span></span>
+          <span class="mf-aside__session-title">设计规范草稿</span>
+          <span class="mf-aside__session-meta"><span class="mf-aside__session-time">2026/7/13</span><button class="mf-aside__icon-btn"><span class="icon i-more"></span></button></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mf-aside__footer">
+      <button class="mf-aside__footer-setting">
+        <span class="icon i-setting"></span>
+        <span>设置</span>
+      </button>
+      <div class="mf-aside__footer-credit">
+        <img src="../../assets/icons/points-gradient.svg" width="14" height="14" style="flex-shrink:0;" />
+        <span>积分：剩余 92%</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ════════════════ MAIN ════════════════ -->
+  <main class="list-main">
+
+    <!-- 顶部 Tab 导航 -->
+    <div class="page-topnav">
+      <div class="page-topnav-tabs">
+        <button class="page-topnav-tab">标题一</button>
+        <button class="page-topnav-tab is-active">标题二</button>
+        <button class="page-topnav-tab">标题三</button>
+        <button class="page-topnav-tab">标题四</button>
+        <button class="page-topnav-tab">标题五</button>
+      </div>
+      <button class="mf-btn mf-btn--secondary mf-btn--lg" style="flex-shrink:0;">操作按钮</button>
+    </div>
+
+    <!-- 内容区 -->
+    <div class="page-content">
+
+      <!-- 二级分组 -->
+      <div class="mf-tabs--pill" style="padding:0;margin:0;">
+        <button class="mf-tab--pill is-active">功能一  8</button>
+        <button class="mf-tab--pill">功能二  6</button>
+        <button class="mf-tab--pill">功能三  4</button>
+      </div>
+
+      <!-- 工具栏 -->
+      <div class="toolbar">
+        <div class="toolbar-search">
+          <span class="toolbar-search__icon">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+              <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M10.5 10.5L13.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <input class="toolbar-search__input" type="text" placeholder="搜索..." />
+        </div>
+        <div class="toolbar-actions">
+          <button class="mf-btn mf-btn--primary mf-btn--md">
+            <span style="margin-right:4px;font-size:16px;line-height:1;vertical-align:middle;">+</span>
+            主要操作
+          </button>
+          <button class="mf-btn mf-btn--secondary mf-btn--md">次要操作</button>
+        </div>
+      </div>
+
+      <!-- 表格 -->
+      <div class="mf-table-card">
+        <table class="mf-table mf-table--fixed">
+          <colgroup>
+            <col />
+            <col />
+            <col />
+            <col />
+            <col />
+            <col />
+            <col />
+          </colgroup>
+          <thead>
+            <tr>
+              <th width="40" style="width:40px;min-width:40px;max-width:40px;padding:0 !important;text-align:center;overflow:hidden;"><div class="mf-checkbox" style="margin:auto;"></div></th>
+              <th class="mf-table__th--filterable"><span class="mf-table__th-inner">列标题 A（含图标+描述）<span class="mf-table__th-filter" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M550.4 572.608C550.4 543.616 560.64 515.392 579.648 493.44L856.96 170.496A2.88 2.88 0 0 0 857.6 169.088 4.032 4.032 0 0 0 857.216 166.912C857.152 166.592 856.96 166.464 856.96 166.4H167.04L166.72 166.912A4.096 4.096 0 0 0 166.4 169.088 3.2 3.2 0 0 0 167.04 170.496H166.912L444.48 493.44C463.424 515.392 473.6 543.616 473.6 572.608V815.168A3.584 3.584 0 0 0 474.304 817.344H474.368L550.08 857.152 550.4 855.552V572.672ZM627.2 855.552C627.2 868.608 624.128 881.6 617.984 893.184A78.08 78.08 0 0 1 591.68 922.112 75.52 75.52 0 0 1 515.328 925.76L438.592 885.312A77.568 77.568 0 0 1 407.872 855.872 80.32 80.32 0 0 1 397.504 825.792L396.864 815.04V572.608A45.568 45.568 0 0 0 390.656 549.76L386.24 543.36 108.8 220.48A79.744 79.744 0 0 1 90.496 180.544 80.896 80.896 0 0 1 96 137.024C101.76 123.392 111.36 111.36 123.84 102.848L133.568 97.28C143.744 92.288 154.88 89.6 166.4 89.6H857.728C873.088 89.664 887.808 94.4 900.288 102.912A78.1 78.1 0 0 1 928.128 137.152 80.896 80.896 0 0 1 921.856 211.52L915.264 220.48 637.824 543.424A44.928 44.928 0 0 0 627.2 572.608V855.552Z"></path></svg></span></span></th>
+              <th class="mf-table__th--filterable"><span class="mf-table__th-inner">列标题 B（标签）<span class="mf-table__th-filter" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M550.4 572.608C550.4 543.616 560.64 515.392 579.648 493.44L856.96 170.496A2.88 2.88 0 0 0 857.6 169.088 4.032 4.032 0 0 0 857.216 166.912C857.152 166.592 856.96 166.464 856.96 166.4H167.04L166.72 166.912A4.096 4.096 0 0 0 166.4 169.088 3.2 3.2 0 0 0 167.04 170.496H166.912L444.48 493.44C463.424 515.392 473.6 543.616 473.6 572.608V815.168A3.584 3.584 0 0 0 474.304 817.344H474.368L550.08 857.152 550.4 855.552V572.672ZM627.2 855.552C627.2 868.608 624.128 881.6 617.984 893.184A78.08 78.08 0 0 1 591.68 922.112 75.52 75.52 0 0 1 515.328 925.76L438.592 885.312A77.568 77.568 0 0 1 407.872 855.872 80.32 80.32 0 0 1 397.504 825.792L396.864 815.04V572.608A45.568 45.568 0 0 0 390.656 549.76L386.24 543.36 108.8 220.48A79.744 79.744 0 0 1 90.496 180.544 80.896 80.896 0 0 1 96 137.024C101.76 123.392 111.36 111.36 123.84 102.848L133.568 97.28C143.744 92.288 154.88 89.6 166.4 89.6H857.728C873.088 89.664 887.808 94.4 900.288 102.912A78.1 78.1 0 0 1 928.128 137.152 80.896 80.896 0 0 1 921.856 211.52L915.264 220.48 637.824 543.424A44.928 44.928 0 0 0 627.2 572.608V855.552Z"></path></svg></span></span></th>
+              <th class="mf-table__th--filterable"><span class="mf-table__th-inner">列标题 C（标签）<span class="mf-table__th-filter" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M550.4 572.608C550.4 543.616 560.64 515.392 579.648 493.44L856.96 170.496A2.88 2.88 0 0 0 857.6 169.088 4.032 4.032 0 0 0 857.216 166.912C857.152 166.592 856.96 166.464 856.96 166.4H167.04L166.72 166.912A4.096 4.096 0 0 0 166.4 169.088 3.2 3.2 0 0 0 167.04 170.496H166.912L444.48 493.44C463.424 515.392 473.6 543.616 473.6 572.608V815.168A3.584 3.584 0 0 0 474.304 817.344H474.368L550.08 857.152 550.4 855.552V572.672ZM627.2 855.552C627.2 868.608 624.128 881.6 617.984 893.184A78.08 78.08 0 0 1 591.68 922.112 75.52 75.52 0 0 1 515.328 925.76L438.592 885.312A77.568 77.568 0 0 1 407.872 855.872 80.32 80.32 0 0 1 397.504 825.792L396.864 815.04V572.608A45.568 45.568 0 0 0 390.656 549.76L386.24 543.36 108.8 220.48A79.744 79.744 0 0 1 90.496 180.544 80.896 80.896 0 0 1 96 137.024C101.76 123.392 111.36 111.36 123.84 102.848L133.568 97.28C143.744 92.288 154.88 89.6 166.4 89.6H857.728C873.088 89.664 887.808 94.4 900.288 102.912A78.1 78.1 0 0 1 928.128 137.152 80.896 80.896 0 0 1 921.856 211.52L915.264 220.48 637.824 543.424A44.928 44.928 0 0 0 627.2 572.608V855.552Z"></path></svg></span></span></th>
+              <th class="mf-table__th--filterable"><span class="mf-table__th-inner">列标题 D（标签）<span class="mf-table__th-filter" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M550.4 572.608C550.4 543.616 560.64 515.392 579.648 493.44L856.96 170.496A2.88 2.88 0 0 0 857.6 169.088 4.032 4.032 0 0 0 857.216 166.912C857.152 166.592 856.96 166.464 856.96 166.4H167.04L166.72 166.912A4.096 4.096 0 0 0 166.4 169.088 3.2 3.2 0 0 0 167.04 170.496H166.912L444.48 493.44C463.424 515.392 473.6 543.616 473.6 572.608V815.168A3.584 3.584 0 0 0 474.304 817.344H474.368L550.08 857.152 550.4 855.552V572.672ZM627.2 855.552C627.2 868.608 624.128 881.6 617.984 893.184A78.08 78.08 0 0 1 591.68 922.112 75.52 75.52 0 0 1 515.328 925.76L438.592 885.312A77.568 77.568 0 0 1 407.872 855.872 80.32 80.32 0 0 1 397.504 825.792L396.864 815.04V572.608A45.568 45.568 0 0 0 390.656 549.76L386.24 543.36 108.8 220.48A79.744 79.744 0 0 1 90.496 180.544 80.896 80.896 0 0 1 96 137.024C101.76 123.392 111.36 111.36 123.84 102.848L133.568 97.28C143.744 92.288 154.88 89.6 166.4 89.6H857.728C873.088 89.664 887.808 94.4 900.288 102.912A78.1 78.1 0 0 1 928.128 137.152 80.896 80.896 0 0 1 921.856 211.52L915.264 220.48 637.824 543.424A44.928 44.928 0 0 0 627.2 572.608V855.552Z"></path></svg></span></span></th>
+              <th>列标题 E（文本）</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <!-- Row 1 -->
+            <tr>
+              <td><div class="mf-checkbox"></div></td>
+              <td>
+                <div class="skill-cell">
+                  <div class="skill-cell__icon">🔷</div>
+                  <div class="skill-cell__meta">
+                    <div class="skill-cell__name-row">
+                      <span class="skill-cell__name">条目标题</span>
+                      <span class="mf-tag mf-tag--source">来源标签 A</span>
+                    </div>
+                    <span class="skill-cell__desc">条目描述文字</span>
+                  </div>
+                </div>
+              </td>
+              <td><div style="display:flex;flex-wrap:wrap;gap:4px;"><span class="mf-tag">标签 1</span><span class="mf-tag">标签 2</span></div></td>
+              <td><span class="mf-tag">枚举值 C</span></td>
+              <td><span class="mf-tag">枚举值 D</span></td>
+              <td><span style="font-size:12px;color:var(--text-secondary);">文本值 E</span></td>
+              <td><div class="action-links"><button class="action-link">编辑</button><button class="action-link action-link--danger">删除</button></div></td>
+            </tr>
+
+            <!-- Row 2 -->
+            <tr>
+              <td><div class="mf-checkbox"></div></td>
+              <td>
+                <div class="skill-cell">
+                  <div class="skill-cell__icon">🔷</div>
+                  <div class="skill-cell__meta">
+                    <div class="skill-cell__name-row">
+                      <span class="skill-cell__name">条目标题</span>
+                      <span class="mf-tag mf-tag--source">来源标签 B</span>
+                    </div>
+                    <span class="skill-cell__desc">条目描述文字</span>
+                  </div>
+                </div>
+              </td>
+              <td><div style="display:flex;flex-wrap:wrap;gap:4px;"><span class="mf-tag">标签 1</span><span class="mf-tag">标签 2</span></div></td>
+              <td><span class="mf-tag">枚举值 C</span></td>
+              <td><span class="mf-tag">枚举值 D</span></td>
+              <td><span style="font-size:12px;color:var(--text-secondary);">文本值 E</span></td>
+              <td><div class="action-links"><button class="action-link">编辑</button><button class="action-link action-link--danger">删除</button></div></td>
+            </tr>
+
+            <!-- Row 3 -->
+            <tr>
+              <td><div class="mf-checkbox"></div></td>
+              <td>
+                <div class="skill-cell">
+                  <div class="skill-cell__icon">🔷</div>
+                  <div class="skill-cell__meta">
+                    <div class="skill-cell__name-row">
+                      <span class="skill-cell__name">条目标题</span>
+                      <span class="mf-tag mf-tag--source">来源标签 A</span>
+                    </div>
+                    <span class="skill-cell__desc">条目描述文字</span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="mf-tag">标签 1</span></td>
+              <td><span class="mf-tag">枚举值 C</span></td>
+              <td><span class="mf-tag">枚举值 D</span></td>
+              <td><span style="font-size:12px;color:var(--text-secondary);">文本值 E</span></td>
+              <td><div class="action-links"><button class="action-link">编辑</button><button class="action-link action-link--danger">删除</button></div></td>
+            </tr>
+
+            <!-- Row 4 -->
+            <tr>
+              <td><div class="mf-checkbox"></div></td>
+              <td>
+                <div class="skill-cell">
+                  <div class="skill-cell__icon">🔷</div>
+                  <div class="skill-cell__meta">
+                    <div class="skill-cell__name-row">
+                      <span class="skill-cell__name">条目标题</span>
+                      <span class="mf-tag mf-tag--source">来源标签 B</span>
+                    </div>
+                    <span class="skill-cell__desc">条目描述文字</span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="mf-tag">标签 1</span></td>
+              <td><span class="mf-tag">枚举值 C</span></td>
+              <td><span class="mf-tag">枚举值 D</span></td>
+              <td><span style="font-size:12px;color:var(--text-secondary);">文本值 E</span></td>
+              <td><div class="action-links"><button class="action-link">编辑</button><button class="action-link action-link--danger">删除</button></div></td>
+            </tr>
+
+            <!-- Row 5 -->
+            <tr>
+              <td><div class="mf-checkbox"></div></td>
+              <td>
+                <div class="skill-cell">
+                  <div class="skill-cell__icon">🔷</div>
+                  <div class="skill-cell__meta">
+                    <div class="skill-cell__name-row">
+                      <span class="skill-cell__name">条目标题</span>
+                      <span class="mf-tag mf-tag--source">来源标签 A</span>
+                    </div>
+                    <span class="skill-cell__desc">条目描述文字</span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="mf-tag">标签 1</span></td>
+              <td><span class="mf-tag">枚举值 C</span></td>
+              <td><span class="mf-tag">枚举值 D</span></td>
+              <td><span style="font-size:12px;color:var(--text-secondary);">文本值 E</span></td>
+              <td><div class="action-links"><button class="action-link">编辑</button><button class="action-link action-link--danger">删除</button></div></td>
+            </tr>
+
+            <!-- Row 6 -->
+            <tr>
+              <td><div class="mf-checkbox"></div></td>
+              <td>
+                <div class="skill-cell">
+                  <div class="skill-cell__icon">🔷</div>
+                  <div class="skill-cell__meta">
+                    <div class="skill-cell__name-row">
+                      <span class="skill-cell__name">条目标题</span>
+                      <span class="mf-tag mf-tag--source">来源标签 B</span>
+                    </div>
+                    <span class="skill-cell__desc">条目描述文字</span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="mf-tag">标签 1</span></td>
+              <td><span class="mf-tag">枚举值 C</span></td>
+              <td><span class="mf-tag">枚举值 D</span></td>
+              <td><span style="font-size:12px;color:var(--text-secondary);">文本值 E</span></td>
+              <td><div class="action-links"><button class="action-link">编辑</button><button class="action-link action-link--danger">删除</button></div></td>
+            </tr>
+
+            <!-- Row 7 -->
+            <tr>
+              <td><div class="mf-checkbox"></div></td>
+              <td>
+                <div class="skill-cell">
+                  <div class="skill-cell__icon">🔷</div>
+                  <div class="skill-cell__meta">
+                    <div class="skill-cell__name-row">
+                      <span class="skill-cell__name">条目标题</span>
+                      <span class="mf-tag mf-tag--source">来源标签 A</span>
+                    </div>
+                    <span class="skill-cell__desc">条目描述文字</span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="mf-tag">标签 1</span></td>
+              <td><span class="mf-tag">枚举值 C</span></td>
+              <td><span class="mf-tag">枚举值 D</span></td>
+              <td><span style="font-size:12px;color:var(--text-secondary);">文本值 E</span></td>
+              <td><div class="action-links"><button class="action-link">编辑</button><button class="action-link action-link--danger">删除</button></div></td>
+            </tr>
+
+            <!-- Row 8 -->
+            <tr>
+              <td><div class="mf-checkbox"></div></td>
+              <td>
+                <div class="skill-cell">
+                  <div class="skill-cell__icon">🔷</div>
+                  <div class="skill-cell__meta">
+                    <div class="skill-cell__name-row">
+                      <span class="skill-cell__name">条目标题</span>
+                      <span class="mf-tag mf-tag--source">来源标签 B</span>
+                    </div>
+                    <span class="skill-cell__desc">条目描述文字</span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="mf-tag">标签 1</span></td>
+              <td><span class="mf-tag">枚举值 C</span></td>
+              <td><span class="mf-tag">枚举值 D</span></td>
+              <td><span style="font-size:12px;color:var(--text-secondary);">文本值 E</span></td>
+              <td><div class="action-links"><button class="action-link">编辑</button><button class="action-link action-link--danger">删除</button></div></td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 分页器 -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--spacer-12) 0;">
+        <span class="mf-pagination__range">共 80 条</span>
+        <div class="mf-pagination">
+          <button class="mf-pagination__item" aria-label="上一页">
+            <span class="icon i-arrowright" style="width:14px;height:14px;transform:rotate(180deg);color:var(--icon-secondary);"></span>
+          </button>
+          <button class="mf-pagination__item num">1</button>
+          <button class="mf-pagination__item is-active num">2</button>
+          <button class="mf-pagination__item num">3</button>
+          <button class="mf-pagination__item" disabled>…</button>
+          <button class="mf-pagination__item num">8</button>
+          <button class="mf-pagination__item" aria-label="下一页">
+            <span class="icon i-arrowright" style="width:14px;height:14px;color:var(--icon-secondary);"></span>
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /page-content -->
+  </main>
+
+</div><!-- /app-shell -->
+
+</body>
+</html>

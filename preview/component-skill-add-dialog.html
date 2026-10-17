@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>添加技能弹窗</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style data-preview-shell>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html,
+    body {
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      letter-spacing: var(--body-sm-letter-spacing);
+      min-height: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+
+    body { padding: var(--spacer-32); }
+    img, svg, video, canvas { max-width: 100%; }
+    a { color: var(--text-default); text-decoration: none; }
+    a:hover { color: var(--text-default-hover); }
+    hr { border: 0; border-top: 1px solid var(--border-neutral-l1); margin: var(--spacer-24) 0; }
+
+    .pv-header { margin-bottom: var(--spacer-32); padding-bottom: var(--spacer-16); border-bottom: 1px solid var(--border-neutral-l1); }
+    .pv-header h1 { font-size: var(--heading-lg-font-size); line-height: var(--heading-lg-line-height); font-weight: var(--heading-lg-font-weight); margin-bottom: var(--spacer-4); }
+    .pv-header p { color: var(--text-secondary); font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); }
+    .pv-section { margin-bottom: var(--spacer-32); }
+    .pv-section__title { font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); margin-bottom: var(--spacer-12); color: var(--text-default); }
+    .pv-section__sub { font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); color: var(--text-tertiary); margin-bottom: var(--spacer-12); }
+
+    @media (max-width: 720px) {
+      body { padding: var(--spacer-16); }
+    }
+  </style>
+  <link rel="stylesheet" href="../components.css" />
+  <style>
+    /* 上传按钮：覆盖 mf-btn 默认高度为 28px */
+    .mf-btn--skill-upload {
+      height: 28px;
+      padding: 0 var(--spacer-12);
+      font-size: var(--body-sm-font-size);
+      line-height: 1;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="pv-header">
+    <h1>添加技能弹窗</h1>
+    <p>基于 <code>.mf-dialog</code> 延展的业务组件。宽度 <code>800px</code>，列表区支持滚动。头像资产位于 <code>assets/icons/skill-avatars/</code>，工具栏控件高度均为 <code>28px</code>。</p>
+  </div>
+
+  <div class="pv-section">
+    <div class="pv-section__title">默认状态</div>
+    <div class="pv-section__sub">列表行 hover 色 <code>--bg-brand-subtle</code>；分割线左右 24px 内缩不拉通；操作按钮点击切换 + / ✓ 并同步背景色。</div>
+
+    <div class="mf-backdrop" style="border-radius: var(--radius-8);">
+      <div class="mf-dialog mf-dialog--skill-add">
+
+        <!-- 标题栏 -->
+        <div class="mf-dialog__head" style="padding: 24px var(--spacer-24) 12px;">
+          <span class="mf-dialog__title">添加技能</span>
+          <button class="mf-dialog__close" aria-label="Close">
+            <span style="width:16px;height:16px;display:inline-flex;" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+                <path fill="currentColor" fill-rule="evenodd" d="M820.352 149.312A38.421 38.421 0 0 1 874.688 203.648L566.336 512 874.688 820.352A38.421 38.421 0 0 1 820.352 874.688L512 566.336 203.648 874.688A38.421 38.421 0 0 1 149.312 820.352L457.664 512 149.312 203.648A38.421 38.421 0 0 1 203.648 149.312L512 457.664 820.352 149.312Z"></path>
+              </svg>
+            </span>
+          </button>
+        </div>
+
+        <!-- 弹窗主体 -->
+        <div class="mf-dialog__body">
+
+          <!-- 工具栏 -->
+          <div class="skill-add__toolbar">
+            <div class="skill-add__search-wrap">
+              <span class="skill-add__search-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" d="M909.6 854.5L649.9 594.8C690.2 542.7 712 479 712 412c0-80.2-31.3-155.4-87.9-212.1C567.2 143.9 492.5 112 412 112s-155.2 31.9-212.1 88.9C143.9 256.8 112 332 112 412c0 80.1 31.3 155.2 88 212 56.8 56.8 132.1 88 212 88 79.2 0 152-29.9 207.9-79.7l259.7 259.6c3.2 3.2 8.4 3.2 11.6 0l38.6-38.6c3.2-3.1 3.2-8.3 0-11.5zM570.4 570.4C528 612.7 471.8 636 412 636s-116-23.3-158.4-65.6C211.3 528 188 471.8 188 412s23.3-116.1 65.6-158.4C296 211.3 352.2 188 412 188s116.1 23.2 158.4 65.6S636 352.2 636 412s-23.3 116.1-65.6 158.4z"/></svg>
+              </span>
+              <input class="skill-add__search-input" type="text" placeholder="请输入关键词" aria-label="搜索技能" />
+            </div>
+            <div class="skill-add__filter-wrap">
+              <select class="skill-add__filter-select" aria-label="场景筛选">
+                <option>场景</option>
+                <option>代码</option>
+                <option>文档 &amp; 写作</option>
+                <option>精选</option>
+                <option>数据</option>
+              </select>
+              <span class="skill-add__filter-arrow" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" d="M230.72 409.664A38.4 38.4 0 0 1 287.552 358.08L480.896 571.392C493.248 584.96 502.016 593.152 508.672 597.76 514.88 602.112 516.48 601.472 515.136 601.472 513.92 601.472 515.392 602.112 521.664 597.76 528.256 593.088 536.96 584.96 549.376 571.392L742.656 358.08A38.425 38.425 0 0 1 799.68 409.6L606.272 622.912A257.92 257.92 0 0 1 565.76 660.672C551.744 670.4 534.912 678.144 515.2 678.144 495.36 678.272 478.464 670.464 464.448 660.608A255.744 255.744 0 0 1 424 622.912L230.72 409.664Z"/></svg>
+              </span>
+            </div>
+            <button class="mf-btn mf-btn--primary mf-btn--skill-upload" type="button">上传技能</button>
+          </div>
+
+          <!-- 技能列表 -->
+          <div class="skill-add__list" role="list">
+
+            <!-- 条目 1：已添加（✓） -->
+            <div class="skill-add__item" role="listitem">
+              <div class="skill-add__item-inner">
+                <div class="skill-add__avatar"><img src="../assets/icons/skill-avatars/skill-writing.svg" alt="" /></div>
+                <div class="skill-add__info">
+                  <div class="skill-add__name-row">
+                    <span class="skill-add__name">公司 Code Review 规范</span>
+                    <span class="mf-tag">文档 &amp; 写作</span>
+                  </div>
+                  <div class="skill-add__desc">这里是描述这里是描述这里是描述这里是描述这里是描述这里是描述</div>
+                </div>
+                <button class="skill-add__action skill-add__action--added" aria-label="已添加" type="button"><span class="ac-icon ac-i-check"></span></button>
+              </div>
+            </div>
+
+            <!-- 条目 2 -->
+            <div class="skill-add__item" role="listitem">
+              <div class="skill-add__item-inner">
+                <div class="skill-add__avatar"><img src="../assets/icons/skill-avatars/skill-data-analysis.svg" alt="" /></div>
+                <div class="skill-add__info">
+                  <div class="skill-add__name-row">
+                    <span class="skill-add__name">公司 Code Review 规范</span>
+                    <span class="mf-tag">精选</span>
+                    <span class="mf-tag">文档 &amp; 写作</span>
+                  </div>
+                  <div class="skill-add__desc">这里是描述这里是描述这里是描述这里是描述这里是描述这里是描述</div>
+                </div>
+                <button class="skill-add__action" aria-label="添加技能" type="button"><span class="ac-icon ac-i-add"></span></button>
+              </div>
+            </div>
+
+            <!-- 条目 3 -->
+            <div class="skill-add__item" role="listitem">
+              <div class="skill-add__item-inner">
+                <div class="skill-add__avatar"><img src="../assets/icons/skill-avatars/skill-engineering.svg" alt="" /></div>
+                <div class="skill-add__info">
+                  <div class="skill-add__name-row">
+                    <span class="skill-add__name">公司 Code Review 规范</span>
+                    <span class="mf-tag">精选</span>
+                    <span class="mf-tag">文档 &amp; 写作</span>
+                  </div>
+                  <div class="skill-add__desc">这里是描述这里是描述这里是描述这里是描述这里是描述这里是描述</div>
+                </div>
+                <button class="skill-add__action" aria-label="添加技能" type="button"><span class="ac-icon ac-i-add"></span></button>
+              </div>
+            </div>
+
+            <!-- 条目 4 -->
+            <div class="skill-add__item" role="listitem">
+              <div class="skill-add__item-inner">
+                <div class="skill-add__avatar"><img src="../assets/icons/skill-avatars/skill-product-design.svg" alt="" /></div>
+                <div class="skill-add__info">
+                  <div class="skill-add__name-row">
+                    <span class="skill-add__name">公司 Code Review 规范</span>
+                    <span class="mf-tag">精选</span>
+                    <span class="mf-tag">文档 &amp; 写作</span>
+                  </div>
+                  <div class="skill-add__desc">这里是描述这里是描述这里是描述这里是描述这里是描述这里是描述</div>
+                </div>
+                <button class="skill-add__action" aria-label="添加技能" type="button"><span class="ac-icon ac-i-add"></span></button>
+              </div>
+            </div>
+
+            <!-- 条目 5 -->
+            <div class="skill-add__item" role="listitem">
+              <div class="skill-add__item-inner">
+                <div class="skill-add__avatar"><img src="../assets/icons/skill-avatars/skill-efficiency.svg" alt="" /></div>
+                <div class="skill-add__info">
+                  <div class="skill-add__name-row">
+                    <span class="skill-add__name">公司 Code Review 规范</span>
+                    <span class="mf-tag">精选</span>
+                    <span class="mf-tag">文档 &amp; 写作</span>
+                  </div>
+                  <div class="skill-add__desc">这里是描述这里是描述这里是描述这里是描述这里是描述这里是描述</div>
+                </div>
+                <button class="skill-add__action" aria-label="添加技能" type="button"><span class="ac-icon ac-i-add"></span></button>
+              </div>
+            </div>
+
+            <!-- 条目 6 -->
+            <div class="skill-add__item" role="listitem">
+              <div class="skill-add__item-inner">
+                <div class="skill-add__avatar"><img src="../assets/icons/skill-avatars/skill-general.svg" alt="" /></div>
+                <div class="skill-add__info">
+                  <div class="skill-add__name-row">
+                    <span class="skill-add__name">公司 Code Review 规范</span>
+                    <span class="mf-tag">精选</span>
+                    <span class="mf-tag">文档 &amp; 写作</span>
+                  </div>
+                  <div class="skill-add__desc">12.5k 安装 · v2.1.0</div>
+                </div>
+                <button class="skill-add__action" aria-label="添加技能" type="button"><span class="ac-icon ac-i-add"></span></button>
+              </div>
+            </div>
+
+            <!-- 条目 7 -->
+            <div class="skill-add__item" role="listitem">
+              <div class="skill-add__item-inner">
+                <div class="skill-add__avatar"><img src="../assets/icons/skill-avatars/skill-writing.svg" alt="" /></div>
+                <div class="skill-add__info">
+                  <div class="skill-add__name-row">
+                    <span class="skill-add__name">公司 Code Review 规范</span>
+                    <span class="mf-tag">精选</span>
+                    <span class="mf-tag">文档 &amp; 写作</span>
+                  </div>
+                  <div class="skill-add__desc">12.5k 安装 · v2.1.0</div>
+                </div>
+                <button class="skill-add__action" aria-label="添加技能" type="button"><span class="ac-icon ac-i-add"></span></button>
+              </div>
+            </div>
+
+            <!-- 条目 8 -->
+            <div class="skill-add__item" role="listitem">
+              <div class="skill-add__item-inner">
+                <div class="skill-add__avatar"><img src="../assets/icons/skill-avatars/skill-data-analysis.svg" alt="" /></div>
+                <div class="skill-add__info">
+                  <div class="skill-add__name-row">
+                    <span class="skill-add__name">数据分析助手</span>
+                    <span class="mf-tag">数据</span>
+                  </div>
+                  <div class="skill-add__desc">自动化 SQL 生成、数据可视化与报表输出，适用于日常取数场景</div>
+                </div>
+                <button class="skill-add__action skill-add__action--added" aria-label="已添加" type="button"><span class="ac-icon ac-i-check"></span></button>
+              </div>
+            </div>
+
+            <!-- 条目 9 -->
+            <div class="skill-add__item" role="listitem">
+              <div class="skill-add__item-inner">
+                <div class="skill-add__avatar"><img src="../assets/icons/skill-avatars/skill-engineering.svg" alt="" /></div>
+                <div class="skill-add__info">
+                  <div class="skill-add__name-row">
+                    <span class="skill-add__name">前端工程规范检查</span>
+                    <span class="mf-tag">代码</span>
+                    <span class="mf-tag">精选</span>
+                  </div>
+                  <div class="skill-add__desc">基于 ESLint + Prettier 自动检查代码风格，输出修复建议</div>
+                </div>
+                <button class="skill-add__action" aria-label="添加技能" type="button"><span class="ac-icon ac-i-add"></span></button>
+              </div>
+            </div>
+
+            <!-- 条目 10 -->
+            <div class="skill-add__item" role="listitem">
+              <div class="skill-add__item-inner">
+                <div class="skill-add__avatar"><img src="../assets/icons/skill-avatars/skill-product-design.svg" alt="" /></div>
+                <div class="skill-add__info">
+                  <div class="skill-add__name-row">
+                    <span class="skill-add__name">产品需求文档生成</span>
+                    <span class="mf-tag">文档 &amp; 写作</span>
+                  </div>
+                  <div class="skill-add__desc">根据一句话描述自动扩写完整 PRD，含背景、目标、功能列表和验收标准</div>
+                </div>
+                <button class="skill-add__action" aria-label="添加技能" type="button"><span class="ac-icon ac-i-add"></span></button>
+              </div>
+            </div>
+
+            <!-- 条目 11 -->
+            <div class="skill-add__item" role="listitem">
+              <div class="skill-add__item-inner">
+                <div class="skill-add__avatar"><img src="../assets/icons/skill-avatars/skill-efficiency.svg" alt="" /></div>
+                <div class="skill-add__info">
+                  <div class="skill-add__name-row">
+                    <span class="skill-add__name">会议纪要提取</span>
+                    <span class="mf-tag">效率</span>
+                    <span class="mf-tag">精选</span>
+                  </div>
+                  <div class="skill-add__desc">粘贴会议录音或文字记录，自动提炼决议事项与 Action Items</div>
+                </div>
+                <button class="skill-add__action" aria-label="添加技能" type="button"><span class="ac-icon ac-i-add"></span></button>
+              </div>
+            </div>
+
+            <!-- 条目 12 -->
+            <div class="skill-add__item" role="listitem">
+              <div class="skill-add__item-inner">
+                <div class="skill-add__avatar"><img src="../assets/icons/skill-avatars/skill-general.svg" alt="" /></div>
+                <div class="skill-add__info">
+                  <div class="skill-add__name-row">
+                    <span class="skill-add__name">多语言翻译助手</span>
+                    <span class="mf-tag">通用</span>
+                  </div>
+                  <div class="skill-add__desc">支持 30+ 语言互译，自动保留格式、术语表和语气风格</div>
+                </div>
+                <button class="skill-add__action" aria-label="添加技能" type="button"><span class="ac-icon ac-i-add"></span></button>
+              </div>
+            </div>
+
+            <!-- 条目 13 -->
+            <div class="skill-add__item" role="listitem">
+              <div class="skill-add__item-inner">
+                <div class="skill-add__avatar"><img src="../assets/icons/skill-avatars/skill-writing.svg" alt="" /></div>
+                <div class="skill-add__info">
+                  <div class="skill-add__name-row">
+                    <span class="skill-add__name">技术博客写作</span>
+                    <span class="mf-tag">文档 &amp; 写作</span>
+                  </div>
+                  <div class="skill-add__desc">从技术方案到可发布博客文章，一键生成结构清晰、案例丰富的内容</div>
+                </div>
+                <button class="skill-add__action" aria-label="添加技能" type="button"><span class="ac-icon ac-i-add"></span></button>
+              </div>
+            </div>
+
+            <!-- 条目 14 -->
+            <div class="skill-add__item" role="listitem">
+              <div class="skill-add__item-inner">
+                <div class="skill-add__avatar"><img src="../assets/icons/skill-avatars/skill-data-analysis.svg" alt="" /></div>
+                <div class="skill-add__info">
+                  <div class="skill-add__name-row">
+                    <span class="skill-add__name">AB 实验报告解读</span>
+                    <span class="mf-tag">数据</span>
+                    <span class="mf-tag">精选</span>
+                  </div>
+                  <div class="skill-add__desc">输入实验指标数据，自动完成显著性检验、效果归因与推全建议</div>
+                </div>
+                <button class="skill-add__action" aria-label="添加技能" type="button"><span class="ac-icon ac-i-add"></span></button>
+              </div>
+            </div>
+
+          </div><!-- /.skill-add__list -->
+
+        </div><!-- /.mf-dialog__body -->
+      </div><!-- /.mf-dialog -->
+    </div><!-- /.mf-backdrop -->
+  </div><!-- /.pv-section -->
+
+  <script>
+    document.querySelectorAll('.skill-add__action').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const icon = this.querySelector('.ac-icon');
+        if (icon.classList.contains('ac-i-add')) {
+          icon.classList.replace('ac-i-add', 'ac-i-check');
+          this.classList.add('skill-add__action--added');
+          this.setAttribute('aria-label', '已添加');
+        } else {
+          icon.classList.replace('ac-i-check', 'ac-i-add');
+          this.classList.remove('skill-add__action--added');
+          this.setAttribute('aria-label', '添加技能');
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

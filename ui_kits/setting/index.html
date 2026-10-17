@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyFlicker · 设置</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../../colors_and_type.css" />
+  <link rel="stylesheet" href="../../components.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg-base-secondary);
+      color: var(--text-tertiary);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── KID icon mask ── */
+    .icon {
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      width: 16px; height: 16px;
+      -webkit-mask-size: contain; mask-size: contain;
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      -webkit-mask-position: center; mask-position: center;
+      background-color: currentColor;
+    }
+    .icon--20 { width: 20px; height: 20px; }
+    .icon--14 { width: 14px; height: 14px; }
+    .icon--12 { width: 12px; height: 12px; }
+
+    .i-arrowleft      { -webkit-mask-image: url(../../assets/icons/kid/arrowleft.svg);      mask-image: url(../../assets/icons/kid/arrowleft.svg); }
+    .i-search         { -webkit-mask-image: url(../../assets/icons/kid/search.svg);         mask-image: url(../../assets/icons/kid/search.svg); }
+    .i-person         { -webkit-mask-image: url(../../assets/icons/kid/person.svg);         mask-image: url(../../assets/icons/kid/person.svg); }
+    .i-appearance     { -webkit-mask-image: url(../../assets/icons/kid/appearance.svg);     mask-image: url(../../assets/icons/kid/appearance.svg); }
+    .i-models         { -webkit-mask-image: url(../../assets/icons/kid/models.svg);         mask-image: url(../../assets/icons/kid/models.svg); }
+    .i-message        { -webkit-mask-image: url(../../assets/icons/kid/message.svg);        mask-image: url(../../assets/icons/kid/message.svg); }
+    .i-command        { -webkit-mask-image: url(../../assets/icons/kid/command.svg);        mask-image: url(../../assets/icons/kid/command.svg); }
+    .i-memory         { -webkit-mask-image: url(../../assets/icons/kid/memory.svg);         mask-image: url(../../assets/icons/kid/memory.svg); }
+    .i-skill          { -webkit-mask-image: url(../../assets/icons/kid/skill.svg);          mask-image: url(../../assets/icons/kid/skill.svg); }
+    .i-mcp            { -webkit-mask-image: url(../../assets/icons/kid/mcp.svg);            mask-image: url(../../assets/icons/kid/mcp.svg); }
+    .i-safe           { -webkit-mask-image: url(../../assets/icons/kid/safe.svg);           mask-image: url(../../assets/icons/kid/safe.svg); }
+    .i-info2          { -webkit-mask-image: url(../../assets/icons/kid/info2.svg);          mask-image: url(../../assets/icons/kid/info2.svg); }
+    .i-arrowright     { -webkit-mask-image: url(../../assets/icons/kid/arrowright.svg);     mask-image: url(../../assets/icons/kid/arrowright.svg); }
+    .i-check          { -webkit-mask-image: url(../../assets/icons/kid/check.svg);          mask-image: url(../../assets/icons/kid/check.svg); }
+    .i-edit           { -webkit-mask-image: url(../../assets/icons/kid/edit.svg);           mask-image: url(../../assets/icons/kid/edit.svg); }
+    .i-close          { -webkit-mask-image: url(../../assets/icons/kid/close.svg);          mask-image: url(../../assets/icons/kid/close.svg); }
+    .i-data           { -webkit-mask-image: url(../../assets/icons/kid/data.svg);           mask-image: url(../../assets/icons/kid/data.svg); }
+    .i-hooks          { -webkit-mask-image: url(../../assets/icons/kid/hooks.svg);          mask-image: url(../../assets/icons/kid/hooks.svg); }
+    .i-arrowdown      { -webkit-mask-image: url(../../assets/icons/kid/arrowdown.svg);      mask-image: url(../../assets/icons/kid/arrowdown.svg); }
+    .i-rule           { -webkit-mask-image: url(../../assets/icons/kid/rule.svg);           mask-image: url(../../assets/icons/kid/rule.svg); }
+    .i-adjustment     { -webkit-mask-image: url(../../assets/icons/kid/adjustment.svg);     mask-image: url(../../assets/icons/kid/adjustment.svg); }
+    .i-jumppage       { -webkit-mask-image: url(../../assets/icons/kid/jumppage.svg);       mask-image: url(../../assets/icons/kid/jumppage.svg); }
+
+    /* ══════════════════════════════════
+       SHELL
+    ══════════════════════════════════ */
+    .setting-shell {
+      display: flex;
+      height: 100vh;
+      width: 100%;
+      background: var(--bg-brand-subtle);
+    }
+
+    /* ══════════════════════════════════
+       LEFT NAV — 240px
+    ══════════════════════════════════ */
+    .setting-nav {
+      width: 240px;
+      flex-shrink: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: transparent;
+      padding: 12px 8px 16px;
+      gap: 4px;
+    }
+
+    /* 返回应用 */
+    .setting-nav__back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 8px;
+      border-radius: var(--radius-8);
+      color: var(--text-tertiary);
+      font-size: var(--body-sm-font-size);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      transition: background 120ms, color 120ms;
+      margin-bottom: 4px;
+    }
+    .setting-nav__back:hover { background: var(--fill-default); color: var(--text-default); }
+
+    /* 搜索框 */
+    .setting-nav__search {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 10px;
+      border-radius: var(--radius-8);
+      background: var(--bg-base-default);
+      border: 1px solid var(--border-neutral-l1);
+      color: var(--text-tertiary);
+      font-size: var(--body-sm-font-size);
+      margin-bottom: 8px;
+    }
+    .setting-nav__search input {
+      flex: 1; border: none; outline: none; background: transparent;
+      font-size: var(--body-sm-font-size); color: var(--text-default);
+      font-family: inherit;
+    }
+    .setting-nav__search input::placeholder { color: var(--text-tertiary); }
+
+    /* 分组标签 */
+    .setting-nav__group-label {
+      padding: 4px 8px 2px;
+      font-size: 12px;
+      color: var(--text-tertiary);
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    /* 导航项 */
+    .setting-nav__item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 32px;
+      padding: 0 8px;
+      border-radius: var(--radius-8);
+      color: var(--text-default);
+      font-size: var(--body-sm-font-size);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      transition: background 120ms, color 120ms;
+    }
+    .setting-nav__item:hover { background: var(--fill-default); color: var(--text-default); }
+    .setting-nav__item.is-active {
+      background: var(--fill-default);
+      color: var(--text-default);
+      font-weight: 500;
+    }
+    .setting-nav__item .icon { color: var(--text-default); }
+    .setting-nav__item.is-active .icon { color: var(--text-default); }
+    .setting-nav__item:hover .icon { color: var(--text-default); }
+
+    /* ══════════════════════════════════
+       RIGHT CONTENT
+    ══════════════════════════════════ */
+    .setting-content {
+      flex: 1;
+      height: calc(100vh - 16px);
+      margin: 8px 8px 8px 0;
+      overflow-y: auto;
+      background: var(--bg-base-default);
+      border-radius: 12px;
+      padding: 48px 48px 64px;
+    }
+    .setting-content::-webkit-scrollbar { width: 4px; }
+    .setting-content::-webkit-scrollbar-track { background: transparent; }
+    .setting-content::-webkit-scrollbar-thumb { background: var(--border-neutral-l1); border-radius: 2px; }
+
+    /* 页面大标题 */
+    .setting-page__title {
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.4;
+      color: var(--text-default);
+      margin-bottom: 4px;
+    }
+    .setting-page__desc {
+      font-size: var(--body-sm-font-size);
+      color: var(--text-tertiary);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .setting-page__desc a {
+      color: var(--color-info);
+      text-decoration: none;
+      font-size: var(--body-sm-font-size);
+    }
+    .setting-page__desc a:hover { text-decoration: underline; }
+
+    /* 分组标题行（含 toggle） */
+    .setting-group {
+      margin-bottom: 32px;
+    }
+    .setting-group__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .setting-group__title {
+      font-size: var(--body-sm-font-size);
+      font-weight: 600;
+      color: var(--text-default);
+    }
+    .setting-group__desc {
+      font-size: var(--body-xs-font-size);
+      color: var(--text-tertiary);
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .setting-group__desc a {
+      color: var(--color-info);
+      text-decoration: none;
+    }
+    .setting-group__desc a:hover { text-decoration: underline; }
+
+    /* 内容卡片 */
+    .setting-card {
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-8);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    /* 卡片内单行 */
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 16px;
+      gap: 12px;
+      min-height: 52px;
+      position: relative;
+    }
+    .setting-row:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 16px;
+      right: 16px;
+      height: 1px;
+      background: var(--border-neutral-l1);
+    }
+    .setting-row--top { align-items: flex-start; }
+
+    /* ── 二级嵌套分组（左虚线） ── */
+    .setting-sub-group {
+      margin: 0 8px;
+      border-left: 1.5px dashed var(--border-neutral-l1);
+      padding-left: 12px;
+    }
+    /* 父行下方有子分组时，隔线改为上方分隔 */
+    .setting-row--has-sub::after { display: none; }
+    .setting-sub-group + .setting-row::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 16px;
+      right: 16px;
+      height: 1px;
+      background: var(--border-neutral-l1);
+    }
+
+    /* 子行 */
+    .setting-sub-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0;
+      gap: 12px;
+      position: relative;
+    }
+    .setting-sub-row:not(:last-child) {
+      margin-bottom: 33px;
+    }
+    .setting-sub-row:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      bottom: -16px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--border-neutral-l1);
+    }
+    .setting-sub-row__left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1;
+      min-width: 0;
+    }
+    .setting-sub-row__label {
+      font-size: var(--body-sm-font-size);
+      color: var(--text-default);
+      font-weight: 500;
+    }
+    .setting-sub-row__hint {
+      font-size: var(--body-xs-font-size);
+      color: var(--text-tertiary);
+      line-height: 1.4;
+    }
+    .setting-sub-row__right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      width: 240px;
+      justify-content: flex-end;
+    }
+
+    /* 子分组与父行之间间距，隐藏父行底部分割线 */
+    .setting-row--parent {
+      padding-bottom: 0;
+    }
+    .setting-row--parent::after { display: none !important; }
+    .setting-sub-group-wrap {
+      padding: 8px 16px 16px;
+    }
+
+    .setting-row__left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1;
+      min-width: 0;
+    }
+    .setting-row__label {
+      font-size: var(--body-sm-font-size);
+      color: var(--text-default);
+      font-weight: 500;
+    }
+    .setting-row__hint {
+      font-size: var(--body-xs-font-size);
+      color: var(--text-tertiary);
+      line-height: 1.4;
+    }
+    .setting-row__right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      width: 240px;
+      justify-content: flex-end;
+    }
+
+    /* ── Toggle 开关 ── */
+    .s-toggle {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    .s-toggle input { opacity: 0; width: 0; height: 0; }
+    .s-toggle__track {
+      position: absolute;
+      inset: 0;
+      background: var(--fill-default);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 200ms;
+    }
+    .s-toggle__track::after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 2px;
+      width: 16px; height: 16px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 200ms;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .s-toggle input:checked + .s-toggle__track { background: #34C759; }
+    .s-toggle input:checked + .s-toggle__track::after { transform: translateX(16px); }
+
+    /* ── Select 下拉 ── */
+    .s-select-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: 100%;
+    }
+    .s-select-wrap .icon {
+      position: absolute;
+      right: 8px;
+      pointer-events: none;
+      color: var(--text-tertiary);
+    }
+    .s-select {
+      height: 28px;
+      padding: 0 28px 0 10px;
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-8);
+      background: var(--bg-base-default);
+      font-size: var(--body-sm-font-size);
+      color: var(--text-default);
+      font-family: inherit;
+      cursor: pointer;
+      appearance: none;
+      outline: none;
+      min-width: 100px;
+      width: 100%;
+    }
+    .s-select:focus { border-color: var(--border-neutral-l2); }
+
+    /* ── Input 文本框 ── */
+    .s-input {
+      height: 32px;
+      padding: 0 10px;
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-6);
+      background: var(--bg-base-default);
+      font-size: var(--body-sm-font-size);
+      color: var(--text-default);
+      font-family: inherit;
+      outline: none;
+      min-width: 220px;
+      transition: border-color 150ms;
+    }
+    .s-input:focus { border-color: var(--border-neutral-l2); }
+    .s-input::placeholder { color: var(--text-tertiary); }
+
+    /* ── 按钮 ── */
+    .s-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      height: 28px; padding: 0 12px;
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-6);
+      background: var(--bg-base-default);
+      font-size: var(--body-sm-font-size);
+      color: var(--text-default);
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 120ms, border-color 120ms;
+      white-space: nowrap;
+    }
+    .s-btn:hover { background: var(--fill-tertiary); }
+    .s-btn--primary {
+      background: var(--bg-brand);
+      border-color: var(--bg-brand);
+      color: var(--text-onbrand);
+    }
+    .s-btn--primary:hover { background: var(--bg-brand-hover); border-color: var(--bg-brand-hover); }
+    .s-btn--danger {
+      color: #EF4444;
+      border-color: transparent;
+    }
+    .s-btn--danger:hover { background: #FEE2E2; }
+
+    /* ── 头像区 ── */
+    .s-avatar {
+      width: 56px; height: 56px;
+      border-radius: var(--radius-full);
+      background: var(--fill-default);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 600; color: var(--text-secondary);
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    /* ── 标签 Tag ── */
+    .s-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      height: 20px; padding: 0 6px;
+      border-radius: var(--radius-4);
+      font-size: var(--body-xs-font-size);
+      background: var(--fill-tertiary);
+      color: var(--text-secondary);
+    }
+    .s-tag--blue { background: var(--bg-info); color: #2491FF; }
+
+    /* ── 分割线 ── */
+    .setting-divider {
+      height: 1px;
+      background: var(--border-neutral-l1);
+      margin: 8px 0;
+    }
+
+    /* ── 快捷键标签 ── */
+    .s-kbd {
+      display: inline-flex; align-items: center; justify-content: center;
+      height: 20px; min-width: 20px; padding: 0 5px;
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-4);
+      font-size: 11px; color: var(--text-secondary);
+      background: var(--bg-base-secondary);
+      font-family: var(--code-editor-font-family);
+    }
+
+    /* ── 颜色主题选择 ── */
+    .s-theme-options {
+      display: flex; gap: 8px;
+    }
+    .s-theme-option {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      cursor: pointer;
+    }
+    .s-theme-option__preview {
+      width: 72px; height: 48px;
+      border-radius: var(--radius-8);
+      border: 2px solid transparent;
+      overflow: hidden;
+      transition: border-color 150ms;
+      position: relative;
+    }
+    .s-theme-option.is-active .s-theme-option__preview { border-color: var(--bg-brand); }
+    .s-theme-option__check {
+      position: absolute; bottom: 4px; right: 4px;
+      width: 16px; height: 16px;
+      background: var(--bg-brand);
+      border-radius: var(--radius-full);
+      display: none; align-items: center; justify-content: center;
+      color: white;
+    }
+    .s-theme-option.is-active .s-theme-option__check { display: flex; }
+    .s-theme-option__label { font-size: 11px; color: var(--text-tertiary); }
+
+    /* 浅色主题预览 */
+    .preview--light { background: #F6F6F6; }
+    .preview--light::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 14px;
+      background: white;
+      border-bottom: 1px solid #EBEDF0;
+    }
+    /* 深色主题预览 */
+    .preview--dark { background: #17181a; }
+    .preview--dark::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 14px;
+      background: #242629;
+      border-bottom: 1px solid #2D2F32;
+    }
+    /* 跟随系统预览 */
+    .preview--system { background: linear-gradient(135deg, #F6F6F6 50%, #17181a 50%); }
+
+    /* ── 内容区占位空白 ── */
+    .s-placeholder {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 120px;
+      color: var(--text-tertiary); font-size: var(--body-sm-font-size);
+    }
+
+    /* 内容最大宽度限制 */
+    .setting-body { max-width: 880px; margin: 0 auto; }
+
+    /* ── Tab 列表卡片专用 ── */
+    .setting-card--list { overflow: visible; }
+
+    /* Tab 栏 */
+    .s-tab-bar {
+      padding: 16px 16px 0;
+    }
+
+    /* 搜索 + 操作行 */
+    .s-list-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 16px;
+    }
+    .s-list-search {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 28px;
+      padding: 0 10px;
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-8);
+      background: var(--bg-base-default);
+    }
+    .s-list-search input {
+      flex: 1; border: none; outline: none; background: transparent;
+      font-size: var(--body-sm-font-size); color: var(--text-default);
+      font-family: inherit;
+    }
+    .s-list-search input::placeholder { color: var(--text-tertiary); }
+
+    /* 列表容器 */
+    .s-list {
+      padding: 0 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* 列表项 */
+    .s-list-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 12px;
+      position: relative;
+      border-radius: var(--radius-8);
+      cursor: default;
+      transition: background 120ms;
+    }
+    .s-list-item:hover { background: var(--bg-brand-subtle); }
+    .s-list-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--border-neutral-l1);
+    }
+    .s-list-item.is-active {
+      background: transparent;
+      margin: 0;
+      padding: 12px 12px;
+    }
+    .s-list-item__main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .s-list-item__title {
+      font-size: var(--body-sm-font-size);
+      font-weight: 500;
+      color: var(--text-default);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .s-list-item__desc {
+      font-size: var(--body-xs-font-size);
+      color: var(--text-tertiary);
+      line-height: 1.4;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .s-icon-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px;
+      border: none; background: transparent;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      border-radius: var(--radius-6);
+      flex-shrink: 0;
+      transition: background 120ms, color 120ms;
+    }
+    .s-icon-btn:hover { background: var(--fill-default); color: var(--text-default); }
+  </style>
+</head>
+<body>
+
+<div class="setting-shell">
+
+  <!-- ══════════════════════════════════
+       LEFT NAV
+  ══════════════════════════════════ -->
+  <nav class="setting-nav">
+
+    <!-- 返回应用 -->
+    <button class="setting-nav__back">
+      <span class="icon i-arrowleft icon--14"></span>
+      返回应用
+    </button>
+
+    <!-- 搜索 -->
+    <div class="setting-nav__search">
+      <span class="icon i-search" style="color:var(--text-tertiary);"></span>
+      <input type="text" placeholder="请输入" />
+    </div>
+
+    <!-- 分组一 -->
+    <div class="setting-nav__group-label">分组一</div>
+    <button class="setting-nav__item is-active">
+      <span class="icon i-rule"></span>
+      内容模版样式
+    </button>
+    <button class="setting-nav__item">
+      <span class="icon i-adjustment"></span>
+      通用设置
+    </button>
+    <button class="setting-nav__item">
+      <span class="icon i-models"></span>
+      模型与 AI 偏好
+    </button>
+    <button class="setting-nav__item">
+      <span class="icon i-message"></span>
+      通知设置
+    </button>
+
+    <!-- 分组二 -->
+    <div class="setting-nav__group-label" style="margin-top:8px;">分组二</div>
+    <button class="setting-nav__item">
+      <span class="icon i-memory"></span>
+      记忆
+    </button>
+    <button class="setting-nav__item">
+      <span class="icon i-skill"></span>
+      技能与工具
+    </button>
+    <button class="setting-nav__item">
+      <span class="icon i-hooks"></span>
+      Hooks
+    </button>
+
+    <!-- 分组三 -->
+    <div class="setting-nav__group-label" style="margin-top:8px;">分组三</div>
+    <button class="setting-nav__item">
+      <span class="icon i-data"></span>
+      存储与数据
+    </button>
+    <button class="setting-nav__item">
+      <span class="icon i-safe"></span>
+      隐私与安全
+    </button>
+
+
+  </nav>
+
+  <!-- ══════════════════════════════════
+       RIGHT CONTENT
+  ══════════════════════════════════ -->
+  <div class="setting-content">
+    <div class="setting-body">
+
+      <!-- 页面大标题 -->
+      <div class="setting-page__title">页面标题</div>
+      <div class="setting-page__desc">
+        这里是页面功能描述，补充说明该设置页的作用与范围
+        <a href="#">了解更多</a>
+      </div>
+
+      <!-- ── 分组一：Toggle 类设置项 ── -->
+      <div class="setting-group">
+        <div class="setting-group__header">
+          <div>
+            <div class="setting-group__title">设置分组标题</div>
+            <div class="setting-group__desc">这里是分组的补充说明文案，可包含 <a href="#">了解更多</a> 链接（可选）</div>
+          </div>
+        </div>
+        <div class="setting-card">
+
+          <div class="setting-row">
+            <div class="setting-row__left">
+              <div class="setting-row__label">设置项名称</div>
+              <div class="setting-row__hint">这里是设置项的补充说明文案（可选）</div>
+            </div>
+            <div class="setting-row__right">
+              <label class="s-toggle">
+                <input type="checkbox" checked />
+                <span class="s-toggle__track"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-row__left">
+              <div class="setting-row__label">设置项名称</div>
+            </div>
+            <div class="setting-row__right">
+              <label class="s-toggle">
+                <input type="checkbox" />
+                <span class="s-toggle__track"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-row__left">
+              <div class="setting-row__label">设置项名称</div>
+              <div class="setting-row__hint">这里是设置项的补充说明文案（可选）</div>
+            </div>
+            <div class="setting-row__right">
+              <label class="s-toggle">
+                <input type="checkbox" checked />
+                <span class="s-toggle__track"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-row__left">
+              <div class="setting-row__label">设置项名称</div>
+            </div>
+            <div class="setting-row__right">
+              <label class="s-toggle">
+                <input type="checkbox" />
+                <span class="s-toggle__track"></span>
+              </label>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── 分组二：Select 类设置项 ── -->
+      <div class="setting-group">
+        <div class="setting-group__header">
+          <div>
+            <div class="setting-group__title">设置分组标题</div>
+            <div class="setting-group__desc">这里是分组的补充说明文案（可选）</div>
+          </div>
+        </div>
+        <div class="setting-card">
+
+          <div class="setting-row">
+            <div class="setting-row__left">
+              <div class="setting-row__label">设置项名称</div>
+              <div class="setting-row__hint">这里是设置项的补充说明文案（可选）</div>
+            </div>
+            <div class="setting-row__right">
+              <div class="s-select-wrap">
+                <select class="s-select">
+                  <option selected>选项一</option>
+                  <option>选项二</option>
+                  <option>选项三</option>
+                </select>
+                <span class="icon i-arrowdown icon--12"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-row__left">
+              <div class="setting-row__label">设置项名称</div>
+            </div>
+            <div class="setting-row__right">
+              <div class="s-select-wrap">
+                <select class="s-select">
+                  <option>选项一</option>
+                  <option selected>选项二</option>
+                  <option>选项三</option>
+                </select>
+                <span class="icon i-arrowdown icon--12"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 父行：带二级子分组，toggle 控制子内容显隐 -->
+          <div class="setting-row setting-row--parent">
+            <div class="setting-row__left">
+              <div class="setting-row__label">设置项名称</div>
+              <div class="setting-row__hint">这里是设置项的补充说明文案（可选）</div>
+            </div>
+            <div class="setting-row__right">
+              <label class="s-toggle js-sub-toggle">
+                <input type="checkbox" checked />
+                <span class="s-toggle__track"></span>
+              </label>
+            </div>
+          </div>
+          <!-- 二级子分组 -->
+          <div class="setting-sub-group-wrap js-sub-content">
+            <div class="setting-sub-group">
+              <div class="setting-sub-row">
+                <div class="setting-sub-row__left">
+                  <div class="setting-sub-row__label">子设置项名称</div>
+                  <div class="setting-sub-row__hint">这里是子设置项的补充说明文案（可选）</div>
+                </div>
+                <div class="setting-sub-row__right">
+                  <div class="s-select-wrap">
+                    <select class="s-select">
+                      <option selected>选项一</option>
+                      <option>选项二</option>
+                      <option>选项三</option>
+                    </select>
+                    <span class="icon i-arrowdown icon--12"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="setting-sub-row">
+                <div class="setting-sub-row__left">
+                  <div class="setting-sub-row__label">子设置项名称</div>
+                  <div class="setting-sub-row__hint">这里是子设置项的补充说明文案（可选）</div>
+                </div>
+                <div class="setting-sub-row__right">
+                  <div class="s-select-wrap">
+                    <select class="s-select">
+                      <option selected>选项一</option>
+                      <option>选项二</option>
+                    </select>
+                    <span class="icon i-arrowdown icon--12"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /setting-card -->
+      </div><!-- /setting-group 分组二 -->
+
+      <!-- ── 分组三：混合类型（Toggle + Select + 按钮） ── -->
+      <div class="setting-group">
+        <div class="setting-group__header">
+          <div>
+            <div class="setting-group__title">设置分组标题</div>
+            <div class="setting-group__desc">这里是分组的补充说明文案，支持 <a href="#">了解更多</a> 链接（可选）</div>
+          </div>
+        </div>
+        <div class="setting-card">
+
+          <div class="setting-row">
+            <div class="setting-row__left">
+              <div class="setting-row__label">设置项名称</div>
+              <div class="setting-row__hint">这里是设置项的补充说明文案（可选）</div>
+            </div>
+            <div class="setting-row__right">
+              <label class="s-toggle">
+                <input type="checkbox" checked />
+                <span class="s-toggle__track"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-row__left">
+              <div class="setting-row__label">设置项名称</div>
+              <div class="setting-row__hint">这里是设置项的补充说明文案（可选）</div>
+            </div>
+            <div class="setting-row__right">
+              <div class="s-select-wrap">
+                <select class="s-select">
+                  <option selected>选项一</option>
+                  <option>选项二</option>
+                  <option>选项三</option>
+                </select>
+                <span class="icon i-arrowdown icon--12"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-row__left">
+              <div class="setting-row__label">设置项名称</div>
+              <div class="setting-row__hint">这里是设置项的补充说明文案，可包含 <a href="#" style="color:var(--color-info);text-decoration:none;">了解更多</a> 链接（可选）</div>
+            </div>
+            <div class="setting-row__right">
+              <button class="s-btn">操作按钮</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── 分组四：Tab + 搜索 + 列表 ── -->
+      <div class="setting-group">
+        <div class="setting-group__header">
+          <div class="setting-group__title">设置分组标题</div>
+        </div>
+
+        <div class="setting-card setting-card--list">
+
+          <!-- Tab 栏 -->
+          <div class="s-tab-bar">
+            <div class="mf-tabs--pill">
+              <button class="mf-tab--pill is-active">标签一</button>
+              <button class="mf-tab--pill">标签二</button>
+              <button class="mf-tab--pill">标签三</button>
+            </div>
+          </div>
+
+          <!-- 搜索 + 操作 -->
+          <div class="s-list-toolbar">
+            <div class="s-list-search">
+              <span class="icon i-search" style="color:var(--text-tertiary);flex-shrink:0;"></span>
+              <input type="text" placeholder="请输入" />
+            </div>
+            <button class="s-btn">操作按钮</button>
+          </div>
+
+          <!-- 列表项 -->
+          <div class="s-list">
+
+            <div class="s-list-item">
+              <div class="s-list-item__main">
+                <div class="s-list-item__title">条目标题 <span class="mf-tag">内置</span></div>
+                <div class="s-list-item__desc">这里是条目的功能描述，可展示名称、说明等文案内容，超出部分截断显示…</div>
+              </div>
+              <button class="s-icon-btn"><span class="icon i-jumppage"></span></button>
+            </div>
+
+            <div class="s-list-item">
+              <div class="s-list-item__main">
+                <div class="s-list-item__title">条目标题</div>
+                <div class="s-list-item__desc">这里是条目的功能描述，可展示名称、说明等文案内容，超出部分截断显示…</div>
+              </div>
+              <button class="s-icon-btn"><span class="icon i-jumppage"></span></button>
+            </div>
+
+            <div class="s-list-item is-active">
+              <div class="s-list-item__main">
+                <div class="s-list-item__title">条目标题 <span class="mf-tag">内置</span></div>
+                <div class="s-list-item__desc">这里是条目的功能描述，可展示名称、说明等文案内容，超出部分截断显示…</div>
+              </div>
+              <button class="s-icon-btn"><span class="icon i-jumppage"></span></button>
+            </div>
+
+            <div class="s-list-item">
+              <div class="s-list-item__main">
+                <div class="s-list-item__title">条目标题</div>
+                <div class="s-list-item__desc">这里是条目的功能描述，可展示名称、说明等文案内容，超出部分截断显示…</div>
+              </div>
+              <button class="s-icon-btn"><span class="icon i-jumppage"></span></button>
+            </div>
+
+            <div class="s-list-item">
+              <div class="s-list-item__main">
+                <div class="s-list-item__title">条目标题</div>
+                <div class="s-list-item__desc">这里是条目的功能描述，可展示名称、说明等文案内容，超出部分截断显示…</div>
+              </div>
+              <button class="s-icon-btn"><span class="icon i-jumppage"></span></button>
+            </div>
+
+          </div><!-- /s-list -->
+
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /setting-content -->
+
+</div><!-- /setting-shell -->
+
+<script>
+  /* 左侧导航切换高亮 */
+  document.querySelectorAll('.setting-nav__item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      document.querySelectorAll('.setting-nav__item').forEach(function(i) { i.classList.remove('is-active'); });
+      this.classList.add('is-active');
+    });
+  });
+
+  /* Toggle 控制二级子内容显隐 */
+  document.querySelectorAll('.js-sub-toggle input').forEach(function(input) {
+    var wrap = input.closest('.setting-row--parent').nextElementSibling;
+    if (wrap && wrap.classList.contains('js-sub-content')) {
+      var inner = wrap.querySelector('.setting-sub-group');
+      if (inner) inner.style.display = input.checked ? '' : 'none';
+      input.addEventListener('change', function() {
+        if (inner) inner.style.display = this.checked ? '' : 'none';
+      });
+    }
+  });
+
+  /* 主题选项切换 */
+  document.querySelectorAll('.s-theme-option').forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      document.querySelectorAll('.s-theme-option').forEach(function(o) { o.classList.remove('is-active'); });
+      this.classList.add('is-active');
+    });
+  });
+</script>
+
+</body>
+</html>

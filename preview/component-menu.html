@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Menu</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style data-preview-shell>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html,
+    body {
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      letter-spacing: var(--body-sm-letter-spacing);
+      min-height: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+
+    body { padding: var(--spacer-32); }
+    img, svg, video, canvas { max-width: 100%; }
+    a { color: var(--text-default); text-decoration: none; }
+    a:hover { color: var(--text-default-hover); }
+    hr { border: 0; border-top: 1px solid var(--border-neutral-l1); margin: var(--spacer-24) 0; }
+
+    .h1 { font-family: var(--heading-2xl-font-family); font-size: var(--heading-2xl-font-size); line-height: var(--heading-2xl-line-height); font-weight: var(--heading-2xl-font-weight); color: var(--text-default); }
+    .h2 { font-family: var(--heading-md-font-family); font-size: var(--heading-md-font-size); line-height: var(--heading-md-line-height); font-weight: var(--heading-md-font-weight); color: var(--text-default); }
+    .h3 { font-family: var(--heading-sm-font-family); font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); color: var(--text-default); }
+    .eyebrow { font-size: var(--body-xs-font-size); line-height: var(--body-xs-line-height); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: var(--body-xs-letter-spacing); }
+    .text-secondary { color: var(--text-secondary); }
+    .text-tertiary { color: var(--text-tertiary); }
+
+    .row { display: flex; gap: var(--spacer-12); flex-wrap: wrap; align-items: center; }
+    .col { display: flex; flex-direction: column; gap: var(--spacer-12); }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacer-24); }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacer-24); }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacer-24); }
+    .stack-8 { display: flex; flex-direction: column; gap: var(--spacer-8); }
+    .stack-12 { display: flex; flex-direction: column; gap: var(--spacer-12); }
+    .stack-16 { display: flex; flex-direction: column; gap: var(--spacer-16); }
+    .stack-24 { display: flex; flex-direction: column; gap: var(--spacer-24); }
+    .stack-40 { display: flex; flex-direction: column; gap: var(--spacer-40); }
+
+    .pv-header { margin-bottom: var(--spacer-32); padding-bottom: var(--spacer-16); border-bottom: 1px solid var(--border-neutral-l1); }
+    .pv-header h1 { font-size: var(--heading-lg-font-size); line-height: var(--heading-lg-line-height); font-weight: var(--heading-lg-font-weight); margin-bottom: var(--spacer-4); }
+    .pv-header p { color: var(--text-secondary); font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); }
+    .pv-section { margin-bottom: var(--spacer-32); }
+    .pv-section__title { font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); margin-bottom: var(--spacer-12); color: var(--text-default); }
+    .pv-section__sub { font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); color: var(--text-tertiary); margin-bottom: var(--spacer-12); }
+
+    @media (max-width: 720px) {
+      body { padding: var(--spacer-16); }
+      .grid-2,
+      .grid-3,
+      .grid-4 { grid-template-columns: 1fr; }
+    }
+  </style>
+  <link rel="stylesheet" href="../components.css" />
+  <style>
+/* Inline asset icon normalization: keep uploaded HTML independent from external SVG styling. */
+    [data-asset-icon] {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent !important;
+      -webkit-mask: none !important;
+      mask: none !important;
+    }
+
+    [data-asset-icon] > svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      flex: 0 0 auto;
+    }
+
+    .asset-inline-icon {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="pv-header">
+    <h1>Menu</h1>
+    <p>Context menus and sidebar menus. Background <code>--bg-menu</code>, menu radius <code>--radius-12</code>, item radius <code>--radius-8</code>, item gap <code>--spacer-2</code>, hover <code>--bg-overlay-l2</code>. Destructive items use <code>--status-error-default</code>.</p>
+  </div>
+
+  <!-- 竖向排布 -->
+  <div style="display: flex; flex-direction: column; gap: var(--spacer-40);">
+
+    <!-- Context menu -->
+    <div class="pv-section" style="">
+      <div class="pv-section__title">Context menu</div>
+      <div class="mf-menu" style="width: 220px;">
+        <div class="mf-menu__item"><span class="icon" style="width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/edit.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M89.6 810.688V213.312C89.6 145.024 145.024 89.664 213.312 89.6H512A38.4 38.4 0 1 1 512 166.4H213.312A46.976 46.976 0 0 0 166.4 213.312V810.688C166.4 836.608 187.392 857.6 213.312 857.6H810.688A46.976 46.976 0 0 0 857.6 810.688V512A38.4 38.4 0 1 1 934.4 512V810.688A123.712 123.712 0 0 1 810.688 934.4H213.312A123.712 123.712 0 0 1 89.6 810.688ZM835.456 134.336A38.4 38.4 0 0 1 892.544 185.6L604.544 505.664A38.4 38.4 0 0 1 547.456 454.4L835.456 134.336Z"></path></svg></span>Rename</div>
+        <div class="mf-menu__item"><span class="icon" style="width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/copy.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M187.712 426.624C187.712 400.704 208.64 379.712 234.624 379.712H661.312C687.232 379.712 708.224 400.768 708.224 426.624V853.312A46.976 46.976 0 0 1 661.312 900.288H234.624A46.912 46.912 0 0 1 187.712 853.312V426.624ZM379.712 234.624C379.712 208.96 400.896 187.712 426.624 187.712H853.312C879.04 187.712 900.224 208.96 900.224 234.624V661.312A47.232 47.232 0 0 1 853.312 708.288 38.4 38.4 0 1 0 853.312 785.088 123.968 123.968 0 0 0 977.024 661.312V234.624A123.968 123.968 0 0 0 853.312 110.976H426.624A123.968 123.968 0 0 0 302.848 234.624 38.464 38.464 0 0 0 379.648 234.624ZM110.912 853.312A123.648 123.648 0 0 0 234.56 977.088H661.312A123.712 123.712 0 0 0 785.024 853.312V426.624A123.712 123.712 0 0 0 661.312 302.976H234.624A123.712 123.712 0 0 0 110.848 426.624V853.312Z"></path></svg></span>Duplicate</div>
+        <div class="mf-menu__item"><span class="icon" style="width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/share.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M857.6 810.624A89.6 89.6 0 0 0 692.48 762.496C692.032 763.456 691.712 764.608 691.2 765.568 690.496 766.72 689.6 767.68 688.832 768.768A89.6 89.6 0 1 0 857.6 810.624ZM345.6 512C345.6 495.872 341.312 480.64 333.824 467.584L333.312 466.944C333.184 466.816 333.184 466.56 333.056 466.368A89.472 89.472 0 0 0 166.4 512 89.6 89.6 0 0 0 330.24 562.112L333.312 557.056 333.632 556.608A90.24 90.24 0 0 0 345.6 512ZM857.6 213.312A89.6 89.6 0 1 0 690.304 257.92L690.688 258.368C690.752 258.56 690.688 258.688 690.816 258.752A89.6 89.6 0 0 0 857.6 213.312ZM934.4 213.312A166.4 166.4 0 0 1 647.552 327.936L415.232 463.616A166.4 166.4 0 0 1 415.168 560.384L647.68 695.808A166.4 166.4 0 1 1 608.832 761.984L376.32 626.56A165.76 165.76 0 0 1 256 678.4 166.4 166.4 0 1 1 376.32 397.248L608.832 261.76A166.4 166.4 0 1 1 934.4 213.312Z"></path></svg></span>Copy link</div>
+        <div class="mf-menu__divider"></div>
+        <div class="mf-menu__item"><span class="icon" style="width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/setting.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M622.976 512A110.976 110.976 0 1 0 401.088 512 110.976 110.976 0 0 0 622.976 512ZM699.776 512A187.776 187.776 0 1 1 324.352 512 187.776 187.776 0 0 1 699.84 512Z"></path><path fill="currentColor" d="M900.288 512C900.288 503.104 898.176 493.184 890.88 477.184 883.2 460.416 871.424 440.064 853.888 409.728L771.84 268.288C754.304 238.208 742.528 217.92 731.84 203.008 721.6 188.8 714.048 181.888 706.304 177.472 698.624 173.056 688.832 169.984 671.36 168.32 653.056 166.4 629.632 166.336 594.688 166.336H429.376C394.432 166.4 371.008 166.528 352.704 168.32 335.232 169.984 325.44 173.056 317.76 177.472 310.08 181.952 302.528 188.8 292.288 203.008 281.6 217.92 269.76 238.08 252.224 268.288L170.24 409.728C152.64 440.064 140.864 460.416 133.248 477.184 125.952 493.184 123.776 503.104 123.776 512S125.952 530.816 133.248 546.816C140.928 563.584 152.64 583.936 170.176 614.272L252.224 755.712C269.76 785.856 281.6 806.08 292.288 820.992 302.528 835.2 310.016 842.112 317.76 846.528 325.44 850.944 335.232 854.016 352.64 855.68 371.008 857.6 394.432 857.664 429.376 857.664H594.688C629.632 857.6 653.056 857.472 671.36 855.68 688.832 854.016 698.624 850.944 706.304 846.528 713.984 842.048 721.6 835.2 731.84 820.992 742.528 806.08 754.304 785.792 771.84 755.712L853.888 614.272C871.424 583.936 883.2 563.584 890.88 546.816 898.176 530.816 900.288 520.896 900.288 512ZM977.088 512C977.152 535.68 970.752 556.8 960.832 578.624 951.168 599.616 937.088 623.808 920.32 652.864L838.272 794.24C821.504 823.04 807.552 847.168 794.112 865.792 780.16 885.248 765.056 901.312 744.64 913.088 724.16 924.8 702.72 929.856 678.912 932.16 656 934.464 628.16 934.4 594.688 934.4H429.376C395.968 934.4 368.128 934.4 345.216 932.16 321.408 929.92 299.968 924.8 279.488 913.088 259.008 901.312 243.904 885.248 229.952 865.856 216.512 847.232 202.56 823.104 185.792 794.24L103.744 652.8C86.912 623.808 72.96 599.68 63.36 578.624 53.376 556.864 46.976 535.68 46.976 512 46.976 488.32 53.376 467.2 63.36 445.376 72.96 424.384 87.04 400.192 103.744 371.136L185.792 229.76C202.56 200.96 216.512 176.896 229.952 158.208 243.84 138.752 259.008 122.688 279.488 110.912 299.968 99.2 321.408 94.144 345.216 91.84 368.128 89.536 395.968 89.6 429.376 89.6H594.688C628.16 89.6 656 89.6 678.912 91.84 702.72 94.08 724.16 99.2 744.64 110.912 765.12 122.688 780.16 138.752 794.112 158.144 807.552 176.832 821.504 200.896 838.272 229.76L920.32 371.2C937.152 400.192 951.168 424.32 960.768 445.376 970.688 467.136 977.152 488.256 977.152 512Z"></path></svg></span>Settings</div>
+        <div class="mf-menu__item mf-menu__item--danger"><span class="icon" style="width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/delete.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M772.224 294.4H251.776V853.312A46.912 46.912 0 0 0 298.688 900.288H725.312A46.976 46.976 0 0 0 772.224 853.312V294.4ZM388.224 725.312V469.312A38.4 38.4 0 0 1 465.024 469.312V725.312A38.4 38.4 0 1 1 388.288 725.312ZM558.912 725.312V469.312A38.4 38.4 0 0 1 635.712 469.312V725.312A38.4 38.4 0 0 1 558.976 725.312ZM644.224 170.624A46.976 46.976 0 0 0 597.312 123.712H426.688A46.976 46.976 0 0 0 379.776 170.624V217.6H644.224V170.624ZM721.024 217.6H896A38.4 38.4 0 0 1 896 294.4H849.088V853.312A123.712 123.712 0 0 1 725.312 977.088H298.688A123.776 123.776 0 0 1 174.912 853.312V294.4H128A38.4 38.4 0 0 1 128 217.6H302.912V170.624A123.84 123.84 0 0 1 426.688 46.976H597.312A123.776 123.776 0 0 1 721.088 170.624V217.6Z"></path></svg></span>Delete</div>
+      </div>
+    </div>
+
+    <!-- Submenu (二级下钻) -->
+    <div class="pv-section" style="">
+      <div class="pv-section__title">Submenu (二级下钻)</div>
+      <div style="position: relative; display: inline-block;">
+        <div class="mf-menu" style="width: 220px;">
+          <div class="mf-menu__item"><span class="icon" style="width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/edit.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M89.6 810.688V213.312C89.6 145.024 145.024 89.664 213.312 89.6H512A38.4 38.4 0 1 1 512 166.4H213.312A46.976 46.976 0 0 0 166.4 213.312V810.688C166.4 836.608 187.392 857.6 213.312 857.6H810.688A46.976 46.976 0 0 0 857.6 810.688V512A38.4 38.4 0 1 1 934.4 512V810.688A123.712 123.712 0 0 1 810.688 934.4H213.312A123.712 123.712 0 0 1 89.6 810.688ZM835.456 134.336A38.4 38.4 0 0 1 892.544 185.6L604.544 505.664A38.4 38.4 0 0 1 547.456 454.4L835.456 134.336Z"></path></svg></span>Rename</div>
+          <div class="mf-menu__item"><span class="icon" style="width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/download.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M896 665.6A38.4 38.4 0 0 1 934.4 704V810.688A123.712 123.712 0 0 1 810.688 934.4H213.312A123.712 123.712 0 0 1 89.6 810.688V704A38.4 38.4 0 1 1 166.4 704V810.688A46.976 46.976 0 0 0 213.312 857.6H810.688A46.976 46.976 0 0 0 857.6 810.688V704A38.4 38.4 0 0 1 896 665.6ZM550.4 565.184V89.6A38.4 38.4 0 0 0 473.6 89.6V565.184L325.824 417.408A38.4 38.4 0 0 0 271.488 471.68L484.864 685.056A38.4 38.4 0 0 0 539.136 685.056L752.512 471.68A38.4 38.4 0 0 0 698.24 417.408Z"></path></svg></span>Download</div>
+          <!-- 有子菜单的行：展开态 is-open -->
+          <div class="mf-menu__item mf-menu__item--submenu is-open is-hovered">
+            <span class="icon" style="width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/share.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M857.6 810.624A89.6 89.6 0 0 0 692.48 762.496C692.032 763.456 691.712 764.608 691.2 765.568 690.496 766.72 689.6 767.68 688.832 768.768A89.6 89.6 0 1 0 857.6 810.624ZM345.6 512C345.6 495.872 341.312 480.64 333.824 467.584L333.312 466.944C333.184 466.816 333.184 466.56 333.056 466.368A89.472 89.472 0 0 0 166.4 512 89.6 89.6 0 0 0 330.24 562.112L333.312 557.056 333.632 556.608A90.24 90.24 0 0 0 345.6 512ZM857.6 213.312A89.6 89.6 0 1 0 690.304 257.92L690.688 258.368C690.752 258.56 690.688 258.688 690.816 258.752A89.6 89.6 0 0 0 857.6 213.312ZM934.4 213.312A166.4 166.4 0 0 1 647.552 327.936L415.232 463.616A166.4 166.4 0 0 1 415.168 560.384L647.68 695.808A166.4 166.4 0 1 1 608.832 761.984L376.32 626.56A165.76 165.76 0 0 1 256 678.4 166.4 166.4 0 1 1 376.32 397.248L608.832 261.76A166.4 166.4 0 1 1 934.4 213.312Z"></path></svg></span>
+            Share to
+            <span class="mf-menu__arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M409.664 793.344A38.4 38.4 0 0 1 358.08 736.512L571.392 543.232C584.96 530.752 593.152 521.984 597.76 515.392 602.176 509.184 601.472 507.52 601.472 508.928 601.472 510.272 602.112 508.672 597.76 502.4 593.152 495.808 584.96 487.04 571.392 474.688L358.08 281.408A38.425 38.425 0 0 1 409.6 224.384L622.912 417.856C637.76 431.232 651.072 444.672 660.672 458.304 670.4 472.32 678.208 489.152 678.208 508.928 678.272 528.704 670.464 545.536 660.608 559.552 651.008 573.248 637.76 586.624 622.912 600.064L409.664 793.344Z"></path></svg></span>
+            <!-- 二级菜单面板 -->
+            <div class="mf-menu__submenu">
+              <div class="mf-menu" style="width: 180px;">
+                <div class="mf-menu__item"><span class="icon" style="width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/discuss.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M639.36 183.168A45.248 45.248 0 0 0 594.24 137.92H183.168A45.248 45.248 0 0 0 137.92 183.168V587.2L215.104 509.952C237.504 487.68 267.776 475.072 299.392 475.072H594.176A45.184 45.184 0 0 0 639.424 429.824V183.168ZM960 893.824A66.304 66.304 0 0 1 880.896 958.72C868.096 956.16 856.32 949.824 847.04 940.608L756.48 850.112A45.248 45.248 0 0 0 724.48 836.864H429.824A119.232 119.232 0 0 1 310.592 717.632V676.48A36.992 36.992 0 1 1 384.512 676.48V717.632A45.248 45.248 0 0 0 429.76 762.816H724.608C756.16 762.88 786.496 775.424 808.832 797.76L886.016 874.944V471.04A45.248 45.248 0 0 0 840.768 425.728 36.992 36.992 0 0 1 840.768 351.744 119.232 119.232 0 0 1 960 470.976V893.824ZM713.408 429.824A119.296 119.296 0 0 1 594.176 549.12H299.392A45.248 45.248 0 0 0 267.392 562.304L177.024 652.8A66.24 66.24 0 0 1 64 606.08V183.104A119.232 119.232 0 0 1 183.168 64H594.176A119.168 119.168 0 0 1 713.408 183.168V429.824Z"></path></svg></span>Slack</div>
+                <div class="mf-menu__item"><span class="icon" style="width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/envelope.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M900.224 368.64 575.744 575.36 574.272 576.256A123.776 123.776 0 0 1 449.92 576.192L448.704 575.424 123.712 368.512V768C123.712 793.856 144.64 814.912 170.624 814.912H853.312A46.912 46.912 0 0 0 900.224 767.936V368.64ZM900.224 256A46.976 46.976 0 0 0 853.312 209.024H170.624A46.976 46.976 0 0 0 123.712 256V277.504L488.768 509.824A46.976 46.976 0 0 0 535.232 509.952L900.224 277.504V256ZM977.024 768A123.776 123.776 0 0 1 853.376 891.648H170.624A123.712 123.712 0 0 1 46.912 768V256C46.912 187.712 102.4 132.352 170.624 132.352H853.312A123.648 123.648 0 0 1 977.088 256V768Z"></path></svg></span>Email</div>
+                <div class="mf-menu__item"><span class="icon" style="width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/copy.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M187.712 426.624C187.712 400.704 208.64 379.712 234.624 379.712H661.312C687.232 379.712 708.224 400.768 708.224 426.624V853.312A46.976 46.976 0 0 1 661.312 900.288H234.624A46.912 46.912 0 0 1 187.712 853.312V426.624ZM379.712 234.624C379.712 208.96 400.896 187.712 426.624 187.712H853.312C879.04 187.712 900.224 208.96 900.224 234.624V661.312A47.232 47.232 0 0 1 853.312 708.288 38.4 38.4 0 1 0 853.312 785.088 123.968 123.968 0 0 0 977.024 661.312V234.624A123.968 123.968 0 0 0 853.312 110.976H426.624A123.968 123.968 0 0 0 302.848 234.624 38.464 38.464 0 0 0 379.648 234.624ZM110.912 853.312A123.648 123.648 0 0 0 234.56 977.088H661.312A123.712 123.712 0 0 0 785.024 853.312V426.624A123.712 123.712 0 0 0 661.312 302.976H234.624A123.712 123.712 0 0 0 110.848 426.624V853.312Z"></path></svg></span>Copy link</div>
+              </div>
+            </div>
+          </div>
+          <div class="mf-menu__divider"></div>
+          <div class="mf-menu__item mf-menu__item--danger"><span class="icon" style="width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/delete.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M772.224 294.4H251.776V853.312A46.912 46.912 0 0 0 298.688 900.288H725.312A46.976 46.976 0 0 0 772.224 853.312V294.4ZM388.224 725.312V469.312A38.4 38.4 0 0 1 465.024 469.312V725.312A38.4 38.4 0 1 1 388.288 725.312ZM558.912 725.312V469.312A38.4 38.4 0 0 1 635.712 469.312V725.312A38.4 38.4 0 0 1 558.976 725.312ZM644.224 170.624A46.976 46.976 0 0 0 597.312 123.712H426.688A46.976 46.912 0 0 0 379.776 170.624V217.6H644.224V170.624ZM721.024 217.6H896A38.4 38.4 0 0 1 896 294.4H849.088V853.312A123.712 123.712 0 0 1 725.312 977.088H298.688A123.776 123.776 0 0 1 174.912 853.312V294.4H128A38.4 38.4 0 0 1 128 217.6H302.912V170.624A123.84 123.84 0 0 1 426.688 46.976H597.312A123.776 123.776 0 0 1 721.088 170.624V217.6Z"></path></svg></span>Delete</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Single-select list （选中态 is-selected + check） -->
+    <div class="pv-section">
+      <div class="pv-section__title">Single-select list</div>
+      <div class="pv-section__sub">选中项右侧显示对勾，使用 <code>.is-selected</code> + <code>.mf-menu__check</code></div>
+      <div class="mf-menu" style="width: 180px;">
+        <button class="mf-menu__item is-selected">
+          最近打开
+          <span class="mf-menu__check"><span class="icon" style="width:14px;height:14px;" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span></span>
+        </button>
+        <button class="mf-menu__item">
+          最近活跃
+          <span class="mf-menu__check"><span class="icon" style="width:14px;height:14px;" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span></span>
+        </button>
+        <button class="mf-menu__item">
+          创建时间
+          <span class="mf-menu__check"><span class="icon" style="width:14px;height:14px;" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Sidebar group -->
+    <div class="pv-section" style="">
+      <div class="pv-section__title">Sidebar group</div>
+      <nav class="mf-menu" style="width: 220px;">
+        <div class="mf-menu__group-label">Workspace</div>
+        <div class="mf-menu__item"><span class="icon" style="width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/data.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M89.6 810.688V128A38.4 38.4 0 1 1 166.4 128V810.688A46.976 46.976 0 0 0 213.312 857.6H896A38.4 38.4 0 1 1 896 934.4H213.312A123.776 123.776 0 0 1 89.6 810.688ZM783.488 356.928A38.4 38.4 0 0 1 837.824 411.072L624.512 624.512A38.4 38.4 0 0 1 570.176 624.512L426.624 480.96 325.824 581.76A38.4 38.4 0 0 1 271.488 527.488L399.488 399.488A38.4 38.4 0 0 1 453.824 399.488L597.312 542.976 783.552 356.864Z"></path></svg></span>Overview</div>
+        <div class="mf-menu__item is-hovered"><span class="icon" style="width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/base.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M857.6 213.312A46.976 46.976 0 0 0 810.688 166.4H213.312A46.976 46.976 0 0 0 166.4 213.312V810.688C166.4 836.608 187.392 857.6 213.312 857.6H810.688A46.976 46.976 0 0 0 857.6 810.688V213.312ZM612.864 356.864A38.376 38.376 0 1 1 667.136 411.136L411.136 667.136A38.376 38.376 0 1 1 356.864 612.864L612.864 356.864ZM934.4 810.688A123.712 123.712 0 0 1 810.688 934.4H213.312A123.712 123.712 0 0 1 89.6 810.688V213.312C89.6 145.024 145.024 89.664 213.312 89.6H810.688C879.04 89.6 934.336 145.024 934.4 213.312V810.688Z"></path></svg></span>Projects<span class="mf-menu__shortcut num">12</span></div>
+        <div class="mf-menu__item"><span class="icon" style="width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/person.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M900.288 469.312C900.288 387.776 900.16 330.496 894.336 287.168 888.64 244.928 878.208 221.824 861.504 205.12 844.864 188.48 821.76 177.984 779.52 172.288 736.128 166.528 678.848 166.4 597.312 166.4H426.624C345.152 166.4 287.872 166.4 244.544 172.288 202.24 178.048 179.136 188.48 162.432 205.12 145.792 221.76 135.296 244.992 129.664 287.168 123.84 330.496 123.712 387.84 123.712 469.312S123.84 608.192 129.664 651.52C135.296 693.696 145.792 716.8 162.432 733.44A87.79 87.79 0 0 0 174.976 744 38.4 38.4 0 0 1 131.456 807.168 161.024 161.024 0 0 1 108.16 787.84C74.88 754.496 60.352 712.32 53.504 661.696 46.848 612.032 46.976 548.672 46.976 469.312 46.976 389.952 46.848 326.592 53.504 276.928 60.352 226.24 74.88 184.128 108.16 150.848 141.44 117.44 183.552 103.04 234.24 96.128 283.968 89.536 347.328 89.6 426.688 89.6H597.312C676.672 89.6 740.032 89.6 789.76 96.192 840.448 103.04 882.56 117.504 915.84 150.784 949.248 184.128 963.712 226.24 970.56 276.928 977.152 326.592 977.088 389.952 977.088 469.312 977.088 548.672 977.088 612.032 970.496 661.696 963.648 712.448 949.12 754.496 915.84 787.776A165.952 165.952 0 0 1 892.608 807.232 38.407 38.407 0 0 1 849.088 743.936C853.568 740.864 857.6 737.408 861.504 733.504 878.144 716.8 888.64 693.696 894.336 651.52 900.16 608.192 900.288 550.848 900.288 469.312Z"></path><path fill="currentColor" d="M350.656 689.344A311.168 311.168 0 0 1 673.28 689.344C687.616 698.048 728.064 719.04 753.856 744.768 767.168 758.144 781.888 777.728 784.64 803.2 787.584 830.72 775.424 855.36 754.88 875.392 722.752 906.688 681.6 934.4 626.944 934.4H396.992C342.464 934.4 301.312 906.752 269.12 875.392 248.64 855.36 236.48 830.72 239.424 803.072 242.112 777.728 256.832 758.208 270.08 744.896 295.872 718.976 336.384 698.048 350.656 689.28zM633.408 754.944A234.304 234.304 0 0 0 390.592 754.944C368 768.768 341.632 782.016 324.48 799.104A47.488 47.488 0 0 0 317.056 808.256 11.712 11.712 0 0 0 315.776 811.136C315.84 809.216 314.048 812.032 322.688 820.416 348.16 845.184 371.008 857.6 396.992 857.6H626.944C652.928 857.6 675.84 845.184 701.248 820.416 709.888 812.032 708.032 809.28 708.16 811.072A10.432 10.432 0 0 0 706.88 808.32 46.976 46.976 0 0 0 699.52 799.104C682.432 781.952 656 768.768 633.408 754.944zM580.288 469.44A68.32 68.32 0 1 0 443.648 469.376 68.32 68.32 0 0 0 580.288 469.376zM657.088 469.376A145.088 145.088 0 1 1 366.912 469.312 145.088 145.088 0 0 1 657.088 469.312z"></path></svg></span>Members</div>
+        <div class="mf-menu__item"><span class="icon" style="width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/safe.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M814.912 256A4.224 4.224 0 0 0 813.632 252.992 4.224 4.224 0 0 0 810.752 251.712C713.088 251.776 598.4 195.392 519.488 126.528A11.52 11.52 0 0 0 504.576 126.528L504.512 126.464C426.048 194.816 310.976 251.712 213.312 251.776A4.288 4.288 0 0 0 209.088 256V554.688C209.024 651.2 242.432 721.6 295.04 775.488 342.016 823.68 405.76 859.968 478.72 888.128L510.4 899.84 511.36 900.16A4.224 4.224 0 0 0 513.92 900.16C599.872 870.208 675.328 830.72 728.96 775.68 781.568 721.664 814.912 651.2 814.912 554.688V256ZM612.864 399.488A38.421 38.421 0 0 1 667.2 453.824L496.512 624.512A38.4 38.4 0 0 1 442.112 624.512L356.928 539.136A38.4 38.4 0 1 1 411.2 484.864L469.312 542.976 612.864 399.488ZM891.712 554.688C891.712 671.488 850.368 761.024 784 829.248 718.592 896.192 630.656 940.864 539.2 972.8L538.88 972.864A81.088 81.088 0 0 1 485.44 972.288V972.352C393.6 940.672 305.6 896.192 240.128 829.184 173.568 761.088 132.288 671.488 132.288 554.688V256A81.024 81.024 0 0 1 213.376 174.912C286.272 174.912 384.256 129.536 454.272 68.352L454.592 68.032A88.32 88.32 0 0 1 563.2 63.232L569.344 68.032 569.728 68.352C640.128 129.92 737.728 174.912 810.688 174.912A81.088 81.088 0 0 1 891.712 256V554.688Z"></path></svg></span>API keys</div>
+      </nav>
+    </div>
+
+  </div>
+
+</body>
+</html>

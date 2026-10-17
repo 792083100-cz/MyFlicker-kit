@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cards &amp; List</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style data-preview-shell>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html,
+    body {
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      letter-spacing: var(--body-sm-letter-spacing);
+      min-height: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+
+    body { padding: var(--spacer-32); }
+    img, svg, video, canvas { max-width: 100%; }
+    a { color: var(--text-default); text-decoration: none; }
+    a:hover { color: var(--text-default-hover); }
+    hr { border: 0; border-top: 1px solid var(--border-neutral-l1); margin: var(--spacer-24) 0; }
+
+    .h1 { font-family: var(--heading-2xl-font-family); font-size: var(--heading-2xl-font-size); line-height: var(--heading-2xl-line-height); font-weight: var(--heading-2xl-font-weight); color: var(--text-default); }
+    .h2 { font-family: var(--heading-md-font-family); font-size: var(--heading-md-font-size); line-height: var(--heading-md-line-height); font-weight: var(--heading-md-font-weight); color: var(--text-default); }
+    .h3 { font-family: var(--heading-sm-font-family); font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); color: var(--text-default); }
+    .eyebrow { font-size: var(--body-xs-font-size); line-height: var(--body-xs-line-height); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: var(--body-xs-letter-spacing); }
+    .text-secondary { color: var(--text-secondary); }
+    .text-tertiary { color: var(--text-tertiary); }
+
+    .row { display: flex; gap: var(--spacer-12); flex-wrap: wrap; align-items: center; }
+    .col { display: flex; flex-direction: column; gap: var(--spacer-12); }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacer-24); }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacer-24); }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacer-24); }
+    .stack-8 { display: flex; flex-direction: column; gap: var(--spacer-8); }
+    .stack-12 { display: flex; flex-direction: column; gap: var(--spacer-12); }
+    .stack-16 { display: flex; flex-direction: column; gap: var(--spacer-16); }
+    .stack-24 { display: flex; flex-direction: column; gap: var(--spacer-24); }
+    .stack-40 { display: flex; flex-direction: column; gap: var(--spacer-40); }
+
+    .pv-header { margin-bottom: var(--spacer-32); padding-bottom: var(--spacer-16); border-bottom: 1px solid var(--border-neutral-l1); }
+    .pv-header h1 { font-size: var(--heading-lg-font-size); line-height: var(--heading-lg-line-height); font-weight: var(--heading-lg-font-weight); margin-bottom: var(--spacer-4); }
+    .pv-header p { color: var(--text-secondary); font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); }
+    .pv-section { margin-bottom: var(--spacer-32); }
+    .pv-section__title { font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); margin-bottom: var(--spacer-12); color: var(--text-default); }
+    .pv-section__sub { font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); color: var(--text-tertiary); margin-bottom: var(--spacer-12); }
+
+    @media (max-width: 720px) {
+      body { padding: var(--spacer-16); }
+      .grid-2,
+      .grid-3,
+      .grid-4 { grid-template-columns: 1fr; }
+    }
+  </style>
+  <link rel="stylesheet" href="../components.css" />
+  <style>
+/* Inline asset icon normalization: keep uploaded HTML independent from external SVG styling. */
+    [data-asset-icon] {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent !important;
+      -webkit-mask: none !important;
+      mask: none !important;
+    }
+
+    [data-asset-icon] > svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      flex: 0 0 auto;
+    }
+
+    .asset-inline-icon {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="pv-header">
+    <h1>Card / List</h1>
+    <p>Cards, list rows and notifications. Surfaces stay neutral; status color is reserved for inline states only.</p>
+  </div>
+
+  <div class="pv-section">
+    <div class="pv-section__title">Cards</div>
+    <div class="grid-3">
+      <div class="mf-card">
+        <div class="mf-card__title">Minimal content card</div>
+        <p class="mf-card__desc">Use for short-form information. Surface, radius and color all come from tokens.</p>
+      </div>
+      <div class="mf-card">
+        <div class="row" style="margin-bottom: var(--spacer-12);">
+          <span class="mf-tag">New</span>
+          <span class="text-tertiary" style="font-size: var(--body-xs-font-size);">2 min ago</span>
+        </div>
+        <div class="mf-card__title">Tokens are code</div>
+        <p class="mf-card__desc">Figma variables compile straight to CSS variables. Hand them to your agent.</p>
+        <div class="row" style="margin-top: var(--spacer-16);">
+          <button class="mf-btn mf-btn--secondary mf-btn--sm">Learn more</button>
+          <button class="mf-btn mf-btn--ghost mf-btn--sm">Dismiss</button>
+        </div>
+      </div>
+      <div class="mf-card" style="background: var(--bg-overlay-l1);">
+        <div class="row" style="margin-bottom: var(--spacer-12);">
+          <span class="icon" style="width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/ai.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M757.12 587.968 531.52 680.384 441.216 903.936A35.84 35.84 0 0 1 379.072 903.936L286.016 680.32 63.232 587.968A35.84 35.84 0 0 1 63.232 525.888L285.952 444.544 379.136 210.048A35.84 35.84 0 0 1 441.216 209.92L531.456 444.672 757.184 525.824A35.904 35.904 0 0 1 757.12 587.968zM963.072 194.752 852.032 240.192 807.616 350.08A17.664 17.664 0 0 1 777.088 350.08L731.328 240.192 621.76 194.752A17.664 17.664 0 0 1 621.76 164.16L731.328 124.224 777.088 8.832A17.664 17.664 0 0 1 807.616 8.832L852.032 124.224 963.008 164.16A17.664 17.664 0 0 1 963.008 194.752z"></path></svg></span>
+          <span class="mf-card__title" style="margin-bottom:0;">Highlighted</span>
+        </div>
+        <p class="mf-card__desc">Highlighted card uses a slightly elevated overlay surface — no brand border.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="pv-section">
+    <div class="pv-section__title">List</div>
+    <div style="background: var(--bg-base-secondary); border: 1px solid var(--border-neutral-l1); border-radius: var(--radius-8); overflow: hidden; max-width: 720px;">
+      <div class="row" style="padding: var(--spacer-16); border-bottom: 1px solid var(--border-neutral-l1);">
+        <div style="width:32px; height:32px; border-radius: var(--radius-full); background: var(--bg-overlay-l3); color: var(--text-default); display:flex; align-items:center; justify-content:center; font-weight: var(--font-weight-strong);">A</div>
+        <div style="flex:1;">
+          <div style="color: var(--text-default); font-weight: var(--font-weight-medium);">Avery Chen</div>
+          <div class="text-tertiary" style="font-size: var(--body-xs-font-size);">avery@nimbus.app</div>
+        </div>
+        <span class="mf-tag mf-tag--success">Online</span>
+      </div>
+      <div class="row" style="padding: var(--spacer-16); border-bottom: 1px solid var(--border-neutral-l1);">
+        <div style="width:32px; height:32px; border-radius: var(--radius-full); background: var(--bg-overlay-l3); color: var(--text-default); display:flex; align-items:center; justify-content:center; font-weight: var(--font-weight-strong);">M</div>
+        <div style="flex:1;">
+          <div style="color: var(--text-default); font-weight: var(--font-weight-medium);">Mia Patel</div>
+          <div class="text-tertiary" style="font-size: var(--body-xs-font-size);">mia@nimbus.app</div>
+        </div>
+        <span class="mf-tag">Offline</span>
+      </div>
+      <div class="row" style="padding: var(--spacer-16);">
+        <div style="width:32px; height:32px; border-radius: var(--radius-full); background: var(--bg-overlay-l3); color: var(--text-default); display:flex; align-items:center; justify-content:center; font-weight: var(--font-weight-strong);">L</div>
+        <div style="flex:1;">
+          <div style="color: var(--text-default); font-weight: var(--font-weight-medium);">Liam Wong</div>
+          <div class="text-tertiary" style="font-size: var(--body-xs-font-size);">liam@nimbus.app</div>
+        </div>
+        <span class="mf-tag mf-tag--warning">Busy</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="pv-section">
+    <div class="pv-section__title">Notifications</div>
+    <div class="stack-12" style="max-width: 720px;">
+      <div style="display:flex; gap: var(--spacer-12); padding: var(--spacer-12) var(--spacer-16); background: var(--bg-base-secondary); border:1px solid var(--border-neutral-l1); border-radius: var(--radius-8); color: var(--text-default);">
+        <span class="icon" style="flex-shrink:0; width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/success.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64ZM707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"></path><path fill="#fff" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"></path></svg></span>
+        Configuration saved successfully.
+      </div>
+      <div style="display:flex; gap: var(--spacer-12); padding: var(--spacer-12) var(--spacer-16); background: var(--bg-base-secondary); border:1px solid var(--border-neutral-l1); border-radius: var(--radius-8); color: var(--text-default);">
+        <span class="icon" style="flex-shrink:0; width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/warn.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M960 512A448 448 0 1 1 64 512 448 448 0 0 1 960 512Z"></path><path fill="#fff" d="M448 320A64 64 0 0 1 576 320V512A64 64 0 0 1 448 512V320zM448 704A64 64 0 1 1 576 704 64 64 0 0 1 448 704z"></path></svg></span>
+        You're approaching your free-tier limit.
+      </div>
+      <div style="display:flex; gap: var(--spacer-12); padding: var(--spacer-12) var(--spacer-16); background: var(--bg-base-secondary); border:1px solid var(--border-neutral-l1); border-radius: var(--radius-8); color: var(--text-default);">
+        <span class="icon" style="flex-shrink:0; width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/info2.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M960 512A448 448 0 1 0 64 512 448 448 0 0 0 960 512Z"></path><path fill="#fff" d="M448 704A64 64 0 1 0 576 704V512A64 64 0 0 0 448 512V704zM448 320A64 64 0 1 0 576 320 64 64 0 0 0 448 320z"></path></svg></span>
+        A new version is available — refresh to load it.
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>Settings Panel</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style data-preview-shell>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      letter-spacing: var(--body-sm-letter-spacing);
+      min-height: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    body { padding: var(--spacer-32); }
+
+    .pv-header { margin-bottom: var(--spacer-32); padding-bottom: var(--spacer-16); border-bottom: 1px solid var(--border-neutral-l1); }
+    .pv-header h1 { font-size: var(--heading-lg-font-size); line-height: var(--heading-lg-line-height); font-weight: var(--heading-lg-font-weight); margin-bottom: var(--spacer-4); }
+    .pv-header p { color: var(--text-secondary); font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); }
+    .pv-section { margin-bottom: var(--spacer-40); }
+    .pv-section__title { font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); margin-bottom: var(--spacer-16); color: var(--text-default); }
+    .pv-section__sub { font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); color: var(--text-tertiary); margin-bottom: var(--spacer-12); }
+  </style>
+  <link rel="stylesheet" href="../components.css" />
+</head>
+<body>
+  <div class="pv-header">
+    <h1>Settings Panel 设置面板</h1>
+    <p>基于 <code>.mf-menu</code> 扩展的业务设置面板。包含带右侧值的导航项、纯动作项、分割线和底部 CTA 按钮。</p>
+  </div>
+
+  <!-- Default -->
+  <div class="pv-section">
+    <div class="pv-section__title">Default — 标准设置面板</div>
+    <div class="pv-section__sub"><code>.settings-panel</code></div>
+    <div class="settings-panel">
+      <div class="settings-panel__list">
+
+        <button class="settings-panel__item">
+          <span class="settings-panel__icon ac-icon ac-i-internet" aria-hidden="true"></span>
+          <span class="settings-panel__label">语言</span>
+          <span class="settings-panel__value">
+            简体中文
+            <span class="sp-arrow"><svg viewBox="0 0 1024 1024" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M409.664 793.344A38.4 38.4 0 0 1 358.08 736.512L571.392 543.232C584.96 530.752 593.152 521.984 597.76 515.392 602.176 509.184 601.472 507.52 601.472 508.928 601.472 510.272 602.112 508.672 597.76 502.4 593.152 495.808 584.96 487.04 571.392 474.688L358.08 281.408A38.425 38.425 0 0 1 409.6 224.384L622.912 417.856C637.76 431.232 651.072 444.672 660.672 458.304 670.4 472.32 678.208 489.152 678.208 508.928 678.272 528.704 670.464 545.536 660.608 559.552 651.008 573.248 637.76 586.624 622.912 600.064L409.664 793.344Z"/></svg></span>
+          </span>
+        </button>
+
+        <button class="settings-panel__item">
+          <span class="settings-panel__icon ac-icon ac-i-lightanddarkswitching" aria-hidden="true"></span>
+          <span class="settings-panel__label">主题</span>
+          <span class="settings-panel__value">
+            浅色
+            <span class="sp-arrow"><svg viewBox="0 0 1024 1024" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M409.664 793.344A38.4 38.4 0 0 1 358.08 736.512L571.392 543.232C584.96 530.752 593.152 521.984 597.76 515.392 602.176 509.184 601.472 507.52 601.472 508.928 601.472 510.272 602.112 508.672 597.76 502.4 593.152 495.808 584.96 487.04 571.392 474.688L358.08 281.408A38.425 38.425 0 0 1 409.6 224.384L622.912 417.856C637.76 431.232 651.072 444.672 660.672 458.304 670.4 472.32 678.208 489.152 678.208 508.928 678.272 528.704 670.464 545.536 660.608 559.552 651.008 573.248 637.76 586.624 622.912 600.064L409.664 793.344Z"/></svg></span>
+          </span>
+        </button>
+
+        <div class="settings-panel__divider"></div>
+
+        <button class="settings-panel__item">
+          <span class="settings-panel__icon ac-icon ac-i-problemfeedback" aria-hidden="true"></span>
+          <span class="settings-panel__label">问题反馈</span>
+        </button>
+
+        <button class="settings-panel__item">
+          <span class="settings-panel__icon ac-icon ac-i-help" aria-hidden="true"></span>
+          <span class="settings-panel__label">帮助手册</span>
+        </button>
+
+        <button class="settings-panel__item">
+          <span class="settings-panel__icon ac-icon ac-i-joinusergroup" aria-hidden="true"></span>
+          <span class="settings-panel__label">加入用户群</span>
+        </button>
+
+        <button class="settings-panel__item">
+          <span class="settings-panel__icon ac-icon ac-i-discuss" aria-hidden="true"></span>
+          <span class="settings-panel__label">前去 KIM 沟通</span>
+        </button>
+
+        <button class="settings-panel__item">
+          <span class="settings-panel__icon ac-icon ac-i-more" aria-hidden="true"></span>
+          <span class="settings-panel__label">更多设置</span>
+        </button>
+
+      </div>
+      <div class="settings-panel__footer">
+        <button class="settings-panel__cta">下载客户端</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- No CTA variant -->
+  <div class="pv-section">
+    <div class="pv-section__title">Minimal — 无底部按钮</div>
+    <div class="pv-section__sub"><code>.settings-panel</code>（无 <code>.settings-panel__footer</code>）</div>
+    <div class="settings-panel">
+      <div class="settings-panel__list">
+
+        <button class="settings-panel__item">
+          <span class="settings-panel__icon ac-icon ac-i-internet" aria-hidden="true"></span>
+          <span class="settings-panel__label">语言</span>
+          <span class="settings-panel__value">
+            简体中文
+            <span class="sp-arrow"><svg viewBox="0 0 1024 1024" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M409.664 793.344A38.4 38.4 0 0 1 358.08 736.512L571.392 543.232C584.96 530.752 593.152 521.984 597.76 515.392 602.176 509.184 601.472 507.52 601.472 508.928 601.472 510.272 602.112 508.672 597.76 502.4 593.152 495.808 584.96 487.04 571.392 474.688L358.08 281.408A38.425 38.425 0 0 1 409.6 224.384L622.912 417.856C637.76 431.232 651.072 444.672 660.672 458.304 670.4 472.32 678.208 489.152 678.208 508.928 678.272 528.704 670.464 545.536 660.608 559.552 651.008 573.248 637.76 586.624 622.912 600.064L409.664 793.344Z"/></svg></span>
+          </span>
+        </button>
+
+        <button class="settings-panel__item">
+          <span class="settings-panel__icon ac-icon ac-i-lightanddarkswitching" aria-hidden="true"></span>
+          <span class="settings-panel__label">主题</span>
+          <span class="settings-panel__value">
+            浅色
+            <span class="sp-arrow"><svg viewBox="0 0 1024 1024" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M409.664 793.344A38.4 38.4 0 0 1 358.08 736.512L571.392 543.232C584.96 530.752 593.152 521.984 597.76 515.392 602.176 509.184 601.472 507.52 601.472 508.928 601.472 510.272 602.112 508.672 597.76 502.4 593.152 495.808 584.96 487.04 571.392 474.688L358.08 281.408A38.425 38.425 0 0 1 409.6 224.384L622.912 417.856C637.76 431.232 651.072 444.672 660.672 458.304 670.4 472.32 678.208 489.152 678.208 508.928 678.272 528.704 670.464 545.536 660.608 559.552 651.008 573.248 637.76 586.624 622.912 600.064L409.664 793.344Z"/></svg></span>
+          </span>
+        </button>
+
+        <div class="settings-panel__divider"></div>
+
+        <button class="settings-panel__item">
+          <span class="settings-panel__icon ac-icon ac-i-problemfeedback" aria-hidden="true"></span>
+          <span class="settings-panel__label">问题反馈</span>
+        </button>
+
+        <button class="settings-panel__item">
+          <span class="settings-panel__icon ac-icon ac-i-help" aria-hidden="true"></span>
+          <span class="settings-panel__label">帮助手册</span>
+        </button>
+
+        <button class="settings-panel__item">
+          <span class="settings-panel__icon ac-icon ac-i-joinusergroup" aria-hidden="true"></span>
+          <span class="settings-panel__label">加入用户群</span>
+        </button>
+
+        <button class="settings-panel__item">
+          <span class="settings-panel__icon ac-icon ac-i-more" aria-hidden="true"></span>
+          <span class="settings-panel__label">更多设置</span>
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

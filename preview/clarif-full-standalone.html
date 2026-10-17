@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>问题澄清卡片 · 完整态</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: var(--bg-base-secondary);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      letter-spacing: var(--body-sm-letter-spacing);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacer-48);
+    }
+    .demo-wrap { max-width: 720px; width: 100%; }
+  </style>
+  <link rel="stylesheet" href="../components.css" />
+</head>
+<body>
+
+  <div class="demo-wrap">
+    <div class="mf-clarif" id="clarif-demo">
+      <div class="mf-clarif__head">
+        <span class="mf-clarif__head-icon">
+          <span class="ac-icon ac-i-newconversation" style="width:16px;height:16px;"></span>
+        </span>
+        <span class="mf-clarif__title">请回答以下问题</span>
+        <div class="mf-clarif__pager">
+          <button class="mf-clarif__pager-btn" id="btn-prev" disabled>
+            <span class="ac-icon ac-i-arrowup" style="width:16px;height:16px;"></span>
+          </button>
+          <span class="mf-clarif__pager-text" id="pager-text">1/3</span>
+          <button class="mf-clarif__pager-btn" id="btn-next">
+            <span class="ac-icon ac-i-arrowdown" style="width:16px;height:16px;"></span>
+          </button>
+        </div>
+      </div>
+      <div class="mf-clarif__body" id="clarif-body"></div>
+      <div class="mf-clarif__foot">
+        <button class="mf-btn mf-btn--ghost mf-btn--md" id="btn-skip">跳过回答</button>
+        <button class="mf-btn mf-btn--secondary mf-btn--md" id="btn-prev-step" style="display:none;">上一步</button>
+        <button class="mf-btn mf-btn--secondary mf-btn--md" id="btn-next-step" disabled>下一步</button>
+        <button class="mf-btn mf-btn--primary mf-btn--md" id="btn-submit" style="display:none;" disabled>提交</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        title: '1. 福利中心页面的文件组织结构应该如何安排？',
+        choices: [
+          { key: 'A', text: '福利中心文件组织结构规则', recommended: true },
+          { key: 'B', text: '福利中心文件组织结构规则：在现有的目录下创建新文件创建新文件创建新文件' },
+          { key: 'C', text: '福利中心文件组织结构规则：在现有的' },
+          { key: 'D', text: '或输入自定义答案...', placeholder: true },
+        ]
+      },
+      {
+        title: '2. 是否需要同时支持暗色主题？',
+        choices: [
+          { key: 'A', text: '是，需要完整暗色主题支持', recommended: true },
+          { key: 'B', text: '否，仅支持亮色主题' },
+          { key: 'C', text: '跟随系统主题自动切换' },
+          { key: 'D', text: '或输入自定义答案...', placeholder: true },
+        ]
+      },
+      {
+        title: '3. 页面路由方案优先选择？',
+        choices: [
+          { key: 'A', text: '基于现有路由规范扩展', recommended: true },
+          { key: 'B', text: '新建独立路由模块' },
+          { key: 'C', text: '沿用旧版路由结构' },
+          { key: 'D', text: '或输入自定义答案...', placeholder: true },
+        ]
+      }
+    ];
+
+    let current = 0;
+    const selections = new Array(questions.length).fill(null);
+
+    const body       = document.getElementById('clarif-body');
+    const pagerText  = document.getElementById('pager-text');
+    const btnPrev    = document.getElementById('btn-prev');
+    const btnNext    = document.getElementById('btn-next');
+    const btnNextStep= document.getElementById('btn-next-step');
+    const btnPrevStep= document.getElementById('btn-prev-step');
+    const btnSubmit  = document.getElementById('btn-submit');
+
+    let focusedIndex = 0;
+
+    function goTo(index) {
+      current = Math.max(0, Math.min(questions.length - 1, index));
+      const sel = selections[current];
+      const q = questions[current];
+      focusedIndex = sel ? q.choices.findIndex(c => c.key === sel) : 0;
+      render();
+    }
+
+    const customAnswers = new Array(questions.length).fill('');
+
+    function selectChoice(key) {
+      const q = questions[current];
+      const choice = q.choices.find(c => c.key === key);
+      focusedIndex = q.choices.findIndex(c => c.key === key);
+      if (choice && choice.placeholder) {
+        selections[current] = key;
+        render();
+        const input = document.getElementById('custom-input');
+        if (input) { input.focus(); input.value = customAnswers[current]; }
+        return;
+      }
+      selections[current] = key;
+      render();
+      if (current < questions.length - 1) {
+        setTimeout(() => goTo(current + 1), 180);
+      }
+    }
+
+    function render() {
+      const q = questions[current];
+      const selected = selections[current];
+      const total = questions.length;
+      const selectedChoice = q.choices.find(c => c.key === selected);
+      const isCustomActive = selectedChoice && selectedChoice.placeholder;
+
+      pagerText.textContent = `${current + 1}/${total}`;
+      btnPrev.disabled = current === 0;
+      btnNext.disabled = current === total - 1;
+      btnNextStep.disabled = selected === null || (isCustomActive && !customAnswers[current].trim());
+
+      const isLast = current === total - 1;
+      btnNextStep.style.display  = isLast ? 'none' : '';
+      btnPrevStep.style.display  = current > 0 ? '' : 'none';
+      btnSubmit.style.display    = isLast ? '' : 'none';
+      btnSubmit.disabled         = selected === null || (isCustomActive && !customAnswers[current].trim());
+
+      body.innerHTML = `
+        <div class="mf-clarif__question">
+          <div class="mf-clarif__question-title">${q.title}</div>
+          <div class="mf-clarif__choices" id="choices-list">
+            ${q.choices.map((c, i) => {
+              const isSelected = selected === c.key;
+              const isFocused  = focusedIndex === i;
+              let cls = 'mf-clarif__choice';
+              if (isSelected) cls += ' mf-clarif__choice--active';
+              if (isFocused && !isSelected)  cls += ' mf-clarif__choice--focused';
+              const keyCls = (isSelected || isFocused) ? 'mf-clarif__choice-key mf-clarif__choice-key--selected' : 'mf-clarif__choice-key';
+              const showEnter = isSelected || isFocused;
+              if (c.placeholder && isSelected) {
+                return `
+                <div class="${cls}" data-key="${c.key}" data-idx="${i}">
+                  <span class="${keyCls}">${c.key}</span>
+                  <span class="mf-clarif__choice-main" style="flex:1;min-width:0;">
+                    <input id="custom-input"
+                      type="text"
+                      class="mf-clarif__custom-input"
+                      placeholder="输入自定义答案..."
+                      value="${customAnswers[current].replace(/"/g, '&quot;')}"
+                    />
+                  </span>
+                  ${customAnswers[current].trim() || isFocused ? `<span class="mf-clarif__choice-enter"><span class="ac-icon ac-i-enterkey"></span></span>` : ''}
+                </div>`;
+              }
+              if (c.placeholder && !isSelected) {
+                const savedText = customAnswers[current];
+                const textCls2 = savedText
+                  ? 'mf-clarif__choice-text'
+                  : 'mf-clarif__choice-text mf-clarif__choice-text--placeholder';
+                return `
+                <div class="${cls}" data-key="${c.key}" data-idx="${i}">
+                  <span class="${keyCls}">${c.key}</span>
+                  <span class="mf-clarif__choice-main">
+                    <span class="${textCls2}">${savedText || c.text}</span>
+                  </span>
+                  ${isFocused ? `<span class="mf-clarif__choice-enter"><span class="ac-icon ac-i-enterkey"></span></span>` : ''}
+                </div>`;
+              }
+              const textCls = c.placeholder
+                ? 'mf-clarif__choice-text mf-clarif__choice-text--placeholder'
+                : (isSelected ? 'mf-clarif__choice-text mf-clarif__choice-text--selected' : 'mf-clarif__choice-text');
+              return `
+              <div class="${cls}" data-key="${c.key}" data-idx="${i}">
+                <span class="${keyCls}">${c.key}</span>
+                <span class="mf-clarif__choice-main">
+                  <span class="${textCls}">${c.text}</span>
+                  ${c.recommended ? `<span class="mf-tag">推荐</span>` : ''}
+                </span>
+                ${showEnter ? `<span class="mf-clarif__choice-enter"><span class="ac-icon ac-i-enterkey"></span></span>` : ''}
+              </div>`;
+            }).join('')}
+          </div>
+        </div>
+      `;
+
+      body.querySelectorAll('.mf-clarif__choice').forEach(el => {
+        el.addEventListener('click', () => {
+          const q = questions[current];
+          const choice = q.choices.find(c => c.key === el.dataset.key);
+          if (choice && choice.placeholder && selections[current] === el.dataset.key) return;
+          selectChoice(el.dataset.key);
+        });
+      });
+
+      const customInput = document.getElementById('custom-input');
+      if (customInput) {
+        customInput.addEventListener('input', () => {
+          customAnswers[current] = customInput.value;
+          btnNextStep.disabled = !customInput.value.trim();
+          btnSubmit.disabled = !customInput.value.trim();
+          const enterSlot = customInput.closest('.mf-clarif__choice').querySelector('.mf-clarif__choice-enter');
+          if (customInput.value.trim()) {
+            if (!enterSlot) {
+              const span = document.createElement('span');
+              span.className = 'mf-clarif__choice-enter';
+              span.innerHTML = `<span class="ac-icon ac-i-enterkey"></span>`;
+              customInput.closest('.mf-clarif__choice').appendChild(span);
+            }
+          } else {
+            if (enterSlot) enterSlot.remove();
+          }
+        });
+        customInput.addEventListener('keydown', e => {
+          if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') e.stopPropagation();
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            if (customInput.value.trim()) {
+              if (current < questions.length - 1) {
+                setTimeout(() => goTo(current + 1), 100);
+              } else {
+                // 最后一题：确认输入，退出编辑态，不直接提交
+                customInput.blur();
+              }
+            }
+            return;
+          }
+          if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            e.stopPropagation();
+            customInput.blur();
+            focusedIndex = e.key === 'ArrowUp'
+              ? focusedIndex - 1
+              : focusedIndex + 1;
+            const q = questions[current];
+            focusedIndex = Math.max(0, Math.min(q.choices.length - 1, focusedIndex));
+            selections[current] = null;
+            render();
+          }
+        });
+      }
+    }
+
+    btnPrev.addEventListener('click', () => goTo(current - 1));
+    btnNext.addEventListener('click', () => goTo(current + 1));
+    btnPrevStep.addEventListener('click', () => goTo(current - 1));
+    btnNextStep.addEventListener('click', () => goTo(current + 1));
+    btnSubmit.addEventListener('click', () => alert('提交成功！'));
+
+    document.addEventListener('keydown', e => {
+      if (document.activeElement && document.activeElement.id === 'custom-input') return;
+      const q = questions[current];
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); goTo(current - 1); return; }
+      if (e.key === 'ArrowRight') { e.preventDefault(); goTo(current + 1); return; }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        focusedIndex = focusedIndex <= 0 ? q.choices.length - 1 : focusedIndex - 1;
+        render();
+        return;
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        focusedIndex = focusedIndex >= q.choices.length - 1 ? 0 : focusedIndex + 1;
+        render();
+        return;
+      }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        // 焦点在 placeholder 选项时，优先进入编辑态，不触发提交
+        const focusedChoice = q.choices[focusedIndex];
+        if (focusedChoice && focusedChoice.placeholder) {
+          const alreadyFilled = selections[current] === focusedChoice.key && customAnswers[current].trim();
+          if (!alreadyFilled) {
+            selectChoice(focusedChoice.key);
+            return;
+          }
+        }
+        const isLast = current === questions.length - 1;
+        if (isLast && selections[current] !== null) {
+          const selChoice = q.choices.find(c => c.key === selections[current]);
+          const isCustom = selChoice && selChoice.placeholder;
+          if (!isCustom || customAnswers[current].trim()) {
+            alert('提交成功！');
+            return;
+          }
+        }
+        if (focusedIndex >= 0) {
+          selectChoice(q.choices[focusedIndex].key);
+        }
+        return;
+      }
+      const letter = e.key.toUpperCase();
+      const match = q.choices.find(c => c.key === letter);
+      if (match) selectChoice(match.key);
+    });
+
+    render();
+  </script>
+
+</body>
+</html>

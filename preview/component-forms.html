@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Form</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style data-preview-shell>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html,
+    body {
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      letter-spacing: var(--body-sm-letter-spacing);
+      min-height: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+
+    body { padding: var(--spacer-32); }
+    img, svg, video, canvas { max-width: 100%; }
+    a { color: var(--text-default); text-decoration: none; }
+    a:hover { color: var(--text-default-hover); }
+    hr { border: 0; border-top: 1px solid var(--border-neutral-l1); margin: var(--spacer-24) 0; }
+
+    .h1 { font-family: var(--heading-2xl-font-family); font-size: var(--heading-2xl-font-size); line-height: var(--heading-2xl-line-height); font-weight: var(--heading-2xl-font-weight); color: var(--text-default); }
+    .h2 { font-family: var(--heading-md-font-family); font-size: var(--heading-md-font-size); line-height: var(--heading-md-line-height); font-weight: var(--heading-md-font-weight); color: var(--text-default); }
+    .h3 { font-family: var(--heading-sm-font-family); font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); color: var(--text-default); }
+    .eyebrow { font-size: var(--body-xs-font-size); line-height: var(--body-xs-line-height); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: var(--body-xs-letter-spacing); }
+    .text-secondary { color: var(--text-secondary); }
+    .text-tertiary { color: var(--text-tertiary); }
+
+    .row { display: flex; gap: var(--spacer-12); flex-wrap: wrap; align-items: center; }
+    .col { display: flex; flex-direction: column; gap: var(--spacer-12); }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacer-24); }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacer-24); }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacer-24); }
+    .stack-8 { display: flex; flex-direction: column; gap: var(--spacer-8); }
+    .stack-12 { display: flex; flex-direction: column; gap: var(--spacer-12); }
+    .stack-16 { display: flex; flex-direction: column; gap: var(--spacer-16); }
+    .stack-24 { display: flex; flex-direction: column; gap: var(--spacer-24); }
+    .stack-40 { display: flex; flex-direction: column; gap: var(--spacer-40); }
+
+    .pv-header { margin-bottom: var(--spacer-32); padding-bottom: var(--spacer-16); border-bottom: 1px solid var(--border-neutral-l1); }
+    .pv-header h1 { font-size: var(--heading-lg-font-size); line-height: var(--heading-lg-line-height); font-weight: var(--heading-lg-font-weight); margin-bottom: var(--spacer-4); }
+    .pv-header p { color: var(--text-secondary); font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); }
+    .pv-section { margin-bottom: var(--spacer-32); }
+    .pv-section__title { font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); margin-bottom: var(--spacer-12); color: var(--text-default); }
+    .pv-section__sub { font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); color: var(--text-tertiary); margin-bottom: var(--spacer-12); }
+
+    @media (max-width: 720px) {
+      body { padding: var(--spacer-16); }
+      .grid-2,
+      .grid-3,
+      .grid-4 { grid-template-columns: 1fr; }
+    }
+  </style>
+  <link rel="stylesheet" href="../components.css" />
+  <style>
+    body { max-width: 1120px; margin: 0 auto; padding: var(--spacer-40) var(--spacer-48) var(--spacer-64); }
+    .pv-header { margin-bottom: var(--spacer-40); padding-bottom: var(--spacer-20); }
+    .pv-header h1 { margin-bottom: var(--spacer-8); }
+    .pv-section { max-width: 760px; margin-bottom: 0; padding: var(--spacer-32) 0; border-top: 1px solid var(--border-neutral-l1); }
+    .pv-header + .pv-section { border-top: 0; padding-top: 0; }
+    .pv-section--wide { max-width: none; }
+    .pv-section__title { margin-bottom: var(--spacer-20); }
+    .pv-section__sub { margin-top: var(--spacer-24); }
+    .grid-2 { gap: var(--spacer-16) var(--spacer-24); }
+    .row { gap: var(--spacer-16) var(--spacer-20); }
+    .stack-8 { gap: var(--spacer-12); }
+    .stack-12 { gap: var(--spacer-12); }
+    .form { max-width: 560px; background: var(--bg-base-default); }
+    .field { position: relative; display:flex; flex-direction: column; gap: var(--spacer-8); margin-bottom: var(--spacer-24); }
+    .field__label {
+      font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); color: var(--text-secondary);
+      font-weight: 400;
+      display: inline-flex; align-items: center; gap: var(--spacer-6);
+    }
+    .field__hint  { position: absolute; top: 100%; left: 0; margin-top: 2px; font-size: var(--body-xs-font-size); line-height: var(--body-xs-line-height); color: var(--text-tertiary); }
+    .field__error { position: absolute; top: 100%; left: 0; margin-top: 2px; font-size: var(--body-xs-font-size); line-height: var(--body-xs-line-height); color: var(--status-error-default, var(--status-error-default)); }
+    .field__required { color: var(--status-error-default, var(--status-error-default)); font-weight: var(--font-weight-medium, 500); }
+    .lbl-row { display: inline-flex; align-items: center; gap: var(--spacer-6); line-height: var(--body-sm-line-height); }
+
+    /* Field help tooltip */
+    .field__help { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; padding: 0; border: 0; background: transparent; color: var(--icon-tertiary); cursor: pointer; }
+    .field__help:hover { color: var(--icon-secondary); }
+    .field__help .icon-img { width: 14px; height: 14px; flex: 0 0 14px; }
+    .field__help-tooltip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); display: none; padding: var(--spacer-6) var(--spacer-8); background: var(--bg-tooltip); color: var(--text-white); border-radius: var(--radius-8); font-size: var(--body-xs-font-size); line-height: var(--body-xs-line-height); white-space: nowrap; box-shadow: 0 12px 32px color-mix(in srgb, var(--text-default) 16%, transparent); z-index: 10; }
+    .field__help:hover .field__help-tooltip { display: block; }
+/* ===== Form preview composition ===== */
+    .select-popover-demo { position: relative; min-height: 248px; }
+    .select-popover-demo .mf-btn.is-active { background: transparent; border-color: var(--border-neutral-l2); font-family: var(--body-sm-font-family); font-weight: var(--body-sm-font-weight); letter-spacing: var(--body-sm-letter-spacing); }
+    .select-popover-demo .mf-btn.is-active:hover,
+    .select-popover-demo .mf-btn.is-active:active { background: transparent; border-color: var(--border-neutral-l2); }
+    .select-popover-demo .mf-popover { position: absolute; top: 32px; left: 0; margin: 0; }
+    .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--spacer-24); }
+    .field-grid .field, .form-grid .field { margin-bottom: 0; }
+    .field--full { grid-column: 1 / -1; }
+    .form-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--spacer-24); align-items: start; }
+    .span-12 { grid-column: 1 / -1; }
+    /* Three-block layout: header / body / footer */
+    .form-card { padding: 0 !important; overflow: hidden; background: var(--bg-base-default); }
+    .form-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--spacer-24); padding: var(--spacer-24) var(--spacer-24) var(--spacer-12); }
+    .form-header__left { display: flex; align-items: baseline; gap: var(--spacer-24); }
+    .form-header .mf-card__title { margin-bottom: 0; }
+    .form-body { padding: var(--spacer-8) var(--spacer-24) var(--spacer-24); display: flex; flex-direction: column; gap: var(--spacer-24); }
+    .form-footer { display: flex; align-items: center; justify-content: flex-end; gap: var(--spacer-8); padding: 13px var(--spacer-24) var(--spacer-24); }
+    .form-footer .mf-btn { min-height: 32px; height: 32px; }
+    .form-subsection { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--spacer-24); padding-top: var(--spacer-24); border-top: 1px solid var(--border-neutral-l1); }
+    .form-subsection__head { grid-column: 1 / -1; display: flex; align-items: flex-start; justify-content: space-between; gap: var(--spacer-16); }
+    .form-subsection__title { margin: 0; color: var(--text-default); font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); font-weight: var(--font-weight-medium, 500); }
+    .form-subsection__desc { margin: var(--spacer-4) 0 0; color: var(--text-tertiary); font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); }
+    .segmented { display: inline-flex; flex-wrap: wrap; gap: var(--spacer-2); border: 1px solid var(--border-neutral-l1); border-radius: var(--radius-12); padding: var(--spacer-2); background: var(--bg-overlay-l1); width: fit-content; max-width: 100%; }
+    .segmented label { position: relative; cursor: pointer; }
+    .segmented input { position: absolute; opacity: 0; pointer-events: none; }
+    .segmented span { display: inline-flex; align-items: center; justify-content: center; min-height: 28px; padding: 0 var(--spacer-12); border-radius: var(--radius-8); color: var(--text-secondary); font-family: var(--body-md-medium-font-family); font-size: var(--body-md-medium-font-size); line-height: var(--body-md-medium-line-height); font-weight: var(--body-md-medium-font-weight); letter-spacing: var(--body-md-medium-letter-spacing); white-space: nowrap; }
+    .segmented input:checked + span { background: var(--bg-base-default); color: var(--text-default); box-shadow: 0 1px 2px color-mix(in srgb, var(--text-default) 10%, transparent); }
+    .otp-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 40px)); gap: var(--spacer-8); }
+    .otp-grid .mf-input { justify-content: center; padding: 0; text-align: center; }
+    .otp-grid .mf-input input { text-align: center; }
+    .strength { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacer-4); }
+    .strength span { height: 4px; border-radius: var(--radius-full); background: var(--bg-overlay-l3); }
+    .strength span.is-on { background: var(--status-success-default); }
+    .slider-row { display: grid; grid-template-columns: minmax(0, 1fr) 48px; align-items: center; gap: var(--spacer-12); }
+    .slider-value { color: var(--text-secondary); text-align: right; font-family: var(--font-family-metric); font-size: var(--body-sm-font-size); }
+    .color-grid { display: flex; flex-wrap: wrap; gap: var(--spacer-10); }
+    .color-swatch { position: relative; width: 28px; height: 28px; border: 0; border-radius: var(--radius-8); cursor: pointer; box-shadow: none; transition: transform .12s ease, opacity .12s ease; }
+    .color-swatch:hover { transform: translateY(-1px); }
+    .color-swatch[aria-pressed="true"]::after { content: ''; position: absolute; left: 9px; top: 8px; width: 9px; height: 5px; border-left: 2px solid var(--text-onbrand); border-bottom: 2px solid var(--text-onbrand); transform: rotate(-45deg); }
+    .color-swatch:focus-visible { outline: 2px solid var(--border-brand); outline-offset: 2px; }
+    .swatch-brand { background: var(--bg-brand); }
+    .swatch-teal { background: var(--accent-teal); }
+    .swatch-coral { background: var(--accent-coral); }
+    .swatch-amber { background: var(--accent-amber); }
+    .swatch-cyan { background: var(--accent-cyan); }
+    .swatch-slate { background: var(--accent-slate); }
+    .score-row { display: inline-flex; gap: var(--spacer-6); }
+    .score-btn { width: 28px; height: 28px; border: 0; border-radius: var(--radius-8); background: var(--bg-overlay-l1); color: var(--text-secondary); cursor: pointer; }
+    .score-btn[aria-pressed="true"] { background: var(--bg-brand); color: var(--text-onbrand); }
+    .file-field { display: flex; align-items: center; flex-wrap: wrap; gap: var(--spacer-8); }
+    .file-field input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+    .file-name { color: var(--text-secondary); font-size: var(--body-sm-font-size); }
+    .date-panel { width: 100%; margin-top: var(--spacer-12); padding: var(--spacer-12); border: 1px solid var(--border-neutral-l1); border-radius: var(--radius-8); background: var(--bg-base-default); color: var(--text-default); }
+    .date-panel__head { display: flex; justify-content: space-between; align-items: center; gap: var(--spacer-8); }
+    .date-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--spacer-4); margin-top: var(--spacer-12); }
+    .date-grid span { display: grid; place-items: center; min-height: 28px; border-radius: var(--radius-8); color: var(--text-secondary); font-size: var(--body-md-font-size); line-height: var(--body-md-line-height); }
+    .date-grid .day-name { color: var(--text-tertiary); font-family: var(--code-editor-font-family); font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); }
+    .date-grid .is-range { background: var(--bg-overlay-l2); color: var(--text-default); }
+    .date-grid .is-start, .date-grid .is-end { background: var(--bg-invert); color: var(--bg-base-default); }
+    .rich-text { width: 100%; border: 1px solid var(--border-neutral-l1); border-radius: var(--radius-12); background: var(--bg-base-default); color: var(--text-default); overflow: hidden; }
+    .editor-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: var(--spacer-4); padding: var(--spacer-8); border-bottom: 1px solid var(--border-neutral-l1); }
+    .editor-toolbar button { min-width: 32px; min-height: 28px; border: 0; border-radius: var(--radius-8); background: transparent; color: var(--text-secondary); font-weight: var(--font-weight-medium); cursor: pointer; }
+    .editor-toolbar button[aria-pressed="true"], .editor-toolbar button:hover { background: var(--bg-overlay-l2); color: var(--text-default); }
+    .editor-body { min-height: 160px; padding: var(--spacer-16); color: var(--text-default); outline: 0; }
+    .editor-body p { margin: var(--spacer-0) var(--spacer-0) var(--spacer-12); }
+    .editor-body p:last-child { margin-bottom: var(--spacer-0); }
+    @media (max-width: 860px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .span-12 { grid-column: 1 / -1; }
+      .field-grid, .form-subsection { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 720px) {
+      body { padding: var(--spacer-24) var(--spacer-16) var(--spacer-48); }
+      .pv-section { padding: var(--spacer-24) 0; }
+      .grid-2 { gap: var(--spacer-12); }
+      .form-actions { justify-content: flex-start; flex-wrap: wrap; }
+      .otp-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+      .segmented { width: 100%; }
+      .segmented label { flex: 1 1 auto; }
+      .segmented span { width: 100%; }
+    }
+
+    /* Inline asset icon normalization: keep uploaded HTML independent from external SVG styling. */
+    [data-asset-icon] {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent !important;
+      -webkit-mask: none !important;
+      mask: none !important;
+    }
+
+    [data-asset-icon] > svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      flex: 0 0 auto;
+    }
+
+    .asset-inline-icon {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="pv-header">
+    <h1>Form</h1>
+    <p>The single home for action / selection controls - input, textarea, select, checkbox, radio, switch and form layout.</p>
+  </div>
+
+  <!-- ===== Input ===== -->
+  <div class="pv-section">
+    <div class="pv-section__title">Input</div>
+    <div class="grid-2" style="max-width:720px;">
+      <div class="mf-input"><input placeholder="Type something..." /></div>
+      <div class="mf-input"><span class="mf-input__icon"><span class="icon-img" aria-hidden="true" data-asset-icon="../assets/icons/kid/envelope.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M900.224 368.64 575.744 575.36 574.272 576.256A123.776 123.776 0 0 1 449.92 576.192L448.704 575.424 123.712 368.512V768C123.712 793.856 144.64 814.912 170.624 814.912H853.312A46.912 46.912 0 0 0 900.224 767.936V368.64ZM900.224 256A46.976 46.976 0 0 0 853.312 209.024H170.624A46.976 46.976 0 0 0 123.712 256V277.504L488.768 509.824A46.976 46.976 0 0 0 535.232 509.952L900.224 277.504V256ZM977.024 768A123.776 123.776 0 0 1 853.376 891.648H170.624A123.712 123.712 0 0 1 46.912 768V256C46.912 187.712 102.4 132.352 170.624 132.352H853.312A123.648 123.648 0 0 1 977.088 256V768Z"></path></svg></span></span><input placeholder="email@example.com" /></div>
+      <div class="mf-input"><input value="Filled value" /></div>
+      <div class="mf-input is-error"><input value="Invalid value" aria-invalid="true" /></div>
+    </div>
+
+    <div style="margin-top: var(--spacer-16);">
+      <div class="mf-input mf-search" style="max-width: 480px;">
+        <span class="mf-input__icon"><span class="icon-img" aria-hidden="true" data-asset-icon="../assets/icons/kid/search.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M793.6 480A313.6 313.6 0 1 0 166.4 480 313.6 313.6 0 0 0 793.6 480ZM870.4 480A390.4 390.4 0 1 1 89.6 480 390.4 390.4 0 0 1 870.4 480Z"></path><path fill="currentColor" stroke="currentColor" stroke-width="76.8" d="M768 768 960 960"></path></svg></span></span>
+        <input placeholder="Search docs, components, tokens..." />
+      </div>
+    </div>
+
+    <div class="stack-12" style="max-width: 480px; margin-top: var(--spacer-16);">
+      <div class="mf-input" style="height:24px; min-height:24px; padding:0 var(--spacer-8); font-size: var(--body-xs-font-size);"><input placeholder="Small (24)" /></div>
+      <div class="mf-input" style="height:28px; min-height:28px;"><input placeholder="Default (28)" /></div>
+      <div class="mf-input" style="height:32px; min-height:32px; padding:0 var(--spacer-12);"><input placeholder="Medium (32)" /></div>
+    </div>
+  </div>
+
+  <!-- ===== Textarea ===== -->
+  <div class="pv-section">
+    <div class="pv-section__title">Textarea</div>
+    <textarea class="mf-textarea" style="max-width:720px;" placeholder="Describe your issue...">Our design system helps any agent ship on-brand UI on the first try.</textarea>
+  </div>
+
+  <!-- ===== Select ===== -->
+  <div class="pv-section">
+    <div class="pv-section__title">Select</div>
+
+    <div class="grid-2" style="max-width: 720px;">
+      <div class="field">
+        <label class="field__label" for="region">Region</label>
+        <div class="mf-select-wrap">
+          <select class="mf-select" id="region">
+            <option>United States</option>
+            <option>Singapore</option>
+            <option>Frankfurt</option>
+            <option>Tokyo</option>
+          </select>
+          <span class="icon-img" aria-hidden="true" data-asset-icon="../assets/icons/kid/arrowdown.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M230.72 409.664A38.4 38.4 0 0 1 287.552 358.08L480.896 571.392C493.248 584.96 502.016 593.152 508.672 597.76 514.88 602.112 516.48 601.472 515.136 601.472 513.92 601.472 515.392 602.112 521.664 597.76 528.256 593.088 536.96 584.96 549.376 571.392L742.656 358.08A38.425 38.425 0 0 1 799.68 409.6L606.272 622.912A257.92 257.92 0 0 1 565.76 660.672C551.744 670.4 534.912 678.144 515.2 678.144 495.36 678.272 478.464 670.464 464.448 660.608A255.744 255.744 0 0 1 424 622.912L230.72 409.664Z"></path></svg></span>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field__label" for="disabled-select">Disabled</label>
+        <div class="mf-select-wrap">
+          <select class="mf-select" id="disabled-select" disabled>
+            <option>Read-only</option>
+          </select>
+          <span class="icon-img" aria-hidden="true" data-asset-icon="../assets/icons/kid/arrowdown.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M230.72 409.664A38.4 38.4 0 0 1 287.552 358.08L480.896 571.392C493.248 584.96 502.016 593.152 508.672 597.76 514.88 602.112 516.48 601.472 515.136 601.472 513.92 601.472 515.392 602.112 521.664 597.76 528.256 593.088 536.96 584.96 549.376 571.392L742.656 358.08A38.425 38.425 0 0 1 799.68 409.6L606.272 622.912A257.92 257.92 0 0 1 565.76 660.672C551.744 670.4 534.912 678.144 515.2 678.144 495.36 678.272 478.464 670.464 464.448 660.608A255.744 255.744 0 0 1 424 622.912L230.72 409.664Z"></path></svg></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pv-section__sub">Custom dropdown (popover) - for richer items.</div>
+    <div class="select-popover-demo">
+      <button class="mf-btn mf-btn--secondary is-active" type="button"><span>Sort by</span><span class="icon icon--down" aria-hidden="true" data-asset-icon="../assets/icons/kid/arrowdown.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M230.72 409.664A38.4 38.4 0 0 1 287.552 358.08L480.896 571.392C493.248 584.96 502.016 593.152 508.672 597.76 514.88 602.112 516.48 601.472 515.136 601.472 513.92 601.472 515.392 602.112 521.664 597.76 528.256 593.088 536.96 584.96 549.376 571.392L742.656 358.08A38.425 38.425 0 0 1 799.68 409.6L606.272 622.912A257.92 257.92 0 0 1 565.76 660.672C551.744 670.4 534.912 678.144 515.2 678.144 495.36 678.272 478.464 670.464 464.448 660.608A255.744 255.744 0 0 1 424 622.912L230.72 409.664Z"></path></svg></span></button>
+      <div class="mf-popover">
+        <div class="mf-menu" style="border:none; padding: 0; min-width: 180px;">
+          <div class="mf-menu__item"><span>Most recent</span><span class="icon-img icon-img--14" style="margin-left:auto;" aria-hidden="true" data-asset-icon="../assets/icons/kid/check.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"></path></svg></span></div>
+          <div class="mf-menu__item"><span>Most viewed</span></div>
+          <div class="mf-menu__item"><span>Alphabetical</span></div>
+          <div class="mf-menu__divider"></div>
+          <div class="mf-menu__item"><span>Custom order...</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pv-section__sub" style="margin-top: var(--spacer-40);">Multi-select chips</div>
+    <div class="mf-input" style="height: auto; min-height: 32px; padding: var(--spacer-4) var(--spacer-8); flex-wrap: wrap; gap: var(--spacer-4); max-width: 480px;">
+      <span class="mf-tag" style="height: 22px;">Design <button class="tag-remove" type="button" aria-label="Remove Design"><span class="icon-img icon-img--12" aria-hidden="true" data-asset-icon="../assets/icons/kid/closem.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M820.352 149.312A38.421 38.421 0 0 1 874.688 203.648L566.336 512 874.688 820.352A38.421 38.421 0 0 1 820.352 874.688L512 566.336 203.648 874.688A38.421 38.421 0 0 1 149.312 820.352L457.664 512 149.312 203.648A38.421 38.421 0 0 1 203.648 149.312L512 457.664 820.352 149.312Z"></path></svg></span></button></span>
+      <span class="mf-tag" style="height: 22px;">Engineering <button class="tag-remove" type="button" aria-label="Remove Engineering"><span class="icon-img icon-img--12" aria-hidden="true" data-asset-icon="../assets/icons/kid/closem.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M820.352 149.312A38.421 38.421 0 0 1 874.688 203.648L566.336 512 874.688 820.352A38.421 38.421 0 0 1 820.352 874.688L512 566.336 203.648 874.688A38.421 38.421 0 0 1 149.312 820.352L457.664 512 149.312 203.648A38.421 38.421 0 0 1 203.648 149.312L512 457.664 820.352 149.312Z"></path></svg></span></button></span>
+      <span class="mf-tag" style="height: 22px;">Marketing <button class="tag-remove" type="button" aria-label="Remove Marketing"><span class="icon-img icon-img--12" aria-hidden="true" data-asset-icon="../assets/icons/kid/closem.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M820.352 149.312A38.421 38.421 0 0 1 874.688 203.648L566.336 512 874.688 820.352A38.421 38.421 0 0 1 820.352 874.688L512 566.336 203.648 874.688A38.421 38.421 0 0 1 149.312 820.352L457.664 512 149.312 203.648A38.421 38.421 0 0 1 203.648 149.312L512 457.664 820.352 149.312Z"></path></svg></span></button></span>
+    </div>
+  </div>
+
+  <!-- ===== Checkbox ===== -->
+  <div class="pv-section">
+    <div class="pv-section__title">Checkbox</div>
+    <div class="row">
+      <label class="mf-check"><input type="checkbox" /><span class="mf-check__box"></span>Default</label>
+      <label class="mf-check"><input type="checkbox" checked /><span class="mf-check__box"></span>Checked</label>
+      <label class="mf-check"><input type="checkbox" disabled /><span class="mf-check__box"></span>Disabled</label>
+      <label class="mf-check"><input type="checkbox" disabled checked /><span class="mf-check__box"></span>Disabled checked</label>
+    </div>
+
+    <div class="stack-8" style="margin-top: var(--spacer-16);">
+      <label class="mf-check"><input type="checkbox" checked /><span class="mf-check__box"></span>Email notifications</label>
+      <label class="mf-check"><input type="checkbox" /><span class="mf-check__box"></span>SMS notifications</label>
+      <label class="mf-check"><input type="checkbox" /><span class="mf-check__box"></span>Slack</label>
+    </div>
+  </div>
+
+  <!-- ===== Radio ===== -->
+  <div class="pv-section">
+    <div class="pv-section__title">Radio</div>
+    <div class="stack-8">
+      <label class="mf-radio"><input type="radio" name="plan" /><span class="mf-radio__dot"></span>Free</label>
+      <label class="mf-radio"><input type="radio" name="plan" checked /><span class="mf-radio__dot"></span>Pro <span class="text-tertiary num" style="margin-left:var(--spacer-6);">$29/mo</span></label>
+      <label class="mf-radio"><input type="radio" name="plan" /><span class="mf-radio__dot"></span>Enterprise</label>
+    </div>
+  </div>
+
+  <!-- ===== Switch ===== -->
+  <div class="pv-section">
+    <div class="pv-section__title">Switch</div>
+    <div class="stack-8">
+      <div class="lbl-row" style="gap: var(--spacer-12);"><label class="mf-switch"><input type="checkbox" /><span class="mf-switch__thumb"></span></label><span>Auto-save drafts</span></div>
+      <div class="lbl-row" style="gap: var(--spacer-12);"><label class="mf-switch"><input type="checkbox" checked /><span class="mf-switch__thumb"></span></label><span>Two-factor authentication</span></div>
+    </div>
+  </div>
+
+  <!-- ===== Form composition ===== -->
+  <div class="pv-section pv-section--wide">
+    <div class="pv-section__title">Form composition</div>
+    <form class="form-grid" id="workspace-form" onsubmit="event.preventDefault();">
+      <section class="mf-card span-12 form-card" id="project" aria-labelledby="project-title">
+        <!-- Header -->
+        <div class="form-header">
+          <div class="form-header__left">
+            <h2 class="mf-card__title" id="project-title">New project</h2>
+            <p class="mf-card__desc">Core details and advanced controls for a workspace project.</p>
+          </div>
+          <button class="tag-remove" type="button" aria-label="Close" style="opacity: .55;"><span class="icon-img" aria-hidden="true" data-asset-icon="../assets/icons/kid/closem.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M820.352 149.312A38.421 38.421 0 0 1 874.688 203.648L566.336 512 874.688 820.352A38.421 38.421 0 0 1 820.352 874.688L512 566.336 203.648 874.688A38.421 38.421 0 0 1 149.312 820.352L457.664 512 149.312 203.648A38.421 38.421 0 0 1 203.648 149.312L512 457.664 820.352 149.312Z"></path></svg></span></button>
+        </div>
+
+        <!-- Body -->
+        <div class="form-body">
+        <div class="field-grid">
+          <div class="field field--full">
+            <label class="field__label" for="project-name">Project name <span class="field__required">*</span></label>
+            <div class="mf-input"><input id="project-name" name="project-name" type="text" placeholder="Acme website redesign" required /></div>
+            <p class="field__hint">Used in project lists, notifications, and shared links.</p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="client">Client</label>
+            <div class="mf-select-wrap">
+              <select class="mf-select" id="client" name="client">
+                <option>Acme Corp</option>
+                <option>Globex Inc</option>
+                <option>Initech</option>
+                <option>Umbrella Co</option>
+              </select>
+              <span class="icon-img" aria-hidden="true" data-asset-icon="../assets/icons/kid/arrowdown.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M230.72 409.664A38.4 38.4 0 0 1 287.552 358.08L480.896 571.392C493.248 584.96 502.016 593.152 508.672 597.76 514.88 602.112 516.48 601.472 515.136 601.472 513.92 601.472 515.392 602.112 521.664 597.76 528.256 593.088 536.96 584.96 549.376 571.392L742.656 358.08A38.425 38.425 0 0 1 799.68 409.6L606.272 622.912A257.92 257.92 0 0 1 565.76 660.672C551.744 670.4 534.912 678.144 515.2 678.144 495.36 678.272 478.464 670.464 464.448 660.608A255.744 255.744 0 0 1 424 622.912L230.72 409.664Z"></path></svg></span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="budget">Budget <button class="field__help" type="button" aria-label="Budget info"><span class="icon-img" aria-hidden="true" data-asset-icon="../assets/icons/kid/help.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M512 674.688A53.312 53.312 0 1 1 512 781.312 53.312 53.312 0 0 1 512 674.688zM512 209.6A166.4 166.4 0 0 1 550.4 537.728V589.312A38.4 38.4 0 1 1 473.6 589.312V504A38.4 38.4 0 0 1 512 465.6 89.664 89.664 0 1 0 422.4 376 38.4 38.4 0 0 1 345.6 376 166.4 166.4 0 0 1 512 209.6z"></path><path fill="currentColor" fill-rule="evenodd" d="M512 25.6C640.384 25.6 756.672 77.696 840.832 161.792A463.808 463.808 0 0 1 977.088 490.688 463.744 463.744 0 0 1 840.768 819.52 463.744 463.744 0 0 1 512 955.776 463.808 463.808 0 0 1 183.104 819.392 463.68 463.68 0 0 1 46.912 490.752 464 464 0 0 1 183.104 161.792 463.744 463.744 0 0 1 512 25.6ZM512 102.4A387.008 387.008 0 0 0 237.44 216.064 387.008 387.008 0 0 0 123.712 490.688C123.712 597.888 167.168 694.848 237.44 765.184A387.008 387.008 0 0 0 512 878.912C619.2 878.912 716.16 835.456 786.56 765.184A386.88 386.88 0 0 0 900.16 490.624 387.008 387.008 0 0 0 786.56 216.128 386.944 386.944 0 0 0 512 102.4Z"></path></svg></span><span class="field__help-tooltip">Monthly budget in USD, excluding taxes.</span></button></label>
+            <div class="mf-input">
+              <span class="input-affix">$</span>
+              <input id="budget" name="budget" type="number" placeholder="25000" />
+              <span class="input-affix">USD</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="start-date">Start date</label>
+            <div class="mf-input mf-date-input">
+              <input id="start-date" name="start-date" type="date" />
+              <span class="icon-img" aria-hidden="true" data-asset-icon="../assets/icons/kid/time.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M900.288 512A388.288 388.288 0 1 0 123.712 512 388.288 388.288 0 0 0 900.288 512ZM473.6 256A38.464 38.464 0 0 1 550.4 256V488.192L699.904 562.944A38.41 38.41 0 0 1 665.6 631.68L494.848 546.304A38.4 38.4 0 0 1 473.6 512V256ZM977.152 512A465.12 465.12 0 1 1 46.912 512 465.12 465.12 0 0 1 977.152 512Z"></path></svg></span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="end-date">End date</label>
+            <div class="mf-input mf-date-input">
+              <input id="end-date" name="end-date" type="date" />
+              <span class="icon-img" aria-hidden="true" data-asset-icon="../assets/icons/kid/time.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M900.288 512A388.288 388.288 0 1 0 123.712 512 388.288 388.288 0 0 0 900.288 512ZM473.6 256A38.464 38.464 0 0 1 550.4 256V488.192L699.904 562.944A38.41 38.41 0 0 1 665.6 631.68L494.848 546.304A38.4 38.4 0 0 1 473.6 512V256ZM977.152 512A465.12 465.12 0 1 1 46.912 512 465.12 465.12 0 0 1 977.152 512Z"></path></svg></span>
+            </div>
+          </div>
+
+          <div class="field field--full">
+            <label class="field__label" for="description">Description</label>
+            <textarea class="mf-textarea" id="description" name="description" placeholder="What problem is this project solving?"></textarea>
+          </div>
+
+          <div class="field field--full">
+            <span class="field__label">Visibility</span>
+            <div class="segmented" role="radiogroup" aria-label="Project visibility">
+              <label><input type="radio" name="visibility" value="private" checked /><span>Private</span></label>
+              <label><input type="radio" name="visibility" value="team" /><span>Team</span></label>
+              <label><input type="radio" name="visibility" value="public" /><span>Public</span></label>
+            </div>
+            <p class="field__hint">Private projects stay limited to invited members.</p>
+          </div>
+
+          <div class="field field--full">
+            <label class="field__label" for="tag-input">Tags</label>
+            <div class="tag-field" id="tag-input">
+              <span class="mf-tag">Web <button class="tag-remove" type="button" aria-label="Remove Web tag"><span class="icon-img icon-img--12" aria-hidden="true" data-asset-icon="../assets/icons/kid/closem.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M820.352 149.312A38.421 38.421 0 0 1 874.688 203.648L566.336 512 874.688 820.352A38.421 38.421 0 0 1 820.352 874.688L512 566.336 203.648 874.688A38.421 38.421 0 0 1 149.312 820.352L457.664 512 149.312 203.648A38.421 38.421 0 0 1 203.648 149.312L512 457.664 820.352 149.312Z"></path></svg></span></button></span>
+              <span class="mf-tag">Design <button class="tag-remove" type="button" aria-label="Remove Design tag"><span class="icon-img icon-img--12" aria-hidden="true" data-asset-icon="../assets/icons/kid/closem.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M820.352 149.312A38.421 38.421 0 0 1 874.688 203.648L566.336 512 874.688 820.352A38.421 38.421 0 0 1 820.352 874.688L512 566.336 203.648 874.688A38.421 38.421 0 0 1 149.312 820.352L457.664 512 149.312 203.648A38.421 38.421 0 0 1 203.648 149.312L512 457.664 820.352 149.312Z"></path></svg></span></button></span>
+              <span class="mf-tag">Q2 <button class="tag-remove" type="button" aria-label="Remove Q2 tag"><span class="icon-img icon-img--12" aria-hidden="true" data-asset-icon="../assets/icons/kid/closem.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M820.352 149.312A38.421 38.421 0 0 1 874.688 203.648L566.336 512 874.688 820.352A38.421 38.421 0 0 1 820.352 874.688L512 566.336 203.648 874.688A38.421 38.421 0 0 1 149.312 820.352L457.664 512 149.312 203.648A38.421 38.421 0 0 1 203.648 149.312L512 457.664 820.352 149.312Z"></path></svg></span></button></span>
+            </div>
+          </div>
+
+          <div class="form-subsection">
+            <div class="form-subsection__head">
+              <div>
+                <h3 class="form-subsection__title">Project controls</h3>
+                <p class="form-subsection__desc">Color, staffing, confidence, and final cover asset.</p>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="field__label">Project color</span>
+              <div class="color-grid" role="group" aria-label="Project color">
+                <button class="color-swatch swatch-brand" type="button" aria-label="Brand" aria-pressed="true"></button>
+                <button class="color-swatch swatch-teal" type="button" aria-label="Teal" aria-pressed="false"></button>
+                <button class="color-swatch swatch-coral" type="button" aria-label="Coral" aria-pressed="false"></button>
+                <button class="color-swatch swatch-amber" type="button" aria-label="Amber" aria-pressed="false"></button>
+                <button class="color-swatch swatch-cyan" type="button" aria-label="Cyan" aria-pressed="false"></button>
+                <button class="color-swatch swatch-slate" type="button" aria-label="Slate" aria-pressed="false"></button>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="field__label">Team size</span>
+              <div class="stepper">
+                <button type="button" data-step="-1" aria-label="Decrease team size"><span class="icon-img icon-img--12" aria-hidden="true" data-asset-icon="../assets/icons/kid/minimise.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" fill-rule="evenodd" d="M804.864 164.864A38.376 38.376 0 1 1 859.136 219.136L626.048 452.224H789.248A38.464 38.464 0 0 1 789.312 529.024H533.312A38.4 38.4 0 0 1 494.976 490.752V234.688A38.4 38.4 0 1 1 571.712 234.688V397.888L804.864 164.992ZM491.776 826.688A38.4 38.4 0 0 1 414.976 826.688V663.36L181.824 896.512A38.4 38.4 0 1 1 127.616 842.176L360.64 609.088H197.44A38.4 38.4 0 1 1 197.44 532.288H453.44A38.4 38.4 0 0 1 491.84 570.624V826.688Z"></path></svg></span></button>
+                <input type="number" value="6" min="1" max="50" aria-label="Team size" />
+                <button type="button" data-step="1" aria-label="Increase team size"><span class="icon-img icon-img--12" aria-hidden="true" data-asset-icon="../assets/icons/kid/add.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M512 89.6A38.4 38.4 0 0 1 550.4 128V473.6H896A38.4 38.4 0 1 1 896 550.4H550.4V896A38.4 38.4 0 1 1 473.6 896V550.4H128A38.4 38.4 0 1 1 128 473.6H473.6V128A38.4 38.4 0 0 1 512 89.6Z"></path></svg></span></button>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="field__label">Project score</span>
+              <div class="score-row" role="group" aria-label="Project score">
+                <button class="score-btn" type="button" aria-pressed="true">1</button>
+                <button class="score-btn" type="button" aria-pressed="true">2</button>
+                <button class="score-btn" type="button" aria-pressed="true">3</button>
+                <button class="score-btn" type="button" aria-pressed="true">4</button>
+                <button class="score-btn" type="button" aria-pressed="false">5</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="notification-volume">Notification volume</label>
+              <div class="slider-row">
+                <input class="mf-slider mf-slider--progress" id="notification-volume" type="range" min="0" max="100" value="62" data-display-target="volume-value" />
+                <span class="slider-value" id="volume-value">62%</span>
+              </div>
+            </div>
+
+            <div class="field field--full">
+              <span class="field__label">Cover image</span>
+              <label class="file-field">
+                <span class="mf-btn mf-btn--secondary mf-btn--sm"><span class="icon icon--14 icon--file-upload" aria-hidden="true" data-asset-icon="../assets/icons/kid/uploadfile.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M768.576 633.6A38.4 38.4 0 0 1 806.976 672.064L806.72 745.664H880.128A38.4 38.4 0 1 1 880.128 822.4H806.72L806.592 896A38.4 38.4 0 1 1 729.92 895.936V822.336H656.128A38.4 38.4 0 1 1 656.128 745.6H730.048L730.112 672A38.4 38.4 0 0 1 768.512 633.6ZM337.152 121.664A123.712 123.712 0 0 1 441.088 176.96L475.648 228.16 475.904 228.48A46.976 46.976 0 0 0 515.072 249.6H853.376A123.776 123.776 0 0 1 977.152 373.312V548.224A38.464 38.464 0 0 1 900.352 548.224V373.312A46.976 46.976 0 0 0 853.312 326.4H515.008A123.84 123.84 0 0 1 411.712 270.72L377.344 219.84 377.152 219.52A46.912 46.912 0 0 0 337.472 198.4H170.688A46.976 46.976 0 0 0 123.776 245.312V800A46.976 46.976 0 0 0 170.688 846.912H456.576A38.4 38.4 0 1 1 456.576 923.712H170.688A123.84 123.84 0 0 1 46.976 800V245.312A123.712 123.712 0 0 1 170.688 121.6L337.088 121.664Z"></path></svg></span><span>Choose file</span></span>
+                <span class="file-name" data-file-name>cover-redesign-final.jpg</span>
+                <input type="file" accept="image/*" data-file-input hidden />
+              </label>
+            </div>
+          </div>
+
+
+          <div class="form-subsection">
+            <div class="form-subsection__head">
+              <div>
+                <h3 class="form-subsection__title">Access and validation</h3>
+                <p class="form-subsection__desc">Credentials, one-time code, inline error, and character counter.</p>
+              </div>
+              <span class="mf-tag mf-tag--success">Synced</span>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="new-password">Access key</label>
+              <div class="mf-input">
+                <input id="new-password" name="new-password" type="password" placeholder="At least 12 characters" autocomplete="new-password" />
+              </div>
+              <div class="strength" aria-label="Access key strength">
+                <span class="is-on"></span>
+                <span class="is-on"></span>
+                <span class="is-on"></span>
+                <span class="is-on"></span>
+              </div>
+              <p class="field__hint">Strength: Strong - 12+ chars, mixed case, number, symbol.</p>
+            </div>
+
+            <div class="field">
+              <span class="field__label">One-time code</span>
+              <div class="otp-grid">
+                <div class="mf-input"><input aria-label="Digit 1 of 6" type="text" inputmode="numeric" maxlength="1" placeholder="0" /></div>
+                <div class="mf-input"><input aria-label="Digit 2 of 6" type="text" inputmode="numeric" maxlength="1" placeholder="0" /></div>
+                <div class="mf-input"><input aria-label="Digit 3 of 6" type="text" inputmode="numeric" maxlength="1" placeholder="0" /></div>
+                <div class="mf-input"><input aria-label="Digit 4 of 6" type="text" inputmode="numeric" maxlength="1" placeholder="0" /></div>
+                <div class="mf-input"><input aria-label="Digit 5 of 6" type="text" inputmode="numeric" maxlength="1" placeholder="0" /></div>
+                <div class="mf-input"><input aria-label="Digit 6 of 6" type="text" inputmode="numeric" maxlength="1" placeholder="0" /></div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="routing-email">Routing email</label>
+              <div class="mf-input is-error"><input id="routing-email" type="email" value="not-an-email" aria-invalid="true" aria-describedby="routing-email-error" /></div>
+              <p class="field__error" id="routing-email-error">Enter a valid email address.</p>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="project-id">Project ID</label>
+              <div class="mf-input is-disabled"><input id="project-id" type="text" value="proj_8f3k29df3lkj" disabled /></div>
+              <p class="field__hint">Generated automatically.</p>
+            </div>
+
+            <div class="field field--full">
+              <label class="field__label" for="tagline">Tagline</label>
+              <textarea class="mf-textarea" id="tagline" maxlength="80" data-char-count>The free Bootstrap admin template, redesigned for TraeWork.</textarea>
+              <p class="field__hint"><span data-char-output>0</span><span>/80</span> characters</p>
+            </div>
+          </div>
+
+          <div class="form-subsection">
+            <div class="form-subsection__head">
+              <div>
+                <h3 class="form-subsection__title">Reporting and notes</h3>
+                <p class="form-subsection__desc">Reporting period and launch copy for the project record.</p>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="report-period">Report period</label>
+              <div class="mf-input"><input id="report-period" type="text" value="Jun 16 - Jun 27, 2026" /></div>
+              <div class="date-panel" aria-label="June 2026 calendar preview">
+                <div class="date-panel__head">
+                  <strong>June 2026</strong>
+                  <span class="mf-tag">12 days</span>
+                </div>
+                <div class="date-grid">
+                  <span class="day-name">M</span>
+                  <span class="day-name">T</span>
+                  <span class="day-name">W</span>
+                  <span class="day-name">T</span>
+                  <span class="day-name">F</span>
+                  <span class="day-name">S</span>
+                  <span class="day-name">S</span>
+                  <span>15</span>
+                  <span class="is-start">16</span>
+                  <span class="is-range">17</span>
+                  <span class="is-range">18</span>
+                  <span class="is-range">19</span>
+                  <span class="is-range">20</span>
+                  <span class="is-range">21</span>
+                  <span class="is-range">22</span>
+                  <span class="is-range">23</span>
+                  <span class="is-range">24</span>
+                  <span class="is-range">25</span>
+                  <span class="is-range">26</span>
+                  <span class="is-end">27</span>
+                  <span>28</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="field field--full">
+              <label class="field__label" for="editor-body">About</label>
+              <div class="rich-text">
+                <div class="editor-toolbar" role="toolbar" aria-label="Formatting">
+                  <button type="button" aria-pressed="true"><strong>B</strong></button>
+                  <button type="button" aria-pressed="false"><em>I</em></button>
+                  <button type="button" aria-pressed="false">H2</button>
+                  <button type="button" aria-pressed="false">List</button>
+                  <button type="button" aria-pressed="false">Link</button>
+                  <button type="button" aria-pressed="false">Code</button>
+                </div>
+                <div class="editor-body" id="editor-body" contenteditable="true" role="textbox" aria-multiline="true">
+                  <p><strong>Gentelella</strong> becomes a quieter TraeWork form surface here: fewer colors, wider rhythm, and controls that read as one system.</p>
+                  <p>Use this area for project context, launch notes, or setup instructions that travel with the form submission.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div><!-- /.form-body -->
+
+        <!-- Footer -->
+        <div class="form-footer">
+          <button class="mf-btn mf-btn--secondary" type="reset">Save draft</button>
+          <button class="mf-btn mf-btn--brand" type="submit">Create project</button>
+        </div>
+      </section>
+    </form>
+  </div>
+
+  <script>
+    (function () {
+      document.querySelectorAll(".mf-slider").forEach(function (slider) {
+        var output = document.getElementById(slider.dataset.displayTarget);
+        var unit = slider.dataset.displayUnit || "%";
+        function updateSlider() {
+          var min = Number(slider.min || 0);
+          var max = Number(slider.max || 100);
+          var value = Number(slider.value || 0);
+          var progress = max === min ? 0 : ((value - min) / (max - min)) * 100;
+          slider.style.background = "linear-gradient(to right, var(--bg-brand) 0 " + progress + "%, var(--bg-overlay-l3) " + progress + "% 100%)";
+          if (output) output.textContent = slider.value + unit;
+        }
+        slider.addEventListener("input", updateSlider);
+        updateSlider();
+      });
+
+      document.querySelectorAll(".stepper").forEach(function (stepper) {
+        var input = stepper.querySelector("input");
+        stepper.querySelectorAll("button[data-step]").forEach(function (button) {
+          button.addEventListener("click", function () {
+            var next = Number(input.value || 0) + Number(button.dataset.step);
+            var min = Number(input.min || next);
+            var max = Number(input.max || next);
+            input.value = Math.min(max, Math.max(min, next));
+          });
+        });
+      });
+
+      document.querySelectorAll(".score-row").forEach(function (row) {
+        var buttons = Array.prototype.slice.call(row.querySelectorAll(".score-btn"));
+        buttons.forEach(function (button, index) {
+          button.addEventListener("click", function () {
+            buttons.forEach(function (item, itemIndex) {
+              item.setAttribute("aria-pressed", String(itemIndex <= index));
+            });
+          });
+        });
+      });
+
+      document.querySelectorAll(".color-grid").forEach(function (grid) {
+        grid.querySelectorAll(".color-swatch").forEach(function (button) {
+          button.addEventListener("click", function () {
+            grid.querySelectorAll(".color-swatch").forEach(function (item) {
+              item.setAttribute("aria-pressed", "false");
+            });
+            button.setAttribute("aria-pressed", "true");
+          });
+        });
+      });
+
+      document.querySelectorAll("[data-file-input]").forEach(function (input) {
+        input.addEventListener("change", function () {
+          var name = input.closest(".file-field").querySelector("[data-file-name]");
+          if (name && input.files && input.files[0]) name.textContent = input.files[0].name;
+        });
+      });
+
+      document.querySelectorAll("[data-char-count]").forEach(function (textarea) {
+        var output = textarea.parentElement.querySelector("[data-char-output]");
+        function updateCount() {
+          if (output) output.textContent = String(textarea.value.length);
+        }
+        textarea.addEventListener("input", updateCount);
+        updateCount();
+      });
+
+      document.querySelectorAll(".tag-remove").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var tag = button.closest(".mf-tag");
+          if (tag) tag.remove();
+        });
+      });
+
+      document.querySelectorAll(".editor-toolbar button").forEach(function (button) {
+        button.addEventListener("click", function () {
+          button.setAttribute("aria-pressed", String(button.getAttribute("aria-pressed") !== "true"));
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

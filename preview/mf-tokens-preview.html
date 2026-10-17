@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyFlicker Token Preview</title>
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-base-secondary);
+      color: var(--text-default);
+      font-family: var(--font-family-default);
+      font-size: 13px;
+      padding: 32px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+    .meta { font-size: 12px; color: var(--text-secondary); margin-bottom: 40px; }
+
+    /* ── group block ── */
+    .group {
+      background: var(--bg-base-default);
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: 8px;
+      padding: 20px 20px 24px;
+      margin-bottom: 16px;
+    }
+    .group-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-default);
+      margin-bottom: 16px;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── chip row ── */
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .chip {
+      display: flex;
+      flex-direction: column;
+      width: 80px;
+      cursor: default;
+    }
+    .chip-block {
+      width: 80px;
+      height: 48px;
+      border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.08);
+      margin-bottom: 5px;
+      flex-shrink: 0;
+    }
+    .chip-name {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-default);
+      line-height: 1.3;
+      word-break: break-all;
+    }
+    .chip-hex {
+      font-size: 10px;
+      color: var(--text-tertiary);
+      margin-top: 1px;
+    }
+
+    /* ── spacing / radius row ── */
+    .space-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+    .space-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .space-block { background: var(--bg-brand); border-radius: 2px; }
+    .space-label { font-size: 10px; color: var(--text-secondary); text-align: center; }
+
+    .radius-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+    .radius-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .radius-block {
+      width: 48px; height: 48px;
+      background: var(--bg-brand-subtle);
+      border: 2px solid var(--bg-brand);
+    }
+
+    /* ── type row ── */
+    .type-row {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-neutral-l1);
+    }
+    .type-row:last-child { border-bottom: none; }
+    .type-meta {
+      width: 160px;
+      flex-shrink: 0;
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+    .type-sample { flex: 1; }
+    .type-var { font-size: 10px; color: var(--text-disabled); margin-left: 8px; }
+  </style>
+</head>
+<body>
+
+  <h1>MyFlicker Token Preview</h1>
+  <div class="meta">colors_and_type.css · v1.0.0 · Light Mode · Brand: Near-black #242323</div>
+
+  <!-- bg-brand -->
+  <div class="group">
+    <div class="group-title">bg-brand</div>
+    <div class="chip-row">
+      <div class="chip"><div class="chip-block" style="background:var(--bg-brand)"></div><div class="chip-name">bg-brand</div><div class="chip-hex">#242323</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-brand-hover)"></div><div class="chip-name">bg-brand-hover</div><div class="chip-hex">#4D4D4D</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-brand-active)"></div><div class="chip-name">bg-brand-active</div><div class="chip-hex">#000000</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-brand-disabled)"></div><div class="chip-name">bg-brand-disabled</div><div class="chip-hex">rgba 22%</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-brand-popup)"></div><div class="chip-name">bg-brand-popup</div><div class="chip-hex">rgba 10%</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-brand-subtle)"></div><div class="chip-name">bg-brand-subtle</div><div class="chip-hex">#F6F6F6</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-brand-subtle-hover)"></div><div class="chip-name">bg-brand-subtle-hover</div><div class="chip-hex">#EDEDED</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-invert)"></div><div class="chip-name">bg-invert</div><div class="chip-hex">#242323</div></div>
+    </div>
+  </div>
+
+  <!-- bg -->
+  <div class="group">
+    <div class="group-title">bg — base</div>
+    <div class="chip-row">
+      <div class="chip"><div class="chip-block" style="background:var(--bg-base-default);outline:1px solid #eee"></div><div class="chip-name">bg-base-default</div><div class="chip-hex">#FFFFFF · colorBg</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-base-secondary)"></div><div class="chip-name">bg-base-secondary</div><div class="chip-hex">#F5F7FA · N200</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-base-tertiary)"></div><div class="chip-name">bg-base-tertiary</div><div class="chip-hex">#F0F2F5 · N300</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-overlay-l1)"></div><div class="chip-name">bg-overlay-l1</div><div class="chip-hex">rgba 8%</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-overlay-l2)"></div><div class="chip-name">bg-overlay-l2</div><div class="chip-hex">rgba 12%</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-overlay-l3)"></div><div class="chip-name">bg-overlay-l3</div><div class="chip-hex">rgba 16%</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-overlay-l4)"></div><div class="chip-name">bg-overlay-l4</div><div class="chip-hex">rgba 20%</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-menu);outline:1px solid #eee"></div><div class="chip-name">bg-menu</div><div class="chip-hex">#FFFFFF</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-tooltip);outline:1px solid #eee"></div><div class="chip-name">bg-tooltip</div><div class="chip-hex">#FFFFFF</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-mask)"></div><div class="chip-name">bg-mask</div><div class="chip-hex">rgba(0,0,0,.45)</div></div>
+    </div>
+  </div>
+
+  <!-- bg status -->
+  <div class="group">
+    <div class="group-title">bg — status semantic (Figma 背景色)</div>
+    <div class="chip-row">
+      <div class="chip"><div class="chip-block" style="background:var(--bg-success)"></div><div class="chip-name">bg-success</div><div class="chip-hex">#F0FFF4 · G100</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-success-hover)"></div><div class="chip-name">bg-success-hover</div><div class="chip-hex">#DBFFE7 · G200</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-warning)"></div><div class="chip-name">bg-warning</div><div class="chip-hex">#FFFCF0 · O100</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-warning-hover)"></div><div class="chip-name">bg-warning-hover</div><div class="chip-hex">#FFF8E3 · O200</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-error)"></div><div class="chip-name">bg-error</div><div class="chip-hex">#FFF2F0 · R100</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-error-hover)"></div><div class="chip-name">bg-error-hover</div><div class="chip-hex">#FFD9D4 · R200</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-info)"></div><div class="chip-name">bg-info</div><div class="chip-hex">#E5F2FF · B100</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--bg-info-hover)"></div><div class="chip-name">bg-info-hover</div><div class="chip-hex">#D9ECFF · B200</div></div>
+    </div>
+  </div>
+
+  <!-- fill -->
+  <div class="group">
+    <div class="group-title">fill — neutral fill scale (Figma 填充色)</div>
+    <div class="chip-row">
+      <div class="chip"><div class="chip-block" style="background:var(--fill-default)"></div><div class="chip-name">fill-default</div><div class="chip-hex">#E1E3E6 · N600</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--fill-secondary)"></div><div class="chip-name">fill-secondary</div><div class="chip-hex">#EBEDF0 · N400</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--fill-tertiary)"></div><div class="chip-name">fill-tertiary</div><div class="chip-hex">#F0F2F5 · N300</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--fill-quaternary)"></div><div class="chip-name">fill-quaternary</div><div class="chip-hex">#F5F7FA · N200</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--fill-white);outline:1px solid #eee"></div><div class="chip-name">fill-white</div><div class="chip-hex">#FFFFFF · N100</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--fill-disabled)"></div><div class="chip-name">fill-disabled</div><div class="chip-hex">#EDEDED · P200</div></div>
+    </div>
+  </div>
+
+  <!-- icon -->
+  <div class="group">
+    <div class="group-title">icon</div>
+    <div class="chip-row">
+      <div class="chip"><div class="chip-block" style="background:var(--icon-default)"></div><div class="chip-name">icon-default</div><div class="chip-hex">#1F2329</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--icon-default-hover)"></div><div class="chip-name">icon-default-hover</div><div class="chip-hex">#0D0E0F</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--icon-secondary)"></div><div class="chip-name">icon-secondary</div><div class="chip-hex">#5C6066</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--icon-tertiary)"></div><div class="chip-name">icon-tertiary</div><div class="chip-hex">#95999E</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--icon-disabled)"></div><div class="chip-name">icon-disabled</div><div class="chip-hex">#C4C7CC</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--icon-brand)"></div><div class="chip-name">icon-brand</div><div class="chip-hex">#242323</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--icon-onbrand)"></div><div class="chip-name">icon-onbrand</div><div class="chip-hex">#FFFFFF</div></div>
+    </div>
+  </div>
+
+  <!-- text -->
+  <div class="group">
+    <div class="group-title">text</div>
+    <div class="chip-row">
+      <div class="chip"><div class="chip-block" style="background:var(--text-default)"></div><div class="chip-name">text-default</div><div class="chip-hex">#1F2329</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--text-default-hover)"></div><div class="chip-name">text-default-hover</div><div class="chip-hex">#0D0E0F</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--text-secondary)"></div><div class="chip-name">text-secondary</div><div class="chip-hex">#5C6066</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--text-tertiary)"></div><div class="chip-name">text-tertiary</div><div class="chip-hex">#95999E</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--text-disabled)"></div><div class="chip-name">text-disabled</div><div class="chip-hex">#C4C7CC</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--text-brand)"></div><div class="chip-name">text-brand</div><div class="chip-hex">#242323</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--text-onbrand)"></div><div class="chip-name">text-onbrand</div><div class="chip-hex">#FFFFFF</div></div>
+    </div>
+  </div>
+
+  <!-- border -->
+  <div class="group">
+    <div class="group-title">border</div>
+    <div class="chip-row">
+      <div class="chip"><div class="chip-block" style="background:var(--border-neutral-l1)"></div><div class="chip-name">border-neutral-l1</div><div class="chip-hex">#EBEDF0 · N400 默认</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--border-neutral-l2)"></div><div class="chip-name">border-neutral-l2</div><div class="chip-hex">#E1E3E6 · N600 悬浮</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--border-neutral-subtle)"></div><div class="chip-name">border-neutral-subtle</div><div class="chip-hex">#F0F2F5 · N300 次级</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--border-white);outline:1px solid #eee"></div><div class="chip-name">border-white</div><div class="chip-hex">#FFFFFF</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--border-brand)"></div><div class="chip-name">border-brand</div><div class="chip-hex">#242323</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--border-brand-hover)"></div><div class="chip-name">border-brand-hover</div><div class="chip-hex">#4D4D4D</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--border-success)"></div><div class="chip-name">border-success</div><div class="chip-hex">#32E485 · G600</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--border-warning)"></div><div class="chip-name">border-warning</div><div class="chip-hex">#FFB641 · O600</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--border-error)"></div><div class="chip-name">border-error</div><div class="chip-hex">#FF3135 · R600</div></div>
+    </div>
+  </div>
+
+  <!-- status -->
+  <div class="group">
+    <div class="group-title">status</div>
+    <div class="chip-row">
+      <div class="chip"><div class="chip-block" style="background:var(--status-success-default)"></div><div class="chip-name">success-default</div><div class="chip-hex">#20BD6E</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--status-success-hover)"></div><div class="chip-name">success-hover</div><div class="chip-hex">#32E485</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--status-success-active)"></div><div class="chip-name">success-active</div><div class="chip-hex">#129659</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--status-success-surface-l1)"></div><div class="chip-name">success-surface-l1</div><div class="chip-hex">rgba 12%</div></div>
+
+      <div class="chip"><div class="chip-block" style="background:var(--status-warning-default)"></div><div class="chip-name">warning-default</div><div class="chip-hex">#FFB641</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--status-warning-hover)"></div><div class="chip-name">warning-hover</div><div class="chip-hex">#FFCA69</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--status-warning-active)"></div><div class="chip-name">warning-active</div><div class="chip-hex">#D9912B</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--status-warning-surface-l1)"></div><div class="chip-name">warning-surface-l1</div><div class="chip-hex">rgba 12%</div></div>
+
+      <div class="chip"><div class="chip-block" style="background:var(--status-error-default)"></div><div class="chip-name">error-default</div><div class="chip-hex">#FF3135</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--status-error-hover)"></div><div class="chip-name">error-hover</div><div class="chip-hex">#FF5C59</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--status-error-active)"></div><div class="chip-name">error-active</div><div class="chip-hex">#D91E28</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--status-error-surface-l1)"></div><div class="chip-name">error-surface-l1</div><div class="chip-hex">rgba 12%</div></div>
+
+      <div class="chip"><div class="chip-block" style="background:var(--status-primary-default)"></div><div class="chip-name">primary-default</div><div class="chip-hex">#1380ED</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--status-primary-hover)"></div><div class="chip-name">primary-hover</div><div class="chip-hex">#339CFF</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--status-primary-active)"></div><div class="chip-name">primary-active</div><div class="chip-hex">#0A74DF</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--status-primary-surface-l1)"></div><div class="chip-name">primary-surface-l1</div><div class="chip-hex">rgba 12%</div></div>
+    </div>
+  </div>
+
+  <!-- purple accent -->
+  <div class="group">
+    <div class="group-title">purple accent (fill / border / bg only — NOT for text)</div>
+    <div class="chip-row">
+      <div class="chip"><div class="chip-block" style="background:var(--purple-fill)"></div><div class="chip-name">purple-fill</div><div class="chip-hex">#722ED1 P600</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--purple-fill-hover)"></div><div class="chip-name">purple-fill-hover</div><div class="chip-hex">#9254DE P500</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--purple-fill-active)"></div><div class="chip-name">purple-fill-active</div><div class="chip-hex">#531DAB P700</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--purple-fill-disabled)"></div><div class="chip-name">purple-fill-disabled</div><div class="chip-hex">rgba 22%</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--purple-border)"></div><div class="chip-name">purple-border</div><div class="chip-hex">#722ED1</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--purple-bg)"></div><div class="chip-name">purple-bg</div><div class="chip-hex">#F9F0FF P100</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--purple-bg-hover)"></div><div class="chip-name">purple-bg-hover</div><div class="chip-hex">#EFDBFF P200</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--purple-bg-deep)"></div><div class="chip-name">purple-bg-deep</div><div class="chip-hex">#D3ADF7 P300</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--purple-surface-l1)"></div><div class="chip-name">purple-surface-l1</div><div class="chip-hex">rgba 12%</div></div>
+    </div>
+  </div>
+
+  <!-- brand palette -->
+  <div class="group">
+    <div class="group-title">brand palette (Primary — near-black scale)</div>
+    <div class="chip-row">
+      <div class="chip"><div class="chip-block" style="background:var(--brand-50)"></div><div class="chip-name">brand-50</div><div class="chip-hex">#F6F6F6</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--brand-100)"></div><div class="chip-name">brand-100</div><div class="chip-hex">#EDEDED</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--brand-200)"></div><div class="chip-name">brand-200</div><div class="chip-hex">#DEDEDE</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--brand-300)"></div><div class="chip-name">brand-300</div><div class="chip-hex">#DDDBDB</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--brand-400)"></div><div class="chip-name">brand-400</div><div class="chip-hex">#D9D9D9</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--brand-500)"></div><div class="chip-name">brand-500</div><div class="chip-hex">#C5C3C3</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--brand-600)"></div><div class="chip-name">brand-600</div><div class="chip-hex">#999696</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--brand-700)"></div><div class="chip-name">brand-700</div><div class="chip-hex">#737272</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--brand-800)"></div><div class="chip-name">brand-800</div><div class="chip-hex">#4D4D4D</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--brand-900)"></div><div class="chip-name">brand-900 ★</div><div class="chip-hex">#242323</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--brand-950)"></div><div class="chip-name">brand-950</div><div class="chip-hex">#000000</div></div>
+    </div>
+  </div>
+
+  <!-- neutral grey -->
+  <div class="group">
+    <div class="group-title">brand-grey (Neutral scale)</div>
+    <div class="chip-row">
+      <div class="chip"><div class="chip-block" style="background:var(--brand-grey-50)"></div><div class="chip-name">grey-50 N100</div><div class="chip-hex">#FFFFFF</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--brand-grey-100)"></div><div class="chip-name">grey-100 N200</div><div class="chip-hex">#F5F7FA</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--brand-grey-200)"></div><div class="chip-name">grey-200 N300</div><div class="chip-hex">#F0F2F5</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--brand-grey-300)"></div><div class="chip-name">grey-300 N400</div><div class="chip-hex">#EBEDF0</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--brand-grey-400)"></div><div class="chip-name">grey-400 N500</div><div class="chip-hex">#E6E8EB</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--brand-grey-500)"></div><div class="chip-name">grey-500 N600</div><div class="chip-hex">#E1E3E6</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--brand-grey-600)"></div><div class="chip-name">grey-600 N700</div><div class="chip-hex">#C4C7CC</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--brand-grey-700)"></div><div class="chip-name">grey-700 N800</div><div class="chip-hex">#95999E</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--brand-grey-800)"></div><div class="chip-name">grey-800 N900</div><div class="chip-hex">#5C6066</div></div>
+      <div class="chip"><div class="chip-block" style="background:var(--brand-grey-900)"></div><div class="chip-name">grey-900 N1000</div><div class="chip-hex">#1F2329</div></div>
+    </div>
+  </div>
+
+  <!-- spacing -->
+  <div class="group">
+    <div class="group-title">spacing</div>
+    <div class="space-row">
+      <div class="space-item"><div class="space-block" style="width:4px;height:24px"></div><div class="space-label">spacer-4<br>XS</div></div>
+      <div class="space-item"><div class="space-block" style="width:6px;height:24px"></div><div class="space-label">spacer-6<br>SM</div></div>
+      <div class="space-item"><div class="space-block" style="width:8px;height:24px"></div><div class="space-label">spacer-8<br>Base</div></div>
+      <div class="space-item"><div class="space-block" style="width:12px;height:24px"></div><div class="space-label">spacer-12<br>L</div></div>
+      <div class="space-item"><div class="space-block" style="width:16px;height:24px"></div><div class="space-label">spacer-16<br>XL</div></div>
+      <div class="space-item"><div class="space-block" style="width:24px;height:24px"></div><div class="space-label">spacer-24<br>XXL</div></div>
+      <div class="space-item"><div class="space-block" style="width:32px;height:24px"></div><div class="space-label">spacer-32</div></div>
+      <div class="space-item"><div class="space-block" style="width:40px;height:24px"></div><div class="space-label">spacer-40</div></div>
+      <div class="space-item"><div class="space-block" style="width:48px;height:24px"></div><div class="space-label">spacer-48</div></div>
+      <div class="space-item"><div class="space-block" style="width:64px;height:24px"></div><div class="space-label">spacer-64</div></div>
+    </div>
+  </div>
+
+  <!-- radius -->
+  <div class="group">
+    <div class="group-title">radius</div>
+    <div class="radius-row">
+      <div class="radius-item"><div class="radius-block" style="border-radius:2px;opacity:0.4"></div><div class="space-label" style="color:var(--text-disabled)">radius-2<br>2px<br><span style="font-size:9px">一般不用</span></div></div>
+      <div class="radius-item"><div class="radius-block" style="border-radius:4px"></div><div class="space-label">radius-4 / sm<br>4px ★</div></div>
+      <div class="radius-item"><div class="radius-block" style="border-radius:6px;opacity:0.4"></div><div class="space-label" style="color:var(--text-disabled)">radius-6<br>6px</div></div>
+      <div class="radius-item"><div class="radius-block" style="border-radius:8px"></div><div class="space-label">radius-8 / lg<br>8px ★</div></div>
+      <div class="radius-item"><div class="radius-block" style="border-radius:10px;opacity:0.4"></div><div class="space-label" style="color:var(--text-disabled)">radius-10<br>10px</div></div>
+      <div class="radius-item"><div class="radius-block" style="border-radius:12px;opacity:0.4"></div><div class="space-label" style="color:var(--text-disabled)">radius-12<br>12px</div></div>
+      <div class="radius-item"><div class="radius-block" style="border-radius:16px;opacity:0.4"></div><div class="space-label" style="color:var(--text-disabled)">radius-16<br>16px</div></div>
+      <div class="radius-item"><div class="radius-block" style="border-radius:999px"></div><div class="space-label">radius-full<br>999px</div></div>
+    </div>
+  </div>
+
+  <!-- typography -->
+  <div class="group">
+    <div class="group-title">typography</div>
+    <div class="type-row">
+      <div class="type-meta">18/28 · 500 · 特大标题（一般不用）</div>
+      <div class="type-sample" style="font-size:18px;font-weight:500;line-height:28px;">特大标题 Extra Large Title<span class="type-var">--body-lg</span></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">16/24 · 500 · 标题</div>
+      <div class="type-sample" style="font-size:16px;font-weight:500;line-height:24px;">标题 Heading<span class="type-var">--body-md-medium</span></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">13/20 · 600 · 正文最强调（一般不用）</div>
+      <div class="type-sample" style="font-size:13px;font-weight:600;line-height:20px;">普通正文最强调 Body Bold<span class="type-var">--body-sm-bold</span></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">13/20 · 500 · 正文中等强调</div>
+      <div class="type-sample" style="font-size:13px;font-weight:500;line-height:20px;">普通正文中等强调 Body Medium<span class="type-var">--body-sm-medium</span></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">13/20 · 400 · 普通正文（主用）</div>
+      <div class="type-sample" style="font-size:13px;font-weight:400;line-height:20px;">普通正文 Body Regular — 主要正文字号<span class="type-var">--body-sm</span></div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">12/18 · 400 · 辅助描述</div>
+      <div class="type-sample" style="font-size:12px;font-weight:400;line-height:18px;color:var(--text-tertiary);">辅助描述 Description — 备注、时间戳、占位符<span class="type-var">--body-xs</span></div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Popover</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <link rel="stylesheet" href="../components.css" />
+  <style data-preview-shell>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg-base-secondary);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      letter-spacing: var(--body-sm-letter-spacing);
+      min-height: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body { padding: var(--spacer-32); }
+
+    .pv-header { margin-bottom: var(--spacer-32); padding-bottom: var(--spacer-16); border-bottom: 1px solid var(--border-neutral-l1); }
+    .pv-header h1 { font-size: var(--heading-lg-font-size); line-height: var(--heading-lg-line-height); font-weight: var(--heading-lg-font-weight); margin-bottom: var(--spacer-4); }
+    .pv-header p { color: var(--text-secondary); font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); }
+
+    .pv-section { margin-bottom: var(--spacer-40); }
+    .pv-section__title { font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); margin-bottom: var(--spacer-4); }
+    .pv-section__sub { font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); color: var(--text-tertiary); margin-bottom: var(--spacer-16); }
+
+    .demo-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacer-24);
+      align-items: flex-start;
+    }
+    .demo-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-8);
+    }
+    .demo-label {
+      font-size: var(--body-xs-font-size);
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    code {
+      font-family: "SF Mono", "Fira Mono", monospace;
+      font-size: 12px;
+      background: var(--bg-base-secondary);
+      border: 1px solid var(--border-neutral-l1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--text-default);
+    }
+
+    /* Token table */
+    .token-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--body-sm-font-size);
+    }
+    .token-table th {
+      text-align: left;
+      padding: var(--spacer-8) var(--spacer-12);
+      background: var(--bg-base-secondary);
+      border-bottom: 1px solid var(--border-neutral-l1);
+      color: var(--text-tertiary);
+      font-weight: 500;
+    }
+    .token-table td {
+      padding: var(--spacer-8) var(--spacer-12);
+      border-bottom: 1px solid var(--border-neutral-l1);
+      vertical-align: middle;
+    }
+    .token-table tr:last-child td { border-bottom: none; }
+  </style>
+</head>
+<body>
+
+  <div class="pv-header">
+    <h1>Popover</h1>
+    <p>悬浮临时面板，承接复杂 hover 内容。基类 <code>.mf-popover</code>，通过子结构类扩展不同内容场景。</p>
+  </div>
+
+  <!-- ── 1. 用户列表面板 ── -->
+  <div class="pv-section">
+    <div class="pv-section__title">用户列表面板</div>
+
+    <div class="demo-row">
+      <div class="demo-item">
+        <div class="mf-popover" style="min-width: 200px;">
+          <ul class="mf-popover__list">
+            <li class="mf-popover__item">
+              <span class="mf-popover__avatar" style="background: #4F8EF7;">王</span>
+              王小明
+            </li>
+            <li class="mf-popover__item">
+              <span class="mf-popover__avatar" style="background: #3EC87A;">李</span>
+              李晓雪
+            </li>
+            <li class="mf-popover__item">
+              <span class="mf-popover__avatar" style="background: #F5A623;">张</span>
+              张伟
+            </li>
+            <li class="mf-popover__item">
+              <span class="mf-popover__avatar" style="background: #9B59B6;">陈</span>
+              陈思远
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 2. 浅色分组列表 ── -->
+  <div class="pv-section">
+    <div class="pv-section__title">分组列表面板</div>
+
+    <div class="demo-row">
+      <div class="demo-item">
+        <div class="mf-popover" style="min-width: 280px;">
+          <div class="mf-popover__group">含 3 个技能</div>
+          <ul class="mf-popover__list">
+            <li class="mf-popover__item">公司 Code Review 规范</li>
+            <li class="mf-popover__item">公司 Code Review 规范</li>
+            <li class="mf-popover__item">公司 Code Review 规范</li>
+          </ul>
+          <div class="mf-popover__group">含 2 个 Hook</div>
+          <ul class="mf-popover__list">
+            <li class="mf-popover__item">提交前格式校验</li>
+            <li class="mf-popover__item">提交前格式校验</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="demo-item">
+        <div class="mf-popover" style="min-width: 240px;">
+          <div class="mf-popover__group">含 2 个技能</div>
+          <ul class="mf-popover__list">
+            <li class="mf-popover__item">TypeScript 最佳实践</li>
+            <li class="mf-popover__item">前端代码规范检查</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 3. 信息条目面板 ── -->
+  <div class="pv-section">
+    <div class="pv-section__title">信息条目面板</div>
+
+    <div class="demo-row">
+      <div class="demo-item">
+        <div class="mf-popover" style="min-width: 320px;">
+          <div class="mf-popover__info-row">
+            <span class="mf-popover__dot mf-popover__dot--success"></span>
+            时间进度：本月已过 24 %
+          </div>
+          <div class="mf-popover__info-row">
+            <span class="mf-popover__dot mf-popover__dot--warning"></span>
+            上月用量：上月同期累计消耗 X 积分，占本月配额 XX.X%
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-item">
+        <div class="mf-popover" style="min-width: 260px;">
+          <div class="mf-popover__info-row">
+            <span class="mf-popover__dot mf-popover__dot--success"></span>
+            成功状态说明文字
+          </div>
+          <div class="mf-popover__info-row">
+            <span class="mf-popover__dot mf-popover__dot--warning"></span>
+            警告状态说明文字
+          </div>
+          <div class="mf-popover__info-row">
+            <span class="mf-popover__dot mf-popover__dot--error"></span>
+            错误状态说明文字
+          </div>
+          <div class="mf-popover__info-row">
+            <span class="mf-popover__dot mf-popover__dot--info"></span>
+            信息状态说明文字
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 4. 最大高度 / 滚动截断 ── -->
+  <div class="pv-section">
+    <div class="pv-section__title">最大高度 · 滚动截断</div>
+    <div class="pv-section__sub">列表项超过 240px 时自动截断并支持滚动（<code>max-height: 240px; overflow-y: auto</code>）</div>
+
+    <div class="demo-row">
+      <!-- 用户列表：10 人，超出滚动 -->
+      <div class="demo-item">
+        <div class="demo-label">用户列表（10 人）</div>
+        <div class="mf-popover" style="min-width: 200px;">
+          <ul class="mf-popover__list">
+            <li class="mf-popover__item"><span class="mf-popover__avatar" style="background:#1380ED;">王</span>王小明</li>
+            <li class="mf-popover__item"><span class="mf-popover__avatar" style="background:#20BD6E;">李</span>李晓雪</li>
+            <li class="mf-popover__item"><span class="mf-popover__avatar" style="background:#FFB641;color:#1F2329;">张</span>张伟</li>
+            <li class="mf-popover__item"><span class="mf-popover__avatar" style="background:#9254DE;">陈</span>陈思远</li>
+            <li class="mf-popover__item"><span class="mf-popover__avatar" style="background:#F5222D;">赵</span>赵晨曦</li>
+            <li class="mf-popover__item"><span class="mf-popover__avatar" style="background:#13C2C2;">刘</span>刘建国</li>
+            <li class="mf-popover__item"><span class="mf-popover__avatar" style="background:#6B57C4;">吴</span>吴宇航</li>
+            <li class="mf-popover__item"><span class="mf-popover__avatar" style="background:#EB2F96;">孙</span>孙梦琦</li>
+            <li class="mf-popover__item"><span class="mf-popover__avatar" style="background:#52C41A;">郑</span>郑浩然</li>
+            <li class="mf-popover__item"><span class="mf-popover__avatar" style="background:#FA8C16;">周</span>周雅婷</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 分组列表：多组超出滚动 -->
+      <div class="demo-item">
+        <div class="demo-label">分组列表（超出截断）</div>
+        <div class="mf-popover" style="min-width: 240px;">
+          <div class="mf-popover__group">含 4 个技能</div>
+          <ul class="mf-popover__list">
+            <li class="mf-popover__item">公司 Code Review 规范</li>
+            <li class="mf-popover__item">TypeScript 最佳实践</li>
+            <li class="mf-popover__item">前端代码规范检查</li>
+            <li class="mf-popover__item">单元测试覆盖率提升</li>
+          </ul>
+          <div class="mf-popover__group">含 4 个 Hook</div>
+          <ul class="mf-popover__list">
+            <li class="mf-popover__item">提交前格式校验</li>
+            <li class="mf-popover__item">提交前 Lint 检查</li>
+            <li class="mf-popover__item">提交信息规范验证</li>
+            <li class="mf-popover__item">分支命名校验</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 4 条以内：不触发滚动 -->
+      <div class="demo-item">
+        <div class="demo-label">3 人以内（无滚动）</div>
+        <div class="mf-popover" style="min-width: 200px;">
+          <ul class="mf-popover__list">
+            <li class="mf-popover__item"><span class="mf-popover__avatar" style="background:#1380ED;">王</span>王小明</li>
+            <li class="mf-popover__item"><span class="mf-popover__avatar" style="background:#20BD6E;">李</span>李晓雪</li>
+            <li class="mf-popover__item"><span class="mf-popover__avatar" style="background:#FFB641;color:#1F2329;">张</span>张伟</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 5. 基础 Popover（原有） ── -->
+  <div class="pv-section">
+    <div class="pv-section__title">基础 Popover</div>
+
+    <div class="demo-row">
+      <div class="demo-item">
+        <div class="mf-popover" style="max-width: 280px;">
+          <div style="font-weight: 500; margin-bottom: var(--spacer-4); color: var(--text-default);">什么是 Popover？</div>
+          <div style="color: var(--text-secondary); font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height);">悬浮面板，承载结构化内容，如描述、操作或表单控件。</div>
+        </div>
+      </div>
+      <div class="demo-item">
+        <div class="mf-popover" style="max-width: 240px;">
+          <div style="font-weight: 500; margin-bottom: var(--spacer-8); color: var(--text-default);">删除此文件？</div>
+          <div style="color: var(--text-secondary); font-size: var(--body-sm-font-size); margin-bottom: var(--spacer-12);">此操作确认后不可撤销。</div>
+          <div style="display: flex; gap: var(--spacer-8);">
+            <button class="mf-btn mf-btn--secondary mf-btn--sm" style="flex:1;">取消</button>
+            <button class="mf-btn mf-btn--danger mf-btn--sm" style="flex:1;">删除</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 5. Token Reference ── -->
+  <div class="pv-section">
+    <div class="pv-section__title">Token Reference</div>
+
+    <table class="token-table">
+      <thead>
+        <tr>
+          <th>选择器</th>
+          <th>属性</th>
+          <th>Token</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>.mf-popover</code></td><td>background</td><td><code>--bg-base-default</code></td></tr>
+        <tr><td><code>.mf-popover</code></td><td>border</td><td><code>--border-neutral-l2</code></td></tr>
+        <tr><td><code>.mf-popover</code></td><td>border-radius</td><td><code>--radius-12</code></td></tr>
+        <tr><td><code>.mf-popover__header</code></td><td>font-size</td><td><code>--body-xs-font-size</code></td></tr>
+        <tr><td><code>.mf-popover__avatar</code></td><td>border-radius</td><td><code>--radius-full</code></td></tr>
+        <tr><td><code>.mf-popover__group</code></td><td>分隔线</td><td><code>--border-neutral-l1</code></td></tr>
+        <tr><td><code>.mf-popover__dot--success</code></td><td>color</td><td><code>--status-success-default</code></td></tr>
+        <tr><td><code>.mf-popover__dot--warning</code></td><td>color</td><td><code>--status-warning-default</code></td></tr>
+        <tr><td><code>.mf-popover__dot--error</code></td><td>color</td><td><code>--status-error-default</code></td></tr>
+        <tr><td><code>.mf-popover__dot--info</code></td><td>color</td><td><code>--status-primary-default</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

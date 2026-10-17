@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Table</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style data-preview-shell>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html,
+    body {
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      letter-spacing: var(--body-sm-letter-spacing);
+      min-height: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+
+    body { padding: var(--spacer-32); }
+    img, svg, video, canvas { max-width: 100%; }
+    a { color: var(--text-default); text-decoration: none; }
+    a:hover { color: var(--text-default-hover); }
+    hr { border: 0; border-top: 1px solid var(--border-neutral-l1); margin: var(--spacer-24) 0; }
+
+    .h1 { font-family: var(--heading-2xl-font-family); font-size: var(--heading-2xl-font-size); line-height: var(--heading-2xl-line-height); font-weight: var(--heading-2xl-font-weight); color: var(--text-default); }
+    .h2 { font-family: var(--heading-md-font-family); font-size: var(--heading-md-font-size); line-height: var(--heading-md-line-height); font-weight: var(--heading-md-font-weight); color: var(--text-default); }
+    .h3 { font-family: var(--heading-sm-font-family); font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); color: var(--text-default); }
+    .eyebrow { font-size: var(--body-xs-font-size); line-height: var(--body-xs-line-height); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: var(--body-xs-letter-spacing); }
+    .text-secondary { color: var(--text-secondary); }
+    .text-tertiary { color: var(--text-tertiary); }
+
+    .row { display: flex; gap: var(--spacer-12); flex-wrap: wrap; align-items: center; }
+    .col { display: flex; flex-direction: column; gap: var(--spacer-12); }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacer-24); }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacer-24); }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacer-24); }
+    .stack-8 { display: flex; flex-direction: column; gap: var(--spacer-8); }
+    .stack-12 { display: flex; flex-direction: column; gap: var(--spacer-12); }
+    .stack-16 { display: flex; flex-direction: column; gap: var(--spacer-16); }
+    .stack-24 { display: flex; flex-direction: column; gap: var(--spacer-24); }
+    .stack-40 { display: flex; flex-direction: column; gap: var(--spacer-40); }
+
+    .pv-header { margin-bottom: var(--spacer-32); padding-bottom: var(--spacer-16); border-bottom: 1px solid var(--border-neutral-l1); }
+    .pv-header h1 { font-size: var(--heading-lg-font-size); line-height: var(--heading-lg-line-height); font-weight: var(--heading-lg-font-weight); margin-bottom: var(--spacer-4); }
+    .pv-header p { color: var(--text-secondary); font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); }
+    .pv-section { margin-bottom: var(--spacer-32); }
+    .pv-section__title { font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); margin-bottom: var(--spacer-12); color: var(--text-default); }
+    .pv-section__sub { font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); color: var(--text-tertiary); margin-bottom: var(--spacer-12); }
+
+    @media (max-width: 720px) {
+      body { padding: var(--spacer-16); }
+      .grid-2,
+      .grid-3,
+      .grid-4 { grid-template-columns: 1fr; }
+    }
+  </style>
+  <link rel="stylesheet" href="../components.css" />
+  <style>
+.mf-table-demo { max-width: 1180px; }
+
+    /* Inline asset icon normalization: keep uploaded HTML independent from external SVG styling. */
+    [data-asset-icon] {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent !important;
+      -webkit-mask: none !important;
+      mask: none !important;
+    }
+
+    [data-asset-icon] > svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      flex: 0 0 auto;
+    }
+
+    .asset-inline-icon {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="pv-header">
+    <h1>Table</h1>
+    <p>Data table with avatar cells, role, last-active and inline status tags. Status colors are scoped to inline cells, never to entire rows.</p>
+  </div>
+
+  <div class="pv-section">
+    <div class="pv-section__title">Table</div>
+    <div class="mf-table-card mf-table-demo">
+      <table class="mf-table mf-table--fixed">
+        <colgroup>
+          <col class="mf-table__col-member">
+          <col class="mf-table__col-role">
+          <col class="mf-table__col-dept">
+          <col class="mf-table__col-joined">
+          <col class="mf-table__col-active">
+          <col class="mf-table__col-status">
+          <col class="mf-table__col-actions">
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="mf-table__th--filterable"><span class="mf-table__th-inner">Member<span class="mf-table__th-filter" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M550.4 572.608C550.4 543.616 560.64 515.392 579.648 493.44L856.96 170.496A2.88 2.88 0 0 0 857.6 169.088 4.032 4.032 0 0 0 857.216 166.912C857.152 166.592 856.96 166.464 856.96 166.4H167.04L166.72 166.912A4.096 4.096 0 0 0 166.4 169.088 3.2 3.2 0 0 0 167.04 170.496H166.912L444.48 493.44C463.424 515.392 473.6 543.616 473.6 572.608V815.168A3.584 3.584 0 0 0 474.304 817.344H474.368L550.08 857.152 550.4 855.552V572.672ZM627.2 855.552C627.2 868.608 624.128 881.6 617.984 893.184A78.08 78.08 0 0 1 591.68 922.112 75.52 75.52 0 0 1 515.328 925.76L438.592 885.312A77.568 77.568 0 0 1 407.872 855.872 80.32 80.32 0 0 1 397.504 825.792L396.864 815.04V572.608A45.568 45.568 0 0 0 390.656 549.76L386.24 543.36 108.8 220.48A79.744 79.744 0 0 1 90.496 180.544 80.896 80.896 0 0 1 96 137.024C101.76 123.392 111.36 111.36 123.84 102.848L133.568 97.28C143.744 92.288 154.88 89.6 166.4 89.6H857.728C873.088 89.664 887.808 94.4 900.288 102.912A78.1 78.1 0 0 1 928.128 137.152 80.896 80.896 0 0 1 921.856 211.52L915.264 220.48 637.824 543.424A44.928 44.928 0 0 0 627.2 572.608V855.552Z"></path></svg></span></span></th>
+            <th class="mf-table__th--filterable"><span class="mf-table__th-inner">Role<span class="mf-table__th-filter" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M550.4 572.608C550.4 543.616 560.64 515.392 579.648 493.44L856.96 170.496A2.88 2.88 0 0 0 857.6 169.088 4.032 4.032 0 0 0 857.216 166.912C857.152 166.592 856.96 166.464 856.96 166.4H167.04L166.72 166.912A4.096 4.096 0 0 0 166.4 169.088 3.2 3.2 0 0 0 167.04 170.496H166.912L444.48 493.44C463.424 515.392 473.6 543.616 473.6 572.608V815.168A3.584 3.584 0 0 0 474.304 817.344H474.368L550.08 857.152 550.4 855.552V572.672ZM627.2 855.552C627.2 868.608 624.128 881.6 617.984 893.184A78.08 78.08 0 0 1 591.68 922.112 75.52 75.52 0 0 1 515.328 925.76L438.592 885.312A77.568 77.568 0 0 1 407.872 855.872 80.32 80.32 0 0 1 397.504 825.792L396.864 815.04V572.608A45.568 45.568 0 0 0 390.656 549.76L386.24 543.36 108.8 220.48A79.744 79.744 0 0 1 90.496 180.544 80.896 80.896 0 0 1 96 137.024C101.76 123.392 111.36 111.36 123.84 102.848L133.568 97.28C143.744 92.288 154.88 89.6 166.4 89.6H857.728C873.088 89.664 887.808 94.4 900.288 102.912A78.1 78.1 0 0 1 928.128 137.152 80.896 80.896 0 0 1 921.856 211.52L915.264 220.48 637.824 543.424A44.928 44.928 0 0 0 627.2 572.608V855.552Z"></path></svg></span></span></th>
+            <th class="mf-table__th--filterable"><span class="mf-table__th-inner">Department<span class="mf-table__th-filter" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M550.4 572.608C550.4 543.616 560.64 515.392 579.648 493.44L856.96 170.496A2.88 2.88 0 0 0 857.6 169.088 4.032 4.032 0 0 0 857.216 166.912C857.152 166.592 856.96 166.464 856.96 166.4H167.04L166.72 166.912A4.096 4.096 0 0 0 166.4 169.088 3.2 3.2 0 0 0 167.04 170.496H166.912L444.48 493.44C463.424 515.392 473.6 543.616 473.6 572.608V815.168A3.584 3.584 0 0 0 474.304 817.344H474.368L550.08 857.152 550.4 855.552V572.672ZM627.2 855.552C627.2 868.608 624.128 881.6 617.984 893.184A78.08 78.08 0 0 1 591.68 922.112 75.52 75.52 0 0 1 515.328 925.76L438.592 885.312A77.568 77.568 0 0 1 407.872 855.872 80.32 80.32 0 0 1 397.504 825.792L396.864 815.04V572.608A45.568 45.568 0 0 0 390.656 549.76L386.24 543.36 108.8 220.48A79.744 79.744 0 0 1 90.496 180.544 80.896 80.896 0 0 1 96 137.024C101.76 123.392 111.36 111.36 123.84 102.848L133.568 97.28C143.744 92.288 154.88 89.6 166.4 89.6H857.728C873.088 89.664 887.808 94.4 900.288 102.912A78.1 78.1 0 0 1 928.128 137.152 80.896 80.896 0 0 1 921.856 211.52L915.264 220.48 637.824 543.424A44.928 44.928 0 0 0 627.2 572.608V855.552Z"></path></svg></span></span></th>
+            <th>Joined</th>
+            <th>Last active</th>
+            <th class="mf-table__th--filterable"><span class="mf-table__th-inner">Status<span class="mf-table__th-filter" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M550.4 572.608C550.4 543.616 560.64 515.392 579.648 493.44L856.96 170.496A2.88 2.88 0 0 0 857.6 169.088 4.032 4.032 0 0 0 857.216 166.912C857.152 166.592 856.96 166.464 856.96 166.4H167.04L166.72 166.912A4.096 4.096 0 0 0 166.4 169.088 3.2 3.2 0 0 0 167.04 170.496H166.912L444.48 493.44C463.424 515.392 473.6 543.616 473.6 572.608V815.168A3.584 3.584 0 0 0 474.304 817.344H474.368L550.08 857.152 550.4 855.552V572.672ZM627.2 855.552C627.2 868.608 624.128 881.6 617.984 893.184A78.08 78.08 0 0 1 591.68 922.112 75.52 75.52 0 0 1 515.328 925.76L438.592 885.312A77.568 77.568 0 0 1 407.872 855.872 80.32 80.32 0 0 1 397.504 825.792L396.864 815.04V572.608A45.568 45.568 0 0 0 390.656 549.76L386.24 543.36 108.8 220.48A79.744 79.744 0 0 1 90.496 180.544 80.896 80.896 0 0 1 96 137.024C101.76 123.392 111.36 111.36 123.84 102.848L133.568 97.28C143.744 92.288 154.88 89.6 166.4 89.6H857.728C873.088 89.664 887.808 94.4 900.288 102.912A78.1 78.1 0 0 1 928.128 137.152 80.896 80.896 0 0 1 921.856 211.52L915.264 220.48 637.824 543.424A44.928 44.928 0 0 0 627.2 572.608V855.552Z"></path></svg></span></span></th>
+            <th class="mf-table__actions">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="mf-table__member">
+                <span class="mf-avatar mf-avatar--lg">A</span>
+                <div class="mf-table__member-meta">
+                  <div class="mf-table__member-name">Avery Chen</div>
+                  <div class="mf-table__member-email">avery@nimbus.app</div>
+                </div>
+              </div>
+            </td>
+            <td>Owner</td>
+            <td>Engineering</td>
+            <td>Jan 2024</td>
+            <td>2 min ago</td>
+            <td><span class="mf-tag mf-tag--success">Active</span></td>
+            <td class="mf-table__actions"><button class="mf-btn mf-btn--ghost mf-btn--sm">编辑</button><button class="mf-btn mf-btn--ghost mf-btn--sm">删除</button><button class="mf-btn mf-btn--ghost mf-btn--sm">更多</button></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="mf-table__member">
+                <span class="mf-avatar mf-avatar--lg">M</span>
+                <div class="mf-table__member-meta">
+                  <div class="mf-table__member-name">Mia Patel</div>
+                  <div class="mf-table__member-email">mia@nimbus.app</div>
+                </div>
+              </div>
+            </td>
+            <td>Editor</td>
+            <td>Design</td>
+            <td>Mar 2024</td>
+            <td>3 hr ago</td>
+            <td><span class="mf-tag">Idle</span></td>
+            <td class="mf-table__actions"><button class="mf-btn mf-btn--ghost mf-btn--sm">编辑</button><button class="mf-btn mf-btn--ghost mf-btn--sm">删除</button><button class="mf-btn mf-btn--ghost mf-btn--sm">更多</button></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="mf-table__member">
+                <span class="mf-avatar mf-avatar--lg">L</span>
+                <div class="mf-table__member-meta">
+                  <div class="mf-table__member-name">Liam Wong</div>
+                  <div class="mf-table__member-email">liam@nimbus.app</div>
+                </div>
+              </div>
+            </td>
+            <td>Viewer</td>
+            <td>Marketing</td>
+            <td>Apr 2024</td>
+            <td>Yesterday</td>
+            <td><span class="mf-tag mf-tag--warning">Invited</span></td>
+            <td class="mf-table__actions"><button class="mf-btn mf-btn--ghost mf-btn--sm">编辑</button><button class="mf-btn mf-btn--ghost mf-btn--sm">删除</button><button class="mf-btn mf-btn--ghost mf-btn--sm">更多</button></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="mf-table__member">
+                <span class="mf-avatar mf-avatar--lg">S</span>
+                <div class="mf-table__member-meta">
+                  <div class="mf-table__member-name">Sofia Reyes</div>
+                  <div class="mf-table__member-email">sofia@nimbus.app</div>
+                </div>
+              </div>
+            </td>
+            <td>Editor</td>
+            <td>Product</td>
+            <td>Feb 2024</td>
+            <td>1 day ago</td>
+            <td><span class="mf-tag mf-tag--success">Active</span></td>
+            <td class="mf-table__actions"><button class="mf-btn mf-btn--ghost mf-btn--sm">编辑</button><button class="mf-btn mf-btn--ghost mf-btn--sm">删除</button><button class="mf-btn mf-btn--ghost mf-btn--sm">更多</button></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="mf-table__member">
+                <span class="mf-avatar mf-avatar--lg">J</span>
+                <div class="mf-table__member-meta">
+                  <div class="mf-table__member-name">James Park</div>
+                  <div class="mf-table__member-email">james@nimbus.app</div>
+                </div>
+              </div>
+            </td>
+            <td>Viewer</td>
+            <td>Sales</td>
+            <td>May 2024</td>
+            <td>3 days ago</td>
+            <td><span class="mf-tag">Idle</span></td>
+            <td class="mf-table__actions"><button class="mf-btn mf-btn--ghost mf-btn--sm">编辑</button><button class="mf-btn mf-btn--ghost mf-btn--sm">删除</button><button class="mf-btn mf-btn--ghost mf-btn--sm">更多</button></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="mf-table__member">
+                <span class="mf-avatar mf-avatar--lg">N</span>
+                <div class="mf-table__member-meta">
+                  <div class="mf-table__member-name">Nina Volkov</div>
+                  <div class="mf-table__member-email">nina@nimbus.app</div>
+                </div>
+              </div>
+            </td>
+            <td>Admin</td>
+            <td>Engineering</td>
+            <td>Dec 2023</td>
+            <td>Just now</td>
+            <td><span class="mf-tag mf-tag--success">Active</span></td>
+            <td class="mf-table__actions"><button class="mf-btn mf-btn--ghost mf-btn--sm">编辑</button><button class="mf-btn mf-btn--ghost mf-btn--sm">删除</button><button class="mf-btn mf-btn--ghost mf-btn--sm">更多</button></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="mf-table__member">
+                <span class="mf-avatar mf-avatar--lg">T</span>
+                <div class="mf-table__member-meta">
+                  <div class="mf-table__member-name">Tom Nakamura</div>
+                  <div class="mf-table__member-email">tom@nimbus.app</div>
+                </div>
+              </div>
+            </td>
+            <td>Viewer</td>
+            <td>Support</td>
+            <td>Jun 2024</td>
+            <td>1 week ago</td>
+            <td><span class="mf-tag mf-tag--danger">Suspended</span></td>
+            <td class="mf-table__actions"><button class="mf-btn mf-btn--ghost mf-btn--sm">编辑</button><button class="mf-btn mf-btn--ghost mf-btn--sm">删除</button><button class="mf-btn mf-btn--ghost mf-btn--sm">更多</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var table = document.querySelector('.mf-table');
+      if (!table) return;
+      var ths = table.querySelectorAll('th.mf-table__th--filterable');
+
+      // 获取每个可筛选 th 的列索引
+      function getColIndex(th) {
+        return Array.prototype.indexOf.call(th.parentElement.children, th);
+      }
+
+      // hover td 时，高亮对应列表头的筛选图标
+      table.querySelectorAll('tbody td').forEach(function (td) {
+        var colIdx = Array.prototype.indexOf.call(td.parentElement.children, td);
+        var matchTh = table.querySelector('thead tr th:nth-child(' + (colIdx + 1) + ')');
+        if (!matchTh || !matchTh.classList.contains('mf-table__th--filterable')) return;
+        var icon = matchTh.querySelector('.mf-table__th-filter');
+        if (!icon) return;
+        td.addEventListener('mouseenter', function () { icon.style.opacity = '1'; });
+        td.addEventListener('mouseleave', function () {
+          if (!matchTh.matches(':hover')) icon.style.opacity = '0';
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

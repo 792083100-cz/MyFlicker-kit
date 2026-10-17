@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>Toast 全局提示</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style data-preview-shell>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      letter-spacing: var(--body-sm-letter-spacing);
+      min-height: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    body { padding: var(--spacer-32); }
+    .pv-header { margin-bottom: var(--spacer-32); padding-bottom: var(--spacer-16); border-bottom: 1px solid var(--border-neutral-l1); }
+    .pv-header h1 { font-size: var(--heading-lg-font-size); line-height: var(--heading-lg-line-height); font-weight: var(--heading-lg-font-weight); margin-bottom: var(--spacer-4); }
+    .pv-header p { color: var(--text-secondary); font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); }
+    .pv-section { margin-bottom: var(--spacer-40); }
+    .pv-section__title { font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); margin-bottom: var(--spacer-20); color: var(--text-default); }
+  </style>
+  <link rel="stylesheet" href="../components.css" />
+  <style>
+    /* === Toast 预览布局 === */
+    .toast-demo-bar {
+      display: flex;
+      gap: var(--spacer-8);
+      flex-wrap: wrap;
+      margin-bottom: var(--spacer-24);
+    }
+    /* 四列对照网格 */
+    .toast-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--spacer-32);
+    }
+    .toast-col__label {
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      color: var(--text-default);
+      font-weight: 500;
+      margin-bottom: var(--spacer-12);
+      display: flex;
+      align-items: center;
+      gap: var(--spacer-4);
+    }
+    .toast-col__label::before { content: '•'; }
+    .toast-rows {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--spacer-12);
+    }
+    .toast-rows .mf-notif {
+      width: auto;
+      max-width: 100%;
+    }
+    /* 顶部浮现 Toast 演示区 */
+    .toast-live-area {
+      position: relative;
+      height: 120px;
+      background: var(--bg-base-secondary);
+      border: 1px dashed var(--border-neutral-l1);
+      border-radius: var(--radius-8);
+      margin-bottom: var(--spacer-24);
+      overflow: hidden;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 16px;
+    }
+    .toast-live-hint {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+    .toast-live-area .mf-toast-container {
+      position: absolute;
+      top: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="pv-header">
+    <h1>Toast 全局提示</h1>
+    <p>轻量级全局操作反馈，支持五种语义 × 四种变体（默认 / 带操作 / 剩余时间 / 主动关闭）。浮于页面顶部居中，3s 后自动消失。</p>
+  </div>
+
+  <!-- 交互演示 -->
+  <div class="pv-section">
+    <div class="pv-section__title">交互演示</div>
+    <div class="toast-demo-bar">
+      <button class="mf-btn" onclick="showToast('default')">默认</button>
+      <button class="mf-btn mf-btn--primary" onclick="showToast('info')">Info</button>
+      <button class="mf-btn" style="background:var(--bg-success);color:var(--status-success-default);" onclick="showToast('success')">Success</button>
+      <button class="mf-btn" style="background:var(--bg-warning);color:var(--status-warning-default);" onclick="showToast('warning')">Warning</button>
+      <button class="mf-btn" style="background:var(--bg-error);color:var(--status-error-default);" onclick="showToast('error')">Error</button>
+    </div>
+    <div class="toast-live-area">
+      <div class="mf-toast-container" id="liveToastContainer"></div>
+      <span class="toast-live-hint">点击上方按钮触发 Toast ↑</span>
+    </div>
+  </div>
+
+  <!-- 四列对照 -->
+  <div class="pv-section">
+    <div class="pv-section__title">变体对照</div>
+    <div class="toast-grid">
+
+      <!-- 默认 -->
+      <div>
+        <div class="toast-col__label">默认</div>
+        <div class="toast-rows">
+
+          <div class="mf-notif mf-notif--simple mf-notif--float">
+            <span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>
+          </div>
+
+          <div class="mf-notif mf-notif--simple mf-notif--float mf-notif--info">
+            <span class="mf-notif__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M960 512A448 448 0 1 0 64 512 448 448 0 0 0 960 512Z"/><path fill="#fff" d="M448 704A64 64 0 1 0 576 704V512A64 64 0 0 0 448 512V704zM448 320A64 64 0 1 0 576 320 64 64 0 0 0 448 320z"/></svg>
+            </span>
+            <span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>
+          </div>
+
+          <div class="mf-notif mf-notif--simple mf-notif--float mf-notif--success">
+            <span class="mf-notif__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64Z"/><path fill="#fff" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 301.12 543.68L428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg>
+            </span>
+            <span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>
+          </div>
+
+          <div class="mf-notif mf-notif--simple mf-notif--float mf-notif--alert">
+            <span class="mf-notif__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M960 512A448 448 0 1 1 64 512 448 448 0 0 1 960 512Z"/><path fill="#fff" d="M448 320A64 64 0 0 1 576 320V512A64 64 0 0 1 448 512V320zM448 704A64 64 0 1 1 576 704 64 64 0 0 1 448 704z"/></svg>
+            </span>
+            <span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>
+          </div>
+
+          <div class="mf-notif mf-notif--simple mf-notif--float mf-notif--error">
+            <span class="mf-notif__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M512 64A448 448 0 1 0 512 960 448 448 0 0 0 512 64Z"/><path fill="#fff" d="M672.512 351.488a44.8 44.8 0 0 0-63.36 0L512 448.64l-97.152-97.152a44.8 44.8 0 0 0-63.36 63.36L448.64 512l-97.152 97.152a44.8 44.8 0 0 0 63.36 63.36L512 575.36l97.152 97.152a44.8 44.8 0 0 0 63.36-63.36L575.36 512l97.152-97.152a44.8 44.8 0 0 0 0-63.36Z"/></svg>
+            </span>
+            <span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 带操作 -->
+      <div>
+        <div class="toast-col__label">带操作</div>
+        <div class="toast-rows">
+
+          <div class="mf-notif mf-notif--simple mf-notif--float">
+            <span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>
+            <a class="mf-alert__action">去操作</a>
+          </div>
+
+          <div class="mf-notif mf-notif--simple mf-notif--float mf-notif--info">
+            <span class="mf-notif__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M960 512A448 448 0 1 0 64 512 448 448 0 0 0 960 512Z"/><path fill="#fff" d="M448 704A64 64 0 1 0 576 704V512A64 64 0 0 0 448 512V704zM448 320A64 64 0 1 0 576 320 64 64 0 0 0 448 320z"/></svg>
+            </span>
+            <span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>
+            <a class="mf-alert__action">去操作</a>
+          </div>
+
+          <div class="mf-notif mf-notif--simple mf-notif--float mf-notif--success">
+            <span class="mf-notif__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64Z"/><path fill="#fff" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 301.12 543.68L428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg>
+            </span>
+            <span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>
+            <a class="mf-alert__action">去操作</a>
+          </div>
+
+          <div class="mf-notif mf-notif--simple mf-notif--float mf-notif--alert">
+            <span class="mf-notif__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M960 512A448 448 0 1 1 64 512 448 448 0 0 1 960 512Z"/><path fill="#fff" d="M448 320A64 64 0 0 1 576 320V512A64 64 0 0 1 448 512V320zM448 704A64 64 0 1 1 576 704 64 64 0 0 1 448 704z"/></svg>
+            </span>
+            <span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>
+            <a class="mf-alert__action">去操作</a>
+          </div>
+
+          <div class="mf-notif mf-notif--simple mf-notif--float mf-notif--error">
+            <span class="mf-notif__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M512 64A448 448 0 1 0 512 960 448 448 0 0 0 512 64Z"/><path fill="#fff" d="M672.512 351.488a44.8 44.8 0 0 0-63.36 0L512 448.64l-97.152-97.152a44.8 44.8 0 0 0-63.36 63.36L448.64 512l-97.152 97.152a44.8 44.8 0 0 0 63.36 63.36L512 575.36l97.152 97.152a44.8 44.8 0 0 0 63.36-63.36L575.36 512l97.152-97.152a44.8 44.8 0 0 0 0-63.36Z"/></svg>
+            </span>
+            <span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>
+            <a class="mf-alert__action">去操作</a>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 剩余时间 -->
+      <div>
+        <div class="toast-col__label">剩余时间</div>
+        <div class="toast-rows">
+
+          <div class="mf-notif mf-notif--simple mf-notif--float">
+            <span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>
+            <span class="mf-notif__countdown">10s</span>
+          </div>
+
+          <div class="mf-notif mf-notif--simple mf-notif--float mf-notif--info">
+            <span class="mf-notif__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M960 512A448 448 0 1 0 64 512 448 448 0 0 0 960 512Z"/><path fill="#fff" d="M448 704A64 64 0 1 0 576 704V512A64 64 0 0 0 448 512V704zM448 320A64 64 0 1 0 576 320 64 64 0 0 0 448 320z"/></svg>
+            </span>
+            <span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>
+            <span class="mf-notif__countdown">10s</span>
+          </div>
+
+          <div class="mf-notif mf-notif--simple mf-notif--float mf-notif--success">
+            <span class="mf-notif__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64Z"/><path fill="#fff" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 301.12 543.68L428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg>
+            </span>
+            <span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>
+            <span class="mf-notif__countdown">10s</span>
+          </div>
+
+          <div class="mf-notif mf-notif--simple mf-notif--float mf-notif--alert">
+            <span class="mf-notif__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M960 512A448 448 0 1 1 64 512 448 448 0 0 1 960 512Z"/><path fill="#fff" d="M448 320A64 64 0 0 1 576 320V512A64 64 0 0 1 448 512V320zM448 704A64 64 0 1 1 576 704 64 64 0 0 1 448 704z"/></svg>
+            </span>
+            <span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>
+            <span class="mf-notif__countdown">10s</span>
+          </div>
+
+          <div class="mf-notif mf-notif--simple mf-notif--float mf-notif--error">
+            <span class="mf-notif__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M512 64A448 448 0 1 0 512 960 448 448 0 0 0 512 64Z"/><path fill="#fff" d="M672.512 351.488a44.8 44.8 0 0 0-63.36 0L512 448.64l-97.152-97.152a44.8 44.8 0 0 0-63.36 63.36L448.64 512l-97.152 97.152a44.8 44.8 0 0 0 63.36 63.36L512 575.36l97.152 97.152a44.8 44.8 0 0 0 63.36-63.36L575.36 512l97.152-97.152a44.8 44.8 0 0 0 0-63.36Z"/></svg>
+            </span>
+            <span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>
+            <span class="mf-notif__countdown">10s</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 主动关闭 -->
+      <div>
+        <div class="toast-col__label">主动关闭</div>
+        <div class="toast-rows">
+
+          <div class="mf-notif mf-notif--simple mf-notif--float">
+            <span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>
+            <button class="mf-notif__close" aria-label="关闭" onclick="this.closest('.mf-notif').remove()">
+              <span class="ac-icon ac-i-close"></span>
+            </button>
+          </div>
+
+          <div class="mf-notif mf-notif--simple mf-notif--float mf-notif--info">
+            <span class="mf-notif__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M960 512A448 448 0 1 0 64 512 448 448 0 0 0 960 512Z"/><path fill="#fff" d="M448 704A64 64 0 1 0 576 704V512A64 64 0 0 0 448 512V704zM448 320A64 64 0 1 0 576 320 64 64 0 0 0 448 320z"/></svg>
+            </span>
+            <span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>
+            <button class="mf-notif__close" aria-label="关闭" onclick="this.closest('.mf-notif').remove()">
+              <span class="ac-icon ac-i-close"></span>
+            </button>
+          </div>
+
+          <div class="mf-notif mf-notif--simple mf-notif--float mf-notif--success">
+            <span class="mf-notif__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64Z"/><path fill="#fff" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 301.12 543.68L428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg>
+            </span>
+            <span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>
+            <button class="mf-notif__close" aria-label="关闭" onclick="this.closest('.mf-notif').remove()">
+              <span class="ac-icon ac-i-close"></span>
+            </button>
+          </div>
+
+          <div class="mf-notif mf-notif--simple mf-notif--float mf-notif--alert">
+            <span class="mf-notif__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M960 512A448 448 0 1 1 64 512 448 448 0 0 1 960 512Z"/><path fill="#fff" d="M448 320A64 64 0 0 1 576 320V512A64 64 0 0 1 448 512V320zM448 704A64 64 0 1 1 576 704 64 64 0 0 1 448 704z"/></svg>
+            </span>
+            <span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>
+            <button class="mf-notif__close" aria-label="关闭" onclick="this.closest('.mf-notif').remove()">
+              <span class="ac-icon ac-i-close"></span>
+            </button>
+          </div>
+
+          <div class="mf-notif mf-notif--simple mf-notif--float mf-notif--error">
+            <span class="mf-notif__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M512 64A448 448 0 1 0 512 960 448 448 0 0 0 512 64Z"/><path fill="#fff" d="M672.512 351.488a44.8 44.8 0 0 0-63.36 0L512 448.64l-97.152-97.152a44.8 44.8 0 0 0-63.36 63.36L448.64 512l-97.152 97.152a44.8 44.8 0 0 0 63.36 63.36L512 575.36l97.152 97.152a44.8 44.8 0 0 0 63.36-63.36L575.36 512l97.152-97.152a44.8 44.8 0 0 0 0-63.36Z"/></svg>
+            </span>
+            <span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>
+            <button class="mf-notif__close" aria-label="关闭" onclick="this.closest('.mf-notif').remove()">
+              <span class="ac-icon ac-i-close"></span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+(function () {
+  var ICONS = {
+    info: '<svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M960 512A448 448 0 1 0 64 512 448 448 0 0 0 960 512Z"/><path fill="#fff" d="M448 704A64 64 0 1 0 576 704V512A64 64 0 0 0 448 512V704zM448 320A64 64 0 1 0 576 320 64 64 0 0 0 448 320z"/></svg>',
+    success: '<svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64Z"/><path fill="#fff" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 301.12 543.68L428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg>',
+    warning: '<svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M960 512A448 448 0 1 1 64 512 448 448 0 0 1 960 512Z"/><path fill="#fff" d="M448 320A64 64 0 0 1 576 320V512A64 64 0 0 1 448 512V320zM448 704A64 64 0 1 1 576 704 64 64 0 0 1 448 704z"/></svg>',
+    error: '<svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M512 64A448 448 0 1 0 512 960 448 448 0 0 0 512 64Z"/><path fill="#fff" d="M672.512 351.488a44.8 44.8 0 0 0-63.36 0L512 448.64l-97.152-97.152a44.8 44.8 0 0 0-63.36 63.36L448.64 512l-97.152 97.152a44.8 44.8 0 0 0 63.36 63.36L512 575.36l97.152 97.152a44.8 44.8 0 0 0 63.36-63.36L575.36 512l97.152-97.152a44.8 44.8 0 0 0 0-63.36Z"/></svg>'
+  };
+
+  var STATUS_MOD = {
+    default: '',
+    info: 'mf-notif--info',
+    success: 'mf-notif--success',
+    warning: 'mf-notif--alert',
+    error: 'mf-notif--error'
+  };
+
+  window.showToast = function (type) {
+    var container = document.getElementById('liveToastContainer');
+    var mod = STATUS_MOD[type] || '';
+    var icon = ICONS[type] ? '<span class="mf-notif__icon" aria-hidden="true">' + ICONS[type] + '</span>' : '';
+
+    var el = document.createElement('div');
+    el.className = ['mf-notif', 'mf-notif--simple', 'mf-notif--float', 'mf-notif--entering', mod].filter(Boolean).join(' ');
+    el.innerHTML = icon +
+      '<span class="mf-notif__text">图片超出 20MB 限制，请压缩后重试</span>' +
+      '<button class="mf-notif__close" aria-label="关闭"><span class="ac-icon ac-i-close"></span></button>';
+
+    el.querySelector('.mf-notif__close').addEventListener('click', function () { dismiss(el); });
+    container.appendChild(el);
+
+    var timer = setTimeout(function () { dismiss(el); }, 3000);
+    el._timer = timer;
+  };
+
+  function dismiss(el) {
+    if (el._leaving) return;
+    el._leaving = true;
+    clearTimeout(el._timer);
+    el.classList.remove('mf-notif--entering');
+    el.classList.add('mf-notif--leaving');
+    el.addEventListener('animationend', function () { el.remove(); }, { once: true });
+  }
+})();
+</script>
+</body>
+</html>

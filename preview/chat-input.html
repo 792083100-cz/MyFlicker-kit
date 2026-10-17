@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chat Input — MyFlicker Design System</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style data-preview-shell>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg-base-secondary);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      letter-spacing: var(--body-sm-letter-spacing);
+      min-height: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body { padding: var(--spacer-40) var(--spacer-48) var(--spacer-64); max-width: 1120px; margin: 0 auto; }
+
+    .pv-header { margin-bottom: var(--spacer-40); padding-bottom: var(--spacer-20); border-bottom: 1px solid var(--border-neutral-l1); }
+    .pv-header h1 { font-size: var(--heading-lg-font-size); line-height: var(--heading-lg-line-height); font-weight: var(--heading-lg-font-weight); margin-bottom: var(--spacer-4); }
+    .pv-header p  { color: var(--text-secondary); font-size: var(--body-sm-font-size); }
+
+    .pv-section { padding: var(--spacer-32) 0; border-top: 1px solid var(--border-neutral-l1); }
+    .pv-header + .pv-section { border-top: 0; padding-top: 0; }
+    .pv-section__title { font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); color: var(--text-default); margin-bottom: var(--spacer-20); }
+    .pv-section__sub  { font-size: var(--body-sm-font-size); color: var(--text-tertiary); margin-bottom: var(--spacer-16); }
+
+    .stack-16 { display: flex; flex-direction: column; gap: var(--spacer-16); }
+    .stack-24 { display: flex; flex-direction: column; gap: var(--spacer-24); }
+    .stack-32 { display: flex; flex-direction: column; gap: var(--spacer-32); }
+
+    .canvas { background: var(--bg-base-secondary); border-radius: var(--radius-12); padding: var(--spacer-32); display: flex; justify-content: center; }
+    .canvas--white { background: var(--bg-base-default); }
+
+    .eyebrow { font-size: var(--body-xs-font-size); line-height: var(--body-xs-line-height); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: .06em; margin-bottom: var(--spacer-8); }
+
+    .icon svg, .icon svg * { fill: currentColor; }
+    .icon-img svg, .icon-img svg * { fill: currentColor; }
+  </style>
+
+  <link rel="stylesheet" href="../components.css" />
+
+  <!-- mf-chat-input + mf-prompt-pills CSS 已迁入 components.css v38 -->
+</head>
+<body>
+
+  <!-- SVG 图标 Sprite（隐藏，供 use 引用） -->
+  <!-- 直接内联，无需 sprite；以下 section 中直接嵌入 -->
+
+  <div class="pv-header">
+    <h1>Chat Input</h1>
+    <p>对话输入框 · M4 UI Kit — 对话页核心组件</p>
+  </div>
+
+  <!-- ───────────────────────────────────────────
+       Section 1: Default — 对齐 Figma 结构
+       外层容器(border+radius-16) >
+         内层输入区(border+radius-12) >
+           textarea + toolbar(+ btn, 技能, 灵感触发 | Claude Sonnet 4.6▾ send)
+         项目工作 bar(灰底)
+         提示文字
+  ─────────────────────────────────────────── -->
+  <div class="pv-section">
+    <div class="pv-section__title">Default</div>
+    <div class="pv-section__sub">Textarea 空状态 + 完整 toolbar + 项目栏 + 提示文字</div>
+    <div class="canvas" style="padding: var(--spacer-48) var(--spacer-32); background: var(--bg-base-default);">
+      <div style="width: 800px;">
+
+        <!-- 外层容器：border + radius-16 -->
+        <div class="mf-chat-input-wrap">
+
+          <!-- 内层输入区：border + radius-12 -->
+          <div class="mf-chat-input">
+            <textarea class="mf-chat-input__textarea" placeholder="和我一起做点什么，@关联对象，/ 调用技能"></textarea>
+
+            <!-- toolbar: + | 技能 | 灵感触发 ............ Claude Sonnet 4.6 ▾ | [send] -->
+            <div class="mf-chat-input__toolbar">
+              <div class="mf-chat-input__toolbar-left">
+
+                <!-- + 附件 -->
+                <button class="mf-chat-input__btn" title="添加附件">
+                  <span class="icon icon--mask i-add"></span>
+                </button>
+
+                <!-- 技能（图标+文字） -->
+                <button class="mf-chat-input__action">
+                  <span class="icon icon--mask i-skill"></span>
+                  技能
+                </button>
+
+                <!-- 灵感触发（图标+文字） -->
+                <button class="mf-chat-input__action">
+                  <span class="icon icon--mask i-inspiration"></span>
+                  灵感触发
+                </button>
+              </div>
+
+              <div class="mf-chat-input__toolbar-right">
+                <!-- 模型选择：Claude Sonnet 4.6 ▾ -->
+                <button class="mf-chat-input__model">
+                  <span class="icon icon--mask i-claude" style="width:14px;height:14px;flex:0 0 14px;"></span>
+                  <span>Claude Sonnet 4.6</span>
+                  <span class="icon icon--mask i-arrowdown mf-chat-input__model-arrow"></span>
+                </button>
+
+                <!-- 发送按钮：brand 圆角方形 -->
+                <button class="mf-chat-input__send" title="发送">
+                  <span class="icon icon--mask i-send"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 项目工作栏容器：灰底，margin-top -12px 压住输入框底边 -->
+          <div class="mf-chat-input__project-area">
+            <button class="mf-chat-input__project-bar">
+              <span class="icon icon--mask i-closefolder"></span>
+              <span>进入项目工作</span>
+              <span class="icon icon--mask i-arrowdown mf-chat-input__model-arrow"></span>
+            </button>
+          </div>
+
+          <!-- 底部提示文字 -->
+          <p class="mf-chat-input__notice">当前模型为公有云模型，请勿外泄公司内部信息</p>
+
+        </div><!-- /mf-chat-input-wrap -->
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────────────────
+       Section 2: Model Picker — 模型选择面板
+  ─────────────────────────────────────────── -->
+  <div class="pv-section">
+    <div class="pv-section__title">Model Picker</div>
+    <div class="pv-section__sub">模型选择下拉面板 — popover 形态，含 Auto / 模型列表 / 添加模型</div>
+    <div class="canvas" style="padding: var(--spacer-48) var(--spacer-32);">
+      <div style="width: fit-content;">
+        <div class="mf-model-picker">
+
+          <!-- Auto 行（可选） -->
+          <li class="mf-model-picker__item">
+            <span class="mf-model-picker__name">Auto</span>
+            <span class="mf-model-picker__meta">1x</span>
+          </li>
+
+          <div class="mf-model-picker__divider"></div>
+
+          <!-- 模型列表 -->
+          <ul class="mf-model-picker__list">
+
+            <!-- Claude Sonnet 4.6 — 推荐 -->
+            <li class="mf-model-picker__item">
+              <span class="mf-model-picker__icon">
+                <span class="icon icon--mask i-claude" style="width:16px;height:16px;"></span>
+              </span>
+              <span class="mf-model-picker__name">Claude Sonnet 4.6</span>
+              <span class="mf-model-picker__meta">5.5x · 图片输入</span>
+              <span class="mf-tag" style="background:var(--bg-info);border-radius:4px;padding:0 4px;">推荐</span>
+            </li>
+
+            <!-- Claude Opus 4.7 — 慢（橙色信号） -->
+            <li class="mf-model-picker__item">
+              <span class="mf-model-picker__icon">
+                <span class="icon icon--mask i-claude" style="width:16px;height:16px;"></span>
+              </span>
+              <span class="mf-model-picker__name">Claude Opus 4.7</span>
+              <span class="mf-model-picker__meta">9x · 图片输入</span>
+              <span class="mf-model-picker__spacer"></span>
+              <span class="mf-model-picker__signal">
+                <img src="../assets/icons/brand/signal-orange.svg" width="16" height="16" alt="">
+              </span>
+            </li>
+
+            <!-- GPT-5.5 -->
+            <li class="mf-model-picker__item">
+              <span class="mf-model-picker__icon">
+                <span class="icon icon--mask i-chatgpt" style="width:16px;height:16px;"></span>
+              </span>
+              <span class="mf-model-picker__name">GPT-5.5</span>
+              <span class="mf-model-picker__meta">8.5x · 图片输入</span>
+            </li>
+
+            <!-- GPT-5.4 — 选中态 -->
+            <li class="mf-model-picker__item is-selected">
+              <span class="mf-model-picker__icon">
+                <span class="icon icon--mask i-chatgpt" style="width:16px;height:16px;"></span>
+              </span>
+              <span class="mf-model-picker__name">GPT-5.4</span>
+              <span class="mf-model-picker__meta">4.5x</span>
+              <span class="mf-model-picker__spacer"></span>
+              <span class="mf-model-picker__check">
+                <svg viewBox="0 0 1024 1024" width="16" height="16"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"/></svg>
+              </span>
+            </li>
+
+            <!-- Gemini 3.1 Pro — 慢（红色信号） -->
+            <li class="mf-model-picker__item">
+              <span class="mf-model-picker__icon">
+                <span class="icon icon--mask i-gemini" style="width:16px;height:16px;"></span>
+              </span>
+              <span class="mf-model-picker__name">Gemini 3.1 Pro</span>
+              <span class="mf-model-picker__meta">3.5x</span>
+              <span class="mf-model-picker__spacer"></span>
+              <span class="mf-model-picker__signal">
+                <img src="../assets/icons/brand/signal-red.svg" width="16" height="16" alt="">
+              </span>
+            </li>
+
+            <!-- Qwen3.7-Max -->
+            <li class="mf-model-picker__item">
+              <span class="mf-model-picker__icon">
+                <span class="icon icon--mask i-qwen" style="width:16px;height:16px;"></span>
+              </span>
+              <span class="mf-model-picker__name">Qwen3.7-Max</span>
+              <span class="mf-model-picker__meta">3.5x</span>
+            </li>
+
+            <!-- DeepSeek-V4-Po -->
+            <li class="mf-model-picker__item">
+              <span class="mf-model-picker__icon">
+                <span class="icon icon--mask i-deepseek" style="width:16px;height:16px;"></span>
+              </span>
+              <span class="mf-model-picker__name">DeepSeek-V4-Po</span>
+              <span class="mf-model-picker__meta">0.75x · 节省积分</span>
+            </li>
+
+          </ul>
+
+          <div class="mf-model-picker__divider"></div>
+
+          <!-- 添加模型 -->
+          <button class="mf-model-picker__add">
+            <span>添加模型</span>
+            <span class="mf-model-picker__add-arrow">
+              <svg viewBox="0 0 1024 1024" width="16" height="16"><path fill="currentColor" d="M409.664 793.344A38.4 38.4 0 0 1 358.08 736.512L571.392 543.232C584.96 530.752 593.152 521.984 597.76 515.392 602.176 509.184 601.472 507.52 601.472 508.928 601.472 510.272 602.112 508.672 597.76 502.4 593.152 495.808 584.96 487.04 571.392 474.688L358.08 281.408A38.425 38.425 0 0 1 409.6 224.384L622.912 417.856C637.76 431.232 651.072 444.672 660.672 458.304 670.4 472.32 678.208 489.152 678.208 508.928 678.272 528.704 670.464 545.536 660.608 559.552 651.008 573.248 637.76 586.624 622.912 600.064L409.664 793.344Z"/></svg>
+            </span>
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────────────────
+       Section 3: With Attachments — 带附件状态
+  ─────────────────────────────────────────── -->
+  <div class="pv-section">
+    <div class="pv-section__title">With Attachments</div>
+    <div class="pv-section__sub">输入框含附件区：文件卡片（已上传）+ 上传中进度态 + 图片缩略图，横向滚动排列</div>
+    <div class="canvas" style="padding: var(--spacer-48) var(--spacer-32); background: var(--bg-base-default);">
+      <div style="width: 800px;">
+
+        <div class="mf-chat-input-wrap">
+          <div class="mf-chat-input">
+
+            <!-- 附件行 -->
+            <div class="mf-chat-input__attachments">
+
+              <!-- TXT 文件 — 已上传 -->
+              <div class="mf-chat-input__attachment">
+                <div class="mf-chat-input__attachment-icon mf-chat-input__attachment-icon--txt">
+                  <span class="icon icon--mask i-txt2" style="width:24px;height:24px;"></span>
+                </div>
+                <div class="mf-chat-input__attachment-body">
+                  <div class="mf-chat-input__attachment-name">用户访谈整理.txt</div>
+                  <div class="mf-chat-input__attachment-meta">TXT · 12KB</div>
+                </div>
+                <button class="mf-chat-input__attachment-remove" title="移除">
+                  <span class="icon icon--mask i-closure" style="width:16px;height:16px;"></span>
+                </button>
+              </div>
+
+              <!-- Word 文件 — 已上传 -->
+              <div class="mf-chat-input__attachment">
+                <div class="mf-chat-input__attachment-icon mf-chat-input__attachment-icon--word">
+                  <span class="icon icon--mask i-word" style="width:24px;height:24px;"></span>
+                </div>
+                <div class="mf-chat-input__attachment-body">
+                  <div class="mf-chat-input__attachment-name">产品需求文档 v2.docx</div>
+                  <div class="mf-chat-input__attachment-meta">Word · 86KB</div>
+                </div>
+                <button class="mf-chat-input__attachment-remove" title="移除">
+                  <span class="icon icon--mask i-closure" style="width:16px;height:16px;"></span>
+                </button>
+              </div>
+
+              <!-- PDF 文件 — 上传中 79% -->
+              <div class="mf-chat-input__attachment mf-chat-input__attachment--uploading" style="--upload-progress: 79%;">
+                <div class="mf-chat-input__attachment-icon mf-chat-input__attachment-icon--pdf">
+                  <span class="icon icon--mask i-pdf" style="width:24px;height:24px;"></span>
+                </div>
+                <div class="mf-chat-input__attachment-body">
+                  <div class="mf-chat-input__attachment-name">泛开发者用户场景的研究.pdf</div>
+                  <div class="mf-chat-input__attachment-meta">上传中 79% · PDF</div>
+                </div>
+              </div>
+
+            </div>
+
+            <textarea class="mf-chat-input__textarea" placeholder="和我一起做点什么，@关联对象，/ 调用技能"></textarea>
+
+            <div class="mf-chat-input__toolbar">
+              <div class="mf-chat-input__toolbar-left">
+                <button class="mf-chat-input__btn" title="添加附件">
+                  <span class="icon icon--mask i-add"></span>
+                </button>
+                <button class="mf-chat-input__action">
+                  <span class="icon icon--mask i-skill"></span>
+                  技能
+                </button>
+                <button class="mf-chat-input__action">
+                  <span class="icon icon--mask i-inspiration"></span>
+                  灵感触发
+                </button>
+              </div>
+              <div class="mf-chat-input__toolbar-right">
+                <button class="mf-chat-input__model">
+                  <span class="icon icon--mask i-claude" style="width:14px;height:14px;flex:0 0 14px;"></span>
+                  <span>Claude Sonnet 4.6</span>
+                  <span class="icon icon--mask i-arrowdown mf-chat-input__model-arrow"></span>
+                </button>
+                <button class="mf-chat-input__send" title="发送">
+                  <span class="icon icon--mask i-send"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p class="mf-chat-input__notice">当前模型为公有云模型，请勿外泄公司内部信息</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────────────────
+       Section 5: Model Picker with Detail Panel
+       v1.3.0 — hover 行显示二级详情面板
+  ─────────────────────────────────────────── -->
+  <div class="pv-section">
+    <div class="pv-section__title">Model Picker · Detail Panel</div>
+    <div class="pv-section__sub">鼠标 hover 模型行时，左侧出现二级详情面板；含名称、状态、可用能力、"仅用私有部署模型"开关</div>
+    <div class="canvas" style="padding: var(--spacer-48) var(--spacer-32); justify-content: flex-end;">
+      <div style="position: relative;">
+        <div class="mf-model-picker">
+
+          <!-- Auto 行 -->
+          <li class="mf-model-picker__item" style="position:relative;">
+            <span class="mf-model-picker__name">Auto</span>
+            <span class="mf-model-picker__meta">1x</span>
+            <!-- detail panel -->
+            <div class="mf-model-detail">
+              <div class="mf-model-detail__head">
+                <span class="mf-model-detail__title">Auto</span>
+              </div>
+              <div class="mf-model-detail__section">根据任务类型智能选择模型，适用于大部分场景</div>
+                <div class="mf-model-detail__toggle-row">
+                  <span class="mf-model-detail__toggle-label">仅私有部署模型</span>
+                  <label class="mf-switch">
+                    <input type="checkbox">
+                    <span class="mf-switch__thumb"></span>
+                  </label>
+                </div>
+            </div>
+          </li>
+
+          <div class="mf-model-picker__divider"></div>
+
+          <ul class="mf-model-picker__list">
+
+            <!-- Claude Sonnet 4.6 — 推荐，正常 -->
+            <li class="mf-model-picker__item" style="position:relative;">
+              <span class="mf-model-picker__icon">
+                <span class="icon icon--mask i-claude" style="width:16px;height:16px;"></span>
+              </span>
+              <span class="mf-model-picker__name">Claude Sonnet 4.6</span>
+              <span class="mf-model-picker__meta">5.5x</span>
+              <span class="mf-tag" style="background:var(--bg-info);border-radius:4px;padding:0 4px;">推荐</span>
+              <div class="mf-model-detail">
+                <div class="mf-model-detail__head">
+                  <span class="mf-model-detail__title">Claude Sonnet 4.6</span>
+                  <div class="mf-model-detail__status mf-model-detail__status--ok">
+                    <img src="../assets/icons/brand/signal-green.svg" width="16" height="16" alt="">
+                    <span class="mf-model-detail__status-label">正常</span>
+                  </div>
+                </div>
+                <div class="mf-model-detail__section">可用能力</div>
+                <div class="mf-model-detail__caps">
+                  <div class="mf-model-detail__cap">
+                    <span class="mf-model-detail__cap-icon">
+                      <svg viewBox="0 0 1024 1024" width="14" height="14" style="flex-shrink:0;"><path fill="currentColor" fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64ZM707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/><path fill="var(--bg-menu)" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg>
+                    </span>
+                    <span class="mf-model-detail__cap-label">图片理解</span>
+                  </div>
+                  <div class="mf-model-detail__cap">
+                    <span class="mf-model-detail__cap-icon">
+                      <svg viewBox="0 0 1024 1024" width="14" height="14" style="flex-shrink:0;"><path fill="currentColor" fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64ZM707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/><path fill="var(--bg-menu)" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg>
+                    </span>
+                    <span class="mf-model-detail__cap-label">推理</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <!-- GPT-5.5 — 推荐，选中态 -->
+            <li class="mf-model-picker__item is-selected" style="position:relative;">
+              <span class="mf-model-picker__icon">
+                <span class="icon icon--mask i-chatgpt" style="width:16px;height:16px;"></span>
+              </span>
+              <span class="mf-model-picker__name">GPT-5.5</span>
+              <span class="mf-model-picker__meta">8.5x</span>
+              <span class="mf-tag" style="background:var(--bg-info);border-radius:4px;padding:0 4px;">推荐</span>
+              <span class="mf-model-picker__spacer"></span>
+              <span class="mf-model-picker__check">
+                <svg viewBox="0 0 1024 1024" width="16" height="16"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"/></svg>
+              </span>
+              <div class="mf-model-detail">
+                <div class="mf-model-detail__head">
+                  <span class="mf-model-detail__title">GPT-5.5</span>
+                  <div class="mf-model-detail__status mf-model-detail__status--ok">
+                    <img src="../assets/icons/brand/signal-green.svg" width="16" height="16" alt="">
+                    <span class="mf-model-detail__status-label">正常</span>
+                  </div>
+                </div>
+                <div class="mf-model-detail__section">可用能力</div>
+                <div class="mf-model-detail__caps">
+                  <div class="mf-model-detail__cap">
+                    <span class="mf-model-detail__cap-icon">
+                      <svg viewBox="0 0 1024 1024" width="14" height="14" style="flex-shrink:0;"><path fill="currentColor" fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64ZM707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/><path fill="var(--bg-menu)" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg>
+                    </span>
+                    <span class="mf-model-detail__cap-label">图片理解</span>
+                  </div>
+                  <div class="mf-model-detail__cap">
+                    <span class="mf-model-detail__cap-icon">
+                      <svg viewBox="0 0 1024 1024" width="14" height="14" style="flex-shrink:0;"><path fill="currentColor" fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64ZM707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/><path fill="var(--bg-menu)" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg>
+                    </span>
+                    <span class="mf-model-detail__cap-label">推理</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <!-- GLM-5.1 — 推荐，私有部署 -->
+            <li class="mf-model-picker__item" style="position:relative;">
+              <span class="mf-model-picker__icon">
+                <span class="icon icon--mask i-qwen" style="width:16px;height:16px;"></span>
+              </span>
+              <span class="mf-model-picker__name">GLM-5.1</span>
+              <span class="mf-model-picker__meta">1x · 私有部署</span>
+              <span class="mf-tag" style="background:var(--bg-info);border-radius:4px;padding:0 4px;">推荐</span>
+              <div class="mf-model-detail">
+                <div class="mf-model-detail__head">
+                  <span class="mf-model-detail__title">GLM-5.1</span>
+                  <div class="mf-model-detail__status mf-model-detail__status--ok">
+                    <img src="../assets/icons/brand/signal-green.svg" width="16" height="16" alt="">
+                    <span class="mf-model-detail__status-label">正常</span>
+                  </div>
+                </div>
+                <div class="mf-model-detail__section">可用能力</div>
+                <div class="mf-model-detail__caps">
+                  <div class="mf-model-detail__cap">
+                    <span class="mf-model-detail__cap-icon">
+                      <svg viewBox="0 0 1024 1024" width="14" height="14" style="flex-shrink:0;"><path fill="currentColor" fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64ZM707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/><path fill="var(--bg-menu)" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg>
+                    </span>
+                    <span class="mf-model-detail__cap-label">图片理解</span>
+                  </div>
+                  <div class="mf-model-detail__cap">
+                    <span class="mf-model-detail__cap-icon">
+                      <svg viewBox="0 0 1024 1024" width="14" height="14" style="flex-shrink:0;"><path fill="currentColor" fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64ZM707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/><path fill="var(--bg-menu)" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg>
+                    </span>
+                    <span class="mf-model-detail__cap-label">推理</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <!-- Gemini 3.1 Pro — 慢（橙色信号） -->
+            <li class="mf-model-picker__item" style="position:relative;">
+              <span class="mf-model-picker__icon">
+                <span class="icon icon--mask i-gemini" style="width:16px;height:16px;"></span>
+              </span>
+              <span class="mf-model-picker__name">Gemini 3.1 Pro</span>
+              <span class="mf-model-picker__meta">3.5x</span>
+              <span class="mf-model-picker__spacer"></span>
+              <span class="mf-model-picker__signal">
+                <img src="../assets/icons/brand/signal-orange.svg" width="16" height="16" alt="">
+              </span>
+              <div class="mf-model-detail">
+                <div class="mf-model-detail__head">
+                  <span class="mf-model-detail__title">Gemini 3.1 Pro</span>
+                  <div class="mf-model-detail__status mf-model-detail__status--warn">
+                    <img src="../assets/icons/brand/signal-orange.svg" width="16" height="16" alt="">
+                    <span class="mf-model-detail__status-label">性能波动</span>
+                  </div>
+                </div>
+                <div class="mf-model-detail__section">可用能力</div>
+                <div class="mf-model-detail__caps">
+                  <div class="mf-model-detail__cap">
+                    <span class="mf-model-detail__cap-icon">
+                      <svg viewBox="0 0 1024 1024" width="14" height="14" style="flex-shrink:0;"><path fill="currentColor" fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64ZM707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/><path fill="var(--bg-menu)" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg>
+                    </span>
+                    <span class="mf-model-detail__cap-label">图片理解</span>
+                  </div>
+                  <div class="mf-model-detail__cap">
+                    <span class="mf-model-detail__cap-icon">
+                      <svg viewBox="0 0 1024 1024" width="14" height="14" style="flex-shrink:0;"><path fill="currentColor" fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64ZM707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/><path fill="var(--bg-menu)" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg>
+                    </span>
+                    <span class="mf-model-detail__cap-label">推理</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <!-- DeepSeek-V4-Pro — 慢（红色信号） -->
+            <li class="mf-model-picker__item" style="position:relative;">
+              <span class="mf-model-picker__icon">
+                <span class="icon icon--mask i-deepseek" style="width:16px;height:16px;"></span>
+              </span>
+              <span class="mf-model-picker__name">DeepSeek-V4-Pro</span>
+              <span class="mf-model-picker__meta">1.75x · 私有部署</span>
+              <span class="mf-model-picker__spacer"></span>
+              <span class="mf-model-picker__signal">
+                <img src="../assets/icons/brand/signal-red.svg" width="16" height="16" alt="">
+              </span>
+              <div class="mf-model-detail">
+                <div class="mf-model-detail__head">
+                  <span class="mf-model-detail__title">DeepSeek-V4-Pro</span>
+                  <div class="mf-model-detail__status mf-model-detail__status--error">
+                    <img src="../assets/icons/brand/signal-red.svg" width="16" height="16" alt="">
+                    <span class="mf-model-detail__status-label">明显波动</span>
+                  </div>
+                </div>
+                <div class="mf-model-detail__section">可用能力</div>
+                <div class="mf-model-detail__caps">
+                  <div class="mf-model-detail__cap">
+                    <span class="mf-model-detail__cap-icon">
+                      <svg viewBox="0 0 1024 1024" width="14" height="14" style="flex-shrink:0;"><path fill="currentColor" fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64ZM707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/><path fill="var(--bg-menu)" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg>
+                    </span>
+                    <span class="mf-model-detail__cap-label">推理</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+
+          <div class="mf-model-picker__divider"></div>
+
+          <!-- 添加模型 -->
+          <button class="mf-model-picker__add">
+            <span>添加模型</span>
+            <span class="mf-model-picker__add-arrow">
+              <svg viewBox="0 0 1024 1024" width="16" height="16"><path fill="currentColor" d="M409.664 793.344A38.4 38.4 0 0 1 358.08 736.512L571.392 543.232C584.96 530.752 593.152 521.984 597.76 515.392 602.176 509.184 601.472 507.52 601.472 508.928 601.472 510.272 602.112 508.672 597.76 502.4 593.152 495.808 584.96 487.04 571.392 474.688L358.08 281.408A38.425 38.425 0 0 1 409.6 224.384L622.912 417.856C637.76 431.232 651.072 444.672 660.672 458.304 670.4 472.32 678.208 489.152 678.208 508.928 678.272 528.704 670.464 545.536 660.608 559.552 651.008 573.248 637.76 586.624 622.912 600.064L409.664 793.344Z"/></svg>
+            </span>
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────
+       Section 4: Prompt Pills — 快捷引导标签
+  ─────────────────────────────────────────── -->
+  <div class="pv-section">
+    <div class="pv-section__title">Prompt Pills</div>
+    <div class="pv-section__sub">一级（有描边，文字图标均为一级色）/ 二级下钻（灰底无描边）；每个 pill 均可下钻；溢出时显示「更多」</div>
+
+    <!-- 一/二级 pills 合并展示 -->
+    <div class="canvas" style="padding: var(--spacer-32); background: var(--bg-base-default); overflow: visible;">
+      <div style="width: 800px; position: relative;">
+
+        <!-- 一级 pills -->
+        <div class="mf-prompt-pills-bar" id="pills-bar-l1">
+          <button class="mf-prompt-pill" onclick="enterDrill('content')"><span class="icon icon--mask i-search"></span>内容运营</button>
+          <button class="mf-prompt-pill" onclick="enterDrill('author')"><span class="icon icon--mask i-skill"></span>作者运营</button>
+          <button class="mf-prompt-pill" onclick="enterDrill('activity')"><span class="icon icon--mask i-schedule"></span>活动运营</button>
+          <button class="mf-prompt-pill" onclick="enterDrill('hot')"><span class="icon icon--mask i-flash"></span>热点运营</button>
+          <button class="mf-prompt-pill" onclick="enterDrill('knowledge')"><span class="icon icon--mask i-knowledge"></span>精选知识</button>
+          <div class="mf-pills-more-wrap" id="pills-more-wrap-l1">
+            <button class="mf-pills-more-btn" id="pills-more-btn-l1" onclick="toggleMore('pills-more-btn-l1','pills-more-panel-l1')">
+              更多<span class="icon icon--mask i-arrowdown mf-pills-more-arrow" style="width:12px;height:12px;flex-shrink:0;"></span>
+            </button>
+            <div class="mf-pills-more-panel" id="pills-more-panel-l1">
+              <button class="mf-pills-more-item" onclick="enterDrill('content')"><span class="icon icon--mask i-search"></span>内容运营</button>
+              <button class="mf-pills-more-item" onclick="enterDrill('author')"><span class="icon icon--mask i-skill"></span>作者运营</button>
+              <button class="mf-pills-more-item" onclick="enterDrill('activity')"><span class="icon icon--mask i-schedule"></span>活动运营</button>
+              <button class="mf-pills-more-item" onclick="enterDrill('hot')"><span class="icon icon--mask i-flash"></span>热点运营</button>
+              <button class="mf-pills-more-item" onclick="enterDrill('knowledge')"><span class="icon icon--mask i-knowledge"></span>精选知识</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 二级 pills（下钻态，JS 动态渲染内容） -->
+        <div class="mf-prompt-pills-bar" id="pills-bar-l2" style="display:none;">
+          <button class="mf-drill-pill mf-drill-pill--back" onclick="exitDrill()">
+            <span class="icon icon--mask i-arrowleft" style="width:14px;height:14px;"></span>返回
+          </button>
+          <div id="pills-l2-items" style="display:contents;"></div>
+          <div class="mf-pills-more-wrap" id="pills-more-wrap-l2">
+            <button class="mf-pills-more-btn" id="pills-more-btn-l2" onclick="toggleMore('pills-more-btn-l2','pills-more-panel-l2')" style="background:var(--bg-brand-subtle);border-color:transparent;">
+              更多<span class="icon icon--mask i-arrowdown mf-pills-more-arrow" style="width:12px;height:12px;flex-shrink:0;"></span>
+            </button>
+            <div class="mf-pills-more-panel" id="pills-more-panel-l2"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 静态样本 -->
+    <div class="pv-section__sub" style="margin-top: var(--spacer-20);">静态样本 — 多行平铺</div>
+    <div class="canvas" style="padding: var(--spacer-40) var(--spacer-32);">
+      <div style="width: 720px;" class="stack-24">
+        <div class="mf-prompt-pills">
+          <button class="mf-prompt-pill"><span class="icon icon--mask i-search"></span>调研洞察</button>
+          <button class="mf-prompt-pill"><span class="icon icon--mask i-knowledge"></span>文档解读</button>
+          <button class="mf-prompt-pill"><span class="icon icon--mask i-ai"></span>创意生成</button>
+          <button class="mf-prompt-pill"><span class="icon icon--mask i-agent"></span>方案分析</button>
+        </div>
+        <div class="mf-prompt-pills">
+          <button class="mf-prompt-pill"><span class="icon icon--mask i-flash"></span>灵感触发</button>
+          <button class="mf-prompt-pill"><span class="icon icon--mask i-skill"></span>技能推荐</button>
+          <button class="mf-prompt-pill"><span class="icon icon--mask i-search"></span>调研洞察</button>
+          <button class="mf-prompt-pill"><span class="icon icon--mask i-knowledge"></span>文档解读</button>
+          <button class="mf-prompt-pill"><span class="icon icon--mask i-data"></span>数据分析</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+<script>
+  function autoResize(el) {
+    el.style.height = 'auto';
+    const maxH = 336;
+    const scrollH = el.scrollHeight;
+    el.style.height = Math.min(scrollH, maxH) + 'px';
+    el.style.overflowY = scrollH > maxH ? 'auto' : 'hidden';
+  }
+  document.querySelectorAll('.mf-chat-input__textarea').forEach(function(ta) {
+    autoResize(ta);
+    ta.addEventListener('input', function() { autoResize(this); });
+  });
+</script>
+
+<script>
+  /* ── 每个 pill 的二级内容数据 ── */
+  var drillData = {
+    content:   ['Q2 内容增长策略是什么？', '爆款内容有哪些共同特征？', '如何提升内容完播率？'],
+    author:    ['如何激励腰部作者持续创作？', '作者分层运营的核心逻辑？', '新人作者冷启动方案'],
+    activity:  ['活动上线前核心 checklist？', '如何提升活动参与转化率？', '大促节点运营策略'],
+    hot:       ['热点追踪的判断标准是什么？', '如何快速制作热点内容？', '热点话题生命周期分析'],
+    knowledge: ['查看 Q2 运营目标', '如何写好 PRD？', '竞品分析框架有哪些？']
+  };
+
+  /* ── 下钻交互 ── */
+  function enterDrill(key) {
+    var items = drillData[key] || [];
+    var container = document.getElementById('pills-l2-items');
+    var morePanel = document.getElementById('pills-more-panel-l2');
+    container.innerHTML = '';
+    morePanel.innerHTML = '';
+    items.forEach(function(text) {
+      var btn = document.createElement('button');
+      btn.className = 'mf-drill-pill';
+      btn.innerHTML = text + '<span class="icon icon--mask i-downleft" style="width:14px;height:14px;margin-left:2px;"></span>';
+      container.appendChild(btn);
+      var mi = document.createElement('button');
+      mi.className = 'mf-pills-more-item';
+      mi.innerHTML = '<span class="icon icon--mask i-downleft" style="width:14px;height:14px;"></span>' + text;
+      morePanel.appendChild(mi);
+    });
+    document.getElementById('pills-bar-l1').style.display = 'none';
+    var l2 = document.getElementById('pills-bar-l2');
+    l2.style.display = 'flex';
+    requestAnimationFrame(function() { checkOverflow('pills-bar-l2', 'pills-more-btn-l2'); });
+  }
+
+  function exitDrill() {
+    document.getElementById('pills-bar-l2').style.display = 'none';
+    document.getElementById('pills-bar-l1').style.display = 'flex';
+    requestAnimationFrame(function() { checkOverflow('pills-bar-l1', 'pills-more-btn-l1'); });
+  }
+
+  /* 更多面板开关 */
+  function toggleMore(btnId, panelId) {
+    document.getElementById(btnId).classList.toggle('is-open');
+    document.getElementById(panelId).classList.toggle('is-open');
+  }
+  document.addEventListener('click', function(e) {
+    [['pills-more-wrap-l1','pills-more-btn-l1','pills-more-panel-l1'],
+     ['pills-more-wrap-l2','pills-more-btn-l2','pills-more-panel-l2']].forEach(function(t) {
+      if (!e.target.closest('#' + t[0])) {
+        var btn = document.getElementById(t[1]);
+        var panel = document.getElementById(t[2]);
+        if (btn) btn.classList.remove('is-open');
+        if (panel) panel.classList.remove('is-open');
+      }
+    });
+  });
+
+  /* 溢出检测 */
+  function checkOverflow(barId, btnId) {
+    var bar = document.getElementById(barId);
+    var btn = document.getElementById(btnId);
+    if (!bar || !btn) return;
+    var moreWrap = bar.querySelector('.mf-pills-more-wrap');
+    /* l2 的 pills 在 #pills-l2-items（display:contents）里，需取 bar 直接子级 + items 子级 */
+    var allPills = [];
+    Array.from(bar.children).forEach(function(el) {
+      if (el === moreWrap) return;
+      if (el.id === 'pills-l2-items') {
+        Array.from(el.children).forEach(function(c) { allPills.push(c); });
+      } else {
+        allPills.push(el);
+      }
+    });
+    allPills.forEach(function(p) { p.classList.remove('mf-pill-hidden'); });
+    btn.classList.remove('is-visible');
+    if (!moreWrap) return;
+    var moreW = moreWrap.scrollWidth + 8;
+    var barW  = bar.clientWidth;
+    var usedW = 0, overflowIdx = -1;
+    for (var i = 0; i < allPills.length; i++) {
+      usedW += allPills[i].scrollWidth + (i > 0 ? 8 : 0);
+      if (barW - usedW < moreW) { overflowIdx = i; break; }
+    }
+    if (overflowIdx >= 0) {
+      for (var j = overflowIdx; j < allPills.length; j++) allPills[j].classList.add('mf-pill-hidden');
+      btn.classList.add('is-visible');
+    }
+  }
+
+  window.addEventListener('resize', function() {
+    checkOverflow('pills-bar-l1', 'pills-more-btn-l1');
+  });
+  requestAnimationFrame(function() {
+    checkOverflow('pills-bar-l1', 'pills-more-btn-l1');
+  });
+</script>
+</html>

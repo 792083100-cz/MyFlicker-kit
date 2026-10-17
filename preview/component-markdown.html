@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Markdown Typography</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style data-preview-shell>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      letter-spacing: var(--body-sm-letter-spacing);
+      min-height: 100%;
+      -webkit-font-smoothing: antialiased;
+    }
+    body { padding: var(--spacer-32); }
+
+    .pv-header { margin-bottom: var(--spacer-32); padding-bottom: var(--spacer-16); border-bottom: 1px solid var(--border-neutral-l1); }
+    .pv-header h1 { font-size: var(--heading-lg-font-size); line-height: var(--heading-lg-line-height); font-weight: var(--heading-lg-font-weight); margin-bottom: var(--spacer-4); }
+    .pv-header p { color: var(--text-secondary); font-size: var(--body-sm-font-size); }
+    .pv-section { margin-bottom: var(--spacer-40); }
+    .pv-section__title { font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); margin-bottom: var(--spacer-16); color: var(--text-default); }
+    .pv-section__sub { font-size: var(--body-xs-font-size); color: var(--text-tertiary); margin-bottom: var(--spacer-12); }
+  </style>
+  <link rel="stylesheet" href="../components.css" />
+  <style>
+    /* ── icon (CSS mask) ── */
+    .icon {
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      width: 16px; height: 16px;
+      -webkit-mask-size: contain; mask-size: contain;
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      -webkit-mask-position: center; mask-position: center;
+      background-color: currentColor;
+    }
+    .i-copy        { -webkit-mask-image: url(../assets/icons/kid/copy.svg);        mask-image: url(../assets/icons/kid/copy.svg); }
+    .i-link        { -webkit-mask-image: url(../assets/icons/kid/link.svg);        mask-image: url(../assets/icons/kid/link.svg); }
+    .i-arrowright  { -webkit-mask-image: url(../assets/icons/kid/arrowright.svg);  mask-image: url(../assets/icons/kid/arrowright.svg); }
+    .i-arrowdown   { -webkit-mask-image: url(../assets/icons/kid/arrowdown.svg);   mask-image: url(../assets/icons/kid/arrowdown.svg); }
+    .i-tool        { -webkit-mask-image: url(../assets/icons/kid/tool.svg);        mask-image: url(../assets/icons/kid/tool.svg); }
+    .i-code        { -webkit-mask-image: url(../assets/icons/kid/code.svg);        mask-image: url(../assets/icons/kid/code.svg); }
+    .i-readfile    { -webkit-mask-image: url(../assets/icons/kid/readfile.svg);    mask-image: url(../assets/icons/kid/readfile.svg); }
+    .i-command     { -webkit-mask-image: url(../assets/icons/kid/command.svg);     mask-image: url(../assets/icons/kid/command.svg); }
+    .i-search      { -webkit-mask-image: url(../assets/icons/kid/search.svg);      mask-image: url(../assets/icons/kid/search.svg); }
+
+    /* ── msg__body — Markdown 渲染规范（来源：components/business/ai-message.json markdownTypography）── */
+    .msg__body {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-default);
+    }
+
+    /* 标题 */
+    .msg__body h1 { font-size: 18px; font-weight: 600; line-height: 1.5; margin-top: 9px;  margin-bottom: 7px; }
+    .msg__body h2 { font-size: 16px; font-weight: 600; line-height: 1.5; margin-top: 8px;  margin-bottom: 6px; }
+    .msg__body h3 { font-size: 14px; font-weight: 600; line-height: 1.5; margin-top: 7px;  margin-bottom: 5px; }
+    .msg__body h4,
+    .msg__body h5,
+    .msg__body h6 { font-size: 13px; font-weight: 600; line-height: 1.5; margin-top: 6px;  margin-bottom: 5px; }
+
+    /* 段落 */
+    .msg__body p  { font-size: 13px; line-height: 1.5; margin-top: 3px; margin-bottom: 3px; }
+    .msg__body p:first-child { margin-top: 0; }
+
+    /* 列表 */
+    .msg__body ul,
+    .msg__body ol { font-size: 13px; line-height: 1.5; margin-top: 3px; margin-bottom: 3px; padding-left: 20px; }
+    .msg__body ul:first-child, .msg__body ol:first-child { margin-top: 0; }
+    .msg__body ul:last-child,  .msg__body ol:last-child  { margin-bottom: 0; }
+    .msg__body li { margin-top: 3px; margin-bottom: 3px; }
+    .msg__body li:first-child { margin-top: 0; }
+    .msg__body li:last-child  { margin-bottom: 0; }
+
+    /* 引用 */
+    .msg__body blockquote {
+      margin-top: 3px; margin-bottom: 3px;
+      padding: 2px 12px;
+      border-left: 3px solid var(--border-neutral-l2);
+      color: var(--text-secondary);
+    }
+
+    /* 行内代码 */
+    .msg__body code {
+      background: var(--bg-overlay-l1);
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-4);
+      padding: 1px 5px;
+      font-family: var(--code-editor-font-family);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* 代码块 */
+    .msg__body pre { margin-top: 8px; margin-bottom: 8px; }
+    .msg__body pre code {
+      display: block;
+      background: #1e1e1e;
+      color: #d4d4d4;
+      font-size: 12px;
+      line-height: 1.6;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 0;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .msg__body .code-block {
+      margin-top: 8px; margin-bottom: 8px;
+      border-radius: var(--radius-8);
+      overflow: hidden;
+      border: 1px solid var(--border-neutral-l1);
+    }
+    .msg__body .code-block__header {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #2d2d2d;
+      padding: 6px 12px;
+      font-size: 12px;
+      color: #95999e;
+    }
+    .msg__body .code-block__copy {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: transparent; border: none; cursor: pointer;
+      font-size: 12px; color: #95999e; padding: 0;
+    }
+    .msg__body .code-block__copy:hover { color: #d4d4d4; }
+    .msg__body .code-block pre { margin: 0; border-radius: 0; }
+
+    /* 表格 */
+    .msg__body table { width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 8px; font-size: 13px; }
+    .msg__body th {
+      padding: 6px 12px;
+      background: var(--bg-base-secondary);
+      border: 1px solid var(--border-neutral-l1);
+      font-weight: 500;
+      text-align: left;
+    }
+    .msg__body td {
+      padding: 6px 12px;
+      border: 1px solid var(--border-neutral-l1);
+    }
+    .msg__body tr:hover td { background: var(--bg-overlay-l1); }
+
+    /* 图片 */
+    .msg__body img { max-width: 100%; border-radius: var(--radius-8); margin-top: 8px; margin-bottom: 8px; display: block; }
+
+    /* 分隔线 */
+    .msg__body hr { margin-top: 16px; margin-bottom: 16px; border: 0; border-top: 1px solid var(--border-neutral-l1); }
+
+    /* 加粗 / 斜体 */
+    .msg__body strong { font-weight: 600; }
+    .msg__body em     { font-style: italic; }
+
+    /* ── COT 折叠块 ── */
+
+    /* L1: 顶层已处理胶囊 */
+    .cot-root {
+      display: block;
+      margin-bottom: 12px;
+    }
+    .cot-root__toggle {
+      display: flex; align-items: center; gap: 6px;
+      width: 100%;
+      padding: 3px 0 7px;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border-neutral-l1);
+      border-radius: 0;
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: opacity 120ms;
+      text-align: left;
+      font-family: inherit;
+    }
+    .cot-root__toggle:hover { opacity: 0.75; }
+    .cot-root__label { font-weight: 400; color: var(--text-secondary); flex-shrink: 0; }
+    .cot-root__meta { color: var(--text-tertiary); font-size: 12px; line-height: 1.5; }
+    .cot-root__chevron {
+      width: 14px; height: 14px; color: var(--text-tertiary);
+      transition: transform 200ms;
+      flex-shrink: 0;
+      -webkit-mask-image: url(../assets/icons/kid/arrowdown.svg);
+      mask-image: url(../assets/icons/kid/arrowdown.svg);
+      -webkit-mask-size: contain; mask-size: contain;
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      background-color: currentColor;
+    }
+    .cot-root.is-open .cot-root__chevron { transform: rotate(180deg); }
+    .cot-root__body {
+      display: none;
+      padding: 6px 0 2px 10px;
+      border-left: 1.5px solid var(--border-neutral-l1);
+      margin-left: 9px;
+      margin-top: 4px;
+    }
+    .cot-root.is-open .cot-root__body { display: block; }
+
+    /* L2: 工具组折叠行 */
+    .cot-group {
+      display: block;
+      margin-bottom: 4px;
+    }
+    .cot-group__toggle {
+      display: flex; align-items: center; gap: 6px;
+      padding: 3px 8px;
+      border-radius: var(--radius-6);
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background 120ms;
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      width: 100%; text-align: left;
+    }
+    .cot-group__toggle:hover { background: var(--bg-overlay-l1); }
+    .cot-group__icon { color: var(--text-tertiary); }
+    .cot-group__label { font-weight: 500; color: var(--text-default); }
+    .cot-group__meta { color: var(--text-tertiary); }
+    .cot-group__chevron {
+      width: 12px; height: 12px; color: var(--text-tertiary);
+      transition: transform 200ms;
+      flex-shrink: 0; margin-left: auto;
+      -webkit-mask-image: url(../assets/icons/kid/arrowdown.svg);
+      mask-image: url(../assets/icons/kid/arrowdown.svg);
+      -webkit-mask-size: contain; mask-size: contain;
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      background-color: currentColor;
+    }
+    .cot-group.is-open .cot-group__chevron { transform: rotate(180deg); }
+    .cot-group__body {
+      display: none;
+      padding: 2px 0 2px 8px;
+      border-left: 1.5px solid var(--border-neutral-l1);
+      margin-left: 13px;
+      margin-top: 2px;
+    }
+    .cot-group.is-open .cot-group__body { display: block; }
+
+    /* L3: 工具条目 */
+    .cot-item {
+      display: flex; align-items: center; gap: 6px;
+      padding: 3px 8px;
+      border-radius: var(--radius-6);
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background 120ms;
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      width: 100%; text-align: left;
+    }
+    .cot-item:hover { background: var(--bg-overlay-l1); }
+    .cot-item__icon { color: var(--text-tertiary); flex-shrink: 0; }
+    .cot-item__name { flex: 1; color: var(--text-default); }
+    .cot-item__path { color: var(--text-tertiary); font-size: 11px; max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .cot-item__chevron {
+      width: 10px; height: 10px; color: var(--text-tertiary);
+      transition: transform 200ms; flex-shrink: 0;
+      -webkit-mask-image: url(../assets/icons/kid/arrowright.svg);
+      mask-image: url(../assets/icons/kid/arrowright.svg);
+      -webkit-mask-size: contain; mask-size: contain;
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      background-color: currentColor;
+    }
+    .cot-item.is-open .cot-item__chevron {
+      -webkit-mask-image: url(../assets/icons/kid/arrowdown.svg);
+      mask-image: url(../assets/icons/kid/arrowdown.svg);
+    }
+    .cot-item__body {
+      display: none;
+      margin: 4px 0 4px 22px;
+      padding: 10px 12px;
+      background: var(--bg-base-secondary);
+      border-radius: var(--radius-8);
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      font-family: var(--code-font-family, monospace);
+      white-space: pre-wrap; word-break: break-all;
+    }
+    .cot-item.is-open .cot-item__body { display: block; }
+
+    /* legacy compat */
+    .msg__tool-process {
+      display: none;
+    }
+
+    /* ── Thinking 占位块 ── */
+    .msg__thinking {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 2px 0;
+      background: transparent; border: none;
+      font-size: var(--body-sm-font-size);
+    }
+    .thinking-mascot {
+      width: 24px; height: 24px; flex-shrink: 0;
+      object-fit: contain;
+      animation: mascot-float 2.4s ease-in-out infinite;
+    }
+    @keyframes mascot-float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-3px); }
+    }
+    .thinking-label {
+      background: linear-gradient(
+        90deg,
+        var(--text-tertiary) 0%,
+        var(--text-tertiary) 30%,
+        var(--text-default) 50%,
+        var(--text-tertiary) 70%,
+        var(--text-tertiary) 100%
+      );
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer-scan 2s linear infinite;
+    }
+    @keyframes shimmer-scan {
+      0%   { background-position: 150% center; }
+      100% { background-position: -50% center; }
+    }
+
+    /* ── 预览卡片 ── */
+    .preview-card {
+      background: var(--bg-base-default);
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-12);
+      padding: var(--spacer-24);
+      max-width: 680px;
+    }
+  </style>
+</head>
+<body>
+  <div class="pv-header">
+    <h1>Markdown Typography</h1>
+    <p>AI 消息正文渲染规范。基准字号 13px / 行高 1.5。容器 <code>.msg__body</code>，来源：<code>components/business/ai-message.json</code>。</p>
+  </div>
+
+  <!-- COT + Thinking -->
+  <div class="pv-section">
+    <div class="pv-section__title">COT 折叠块 &amp; Thinking 状态</div>
+    <div class="pv-section__sub">.msg__tool-process · .msg__thinking</div>
+    <div class="preview-card" style="max-width:680px;">
+
+      <!-- 已完成态 -->
+      <div style="margin-bottom:var(--spacer-8); font-size:11px; color:var(--text-tertiary); font-weight:500; text-transform:uppercase; letter-spacing:.04em;">完成态</div>
+      <div class="cot-root is-open" id="cotDemo">
+        <button class="cot-root__toggle" onclick="this.closest('.cot-root').classList.toggle('is-open')">
+          <span class="cot-root__label">已处理</span>
+          <span class="cot-root__meta">25min36s</span>
+          <span class="cot-root__chevron"></span>
+        </button>
+        <div class="cot-root__body">
+
+          <!-- L2: 工具组 -->
+          <div class="cot-group is-open">
+            <button class="cot-group__toggle" onclick="this.closest('.cot-group').classList.toggle('is-open')">
+              <span class="icon i-tool cot-group__icon"></span>
+              <span class="cot-group__label">调用工具</span>
+              <span class="cot-group__meta">调用了 6 个工具</span>
+              <span class="cot-group__chevron"></span>
+            </button>
+            <div class="cot-group__body">
+
+              <!-- L3 工具条目（无内容展开）-->
+              <button class="cot-item">
+                <span class="icon i-code cot-item__icon"></span>
+                <span class="cot-item__name">执行命令</span>
+                <span class="cot-item__path">生成 Python 脚本生成方案</span>
+                <span class="cot-item__chevron"></span>
+              </button>
+
+              <button class="cot-item">
+                <span class="icon i-readfile cot-item__icon"></span>
+                <span class="cot-item__name">读取文件</span>
+                <span class="cot-item__path">projects/rpc-providerl.rollup.cache/index</span>
+                <span class="cot-item__chevron"></span>
+              </button>
+
+              <button class="cot-item">
+                <span class="icon i-code cot-item__icon"></span>
+                <span class="cot-item__name">执行命令</span>
+                <span class="cot-item__path">生成 Python 脚本生成方案</span>
+                <span class="cot-item__chevron"></span>
+              </button>
+
+              <button class="cot-item">
+                <span class="icon i-code cot-item__icon"></span>
+                <span class="cot-item__name">执行命令</span>
+                <span class="cot-item__path">生成 Python 脚本生成方案</span>
+                <span class="cot-item__chevron"></span>
+              </button>
+
+              <!-- L3 工具条目（有内容，可展开）-->
+              <button class="cot-item is-open" onclick="this.classList.toggle('is-open'); this.nextElementSibling.style.display = this.classList.contains('is-open') ? 'block' : 'none'">
+                <span class="icon i-code cot-item__icon"></span>
+                <span class="cot-item__name">执行命令</span>
+                <span class="cot-item__path">生成 Python 脚本生成方案</span>
+                <span class="cot-item__chevron"></span>
+              </button>
+              <div class="cot-item__body" style="display:block;">cd "/Users/fangdi/工作/2026.03.10 ktest实验" &amp;&amp; npm run dev
+cd "/Users/fangdi/工作/2026.03.10 ktest实验" &amp;&amp; npm run dev
+
+VITE v4.5.14  ready in 551 ms
+
+Local:   http://localhost:3000/
+Network: use --host to expose
+press h to show help</div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div style="margin: var(--spacer-24) 0 var(--spacer-8); font-size:11px; color:var(--text-tertiary); font-weight:500; text-transform:uppercase; letter-spacing:.04em;">处理中态</div>
+      <div class="msg__thinking">
+        <img class="thinking-mascot" src="../assets/Final.webp" alt="thinking" />
+        <span class="thinking-label">内容输出中，请耐心等待…</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 标题阶梯 -->
+  <div class="pv-section">
+    <div class="pv-section__title">标题 H1 – H4</div>
+    <div class="pv-section__sub">18 / 16 / 14 / 13px · font-weight 600</div>
+    <div class="preview-card">
+      <div class="msg__body">
+        <h1>H1 — 自评报告（述职版）</h1>
+        <h2>H2 — 核心成果</h2>
+        <h3>H3 — 项目背景与目标</h3>
+        <h4>H4 — 关键指标定义</h4>
+        <p>正文段落紧随标题，字号 13px，行高 1.5。段落间距 margin-top 3px，首段无上边距。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 段落 + 列表 + 引用 -->
+  <div class="pv-section">
+    <div class="pv-section__title">段落 · 列表 · 引用</div>
+    <div class="pv-section__sub">p / ul / ol / blockquote</div>
+    <div class="preview-card">
+      <div class="msg__body">
+        <p>以下是本季度核心交付的摘要，涵盖设计系统、组件规范与研发协作流程三个维度。</p>
+        <h3>无序列表</h3>
+        <ul>
+          <li>完成 M4 Design System 基础组件 15 个</li>
+          <li>建立 AI 消息 Markdown 渲染规范</li>
+          <li>输出 component-*.html 独立预览页</li>
+        </ul>
+        <h3>有序列表</h3>
+        <ol>
+          <li>制定 Token 命名规范</li>
+          <li>搭建组件库预览体系</li>
+          <li>同步设计与研发规范文档</li>
+        </ol>
+        <blockquote>生成后请对照这里进行验证，不对题请继续输出正文部分。</blockquote>
+      </div>
+    </div>
+  </div>
+
+  <!-- 行内代码 + 加粗 + 斜体 -->
+  <div class="pv-section">
+    <div class="pv-section__title">行内代码 · 加粗 · 斜体</div>
+    <div class="pv-section__sub">code · strong · em</div>
+    <div class="preview-card">
+      <div class="msg__body">
+        <p>使用 <code>.msg__body</code> 作为 Markdown 渲染容器，<code>font-size: 13px</code> 为基准字号。</p>
+        <p>所有行内代码应使用 <code>--code-editor-font-family</code>，背景取 <code>--bg-overlay-l1</code>，边框取 <code>--border-neutral-l1</code>。</p>
+        <p>加粗文字使用 <strong>font-weight 600</strong>，斜体使用 <em>font-style italic</em>，两者可以<strong><em>组合使用</em></strong>。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 代码块 -->
+  <div class="pv-section">
+    <div class="pv-section__title">代码块</div>
+    <div class="pv-section__sub">.code-block · 深色主题 · 含复制按钮</div>
+    <div class="preview-card">
+      <div class="msg__body">
+        <p>以下是统计近 30 天活跃用户的示例脚本：</p>
+        <div class="code-block">
+          <div class="code-block__header">
+            <span>python</span>
+            <button class="code-block__copy">
+              <span class="icon i-copy" style="width:12px;height:12px;background-color:#95999e;"></span>
+              复制代码
+            </button>
+          </div>
+          <pre><code>import pandas as pd
+
+df = pd.read_csv("events.csv", parse_dates=["timestamp"])
+active = (
+    df[df["timestamp"] >= pd.Timestamp.now() - pd.Timedelta(days=30)]
+    .groupby("user_id")
+    .size()
+    .reset_index(name="event_count")
+)
+print(f"活跃用户数：{len(active)}")</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 表格 -->
+  <div class="pv-section">
+    <div class="pv-section__title">表格</div>
+    <div class="pv-section__sub">table · th背景 bg-base-secondary · hover bg-overlay-l1</div>
+    <div class="preview-card">
+      <div class="msg__body">
+        <table>
+          <thead>
+            <tr>
+              <th>Token</th>
+              <th>值</th>
+              <th>用途</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>--body-sm-font-size</code></td><td>13px</td><td>正文基准字号</td></tr>
+            <tr><td><code>--body-xs-font-size</code></td><td>12px</td><td>辅助描述 / hint</td></tr>
+            <tr><td><code>--radius-8</code></td><td>8px</td><td>组件主圆角</td></tr>
+            <tr><td><code>--spacer-24</code></td><td>24px</td><td>模块间距</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 分隔线 + 综合示例 -->
+  <div class="pv-section">
+    <div class="pv-section__title">综合示例</div>
+    <div class="pv-section__sub">模拟真实 AI 回复正文</div>
+    <div class="preview-card">
+      <div class="msg__body">
+        <h2>设计系统 Q3 交付总结</h2>
+        <p>本季度完成了 <strong>MyFlicker Design System M4</strong> 的核心搭建，覆盖 Token 层、组件层与业务组件层。</p>
+        <h3>核心交付</h3>
+        <ul>
+          <li>Token 体系：色板 / 字体 / 圆角 / 间距全部 CSS 变量化</li>
+          <li>基础组件：<code>mf-btn</code> / <code>mf-dialog</code> / <code>mf-menu</code> 等 15 个</li>
+          <li>业务组件：Aside / Chat Input / Markdown Typography</li>
+        </ul>
+        <blockquote>所有样式遵循 <strong>ai-message.json</strong> 规范，不得内联覆盖字号或间距。</blockquote>
+        <h3>数据看板</h3>
+        <table>
+          <thead><tr><th>维度</th><th>Q2</th><th>Q3</th><th>变化</th></tr></thead>
+          <tbody>
+            <tr><td>组件数</td><td>8</td><td>15</td><td>+87%</td></tr>
+            <tr><td>Token 数</td><td>120</td><td>240</td><td>+100%</td></tr>
+            <tr><td>预览页</td><td>5</td><td>17</td><td>+240%</td></tr>
+          </tbody>
+        </table>
+        <hr>
+        <p>下季度计划引入 Dark Mode 适配与组件 Storybook 集成。</p>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

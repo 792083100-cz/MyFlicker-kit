@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>FlickerAside — 侧导航</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style data-preview-shell>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100%;
+    }
+    body { padding: 32px; }
+
+    /* ── 页面框架 ── */
+    .pv-header { margin-bottom: 32px; padding-bottom: 16px; border-bottom: 1px solid var(--border-neutral-l1); }
+    .pv-header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+    .pv-header p { color: var(--text-secondary); font-size: 13px; line-height: 1.6; }
+    .pv-section { margin-bottom: 48px; }
+    .pv-section__title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .pv-section__sub { font-size: 12px; color: var(--text-tertiary); margin-bottom: 16px; line-height: 1.5; }
+
+    /* ── 预览容器：模拟真实 App Shell 背景 ── */
+    .aside-demo {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .aside-demo__frame {
+      background: var(--bg-brand-subtle);
+      border-radius: 12px;
+      padding: 0;
+      display: inline-flex;
+      height: 640px;
+    }
+
+    /* .icon / .i-xxx 全部由 components.css 统一管理，此处无需重复定义 */
+
+    /* ── 注解标签 ── */
+    .ann-table { border-collapse: collapse; font-size: 12px; width: 100%; max-width: 680px; }
+    .ann-table th { text-align: left; padding: 6px 12px; color: var(--text-tertiary); font-weight: 500; border-bottom: 1px solid var(--border-neutral-l1); }
+    .ann-table td { padding: 7px 12px; border-bottom: 1px solid var(--border-neutral-l1); vertical-align: top; color: var(--text-default); }
+    .ann-table td:first-child { font-family: monospace; color: var(--text-brand); white-space: nowrap; }
+    .ann-table td:last-child { color: var(--text-secondary); }
+    .chip { display: inline-block; background: var(--bg-overlay-l2); border-radius: 4px; padding: 1px 6px; font-family: monospace; font-size: 11px; color: var(--text-secondary); }
+  </style>
+  <link rel="stylesheet" href="../components.css" />
+</head>
+<body>
+
+  <div class="pv-header">
+    <h1>FlickerAside · 侧导航</h1>
+    <p>业务组件 · 对应 <code>FlickerAside.tsx</code>。CSS 定义在 <code>components.css → .mf-aside__*</code>。<br>
+    hover/active 背景 <span class="chip">--fill-default #E1E3E6</span>，侧边栏背景 <span class="chip">--bg-brand-subtle #F6F6F6</span>。</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 1 — 完整侧导（默认展开态）
+  ═══════════════════════════════════════ -->
+  <div class="pv-section">
+    <div class="pv-section__title">完整侧导（展开态，含全部子区块）</div>
+    <div class="pv-section__sub">分组 1 展开（3 条不同状态会话）· 分组 2 折叠 · 对话区 5 条（generating / pintotop / default / error / draft）</div>
+
+    <div class="aside-demo">
+      <div class="aside-demo__frame">
+        <aside class="mf-aside">
+
+          <!-- 头部：TeamSpaceSelect + 收起 -->
+          <div class="mf-aside__header">
+            <div class="mf-aside__workspace">
+              <img class="mf-aside__workspace-avatar" src="../assets/icons/workspace-myflicker.svg" alt="workspace" />
+              <span class="mf-aside__workspace-name">个人空间</span>
+              <span class="icon i-unfold mf-aside__workspace-unfold"></span>
+            </div>
+            <button class="mf-aside__collapse" aria-label="收起">
+              <span class="icon i-leftsidebar"></span>
+            </button>
+          </div>
+
+          <!-- 主导航 -->
+          <nav class="mf-aside__nav">
+            <div class="mf-aside__nav-item is-active">
+              <span class="icon i-newchat"></span>
+              <span class="mf-aside__nav-item__label">新对话</span>
+            </div>
+            <div class="mf-aside__nav-item">
+              <span class="icon i-search"></span>
+              <span class="mf-aside__nav-item__label">搜索</span>
+            </div>
+            <div class="mf-aside__nav-item">
+              <span class="icon i-schedule"></span>
+              <span class="mf-aside__nav-item__label">定时任务</span>
+            </div>
+            <div class="mf-aside__nav-item">
+              <span class="icon i-skill"></span>
+              <span class="mf-aside__nav-item__label">技能</span>
+            </div>
+            <div class="mf-aside__nav-item">
+              <span class="icon i-knowledge"></span>
+              <span class="mf-aside__nav-item__label">知识</span>
+            </div>
+          </nav>
+
+          <!-- 滚动区 -->
+          <div class="mf-aside__body">
+
+            <!-- 分组 label -->
+            <div class="mf-aside__section-label is-always-show">
+              <span>分组</span>
+              <div class="mf-aside__section-label-actions">
+                <button class="mf-aside__icon-btn" aria-label="新建分组">
+                  <span class="icon i-addgroup"></span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 分组 1 — 展开 -->
+            <div class="mf-aside__group">
+              <div class="mf-aside__group-icon">
+                <span class="icon i-openfolder"></span>
+              </div>
+              <span class="mf-aside__group-name">设计系统项目</span>
+              <div class="mf-aside__group-actions">
+                <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+                <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+              </div>
+            </div>
+            <div class="mf-aside__group-sessions">
+              <!-- generating -->
+              <div class="mf-aside__session">
+                <span class="mf-aside__session-status"><span class="icon i-generating" style="color:var(--text-brand);"></span></span>
+                <span class="mf-aside__session-title">组件 Token 绑定机制</span>
+                <span class="mf-aside__session-meta">
+                  <span class="mf-aside__session-time">14:30</span>
+                  <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+                </span>
+              </div>
+              <!-- default (no status icon) -->
+              <div class="mf-aside__session">
+                <span class="mf-aside__session-status"></span>
+                <span class="mf-aside__session-title">AI 对话页 UI Kit</span>
+                <span class="mf-aside__session-meta">
+                  <span class="mf-aside__session-time">昨天</span>
+                  <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+                </span>
+              </div>
+              <!-- generationcompleted -->
+              <div class="mf-aside__session">
+                <span class="mf-aside__session-status"><span class="icon i-generationcompleted" style="color:var(--text-secondary);"></span></span>
+                <span class="mf-aside__session-title">颜色系统整理</span>
+                <span class="mf-aside__session-meta">
+                  <span class="mf-aside__session-time">2026/7/12</span>
+                  <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+                </span>
+              </div>
+            </div>
+
+            <!-- 分组 2 — 折叠 -->
+            <div class="mf-aside__group" style="margin-top:4px;">
+              <div class="mf-aside__group-icon">
+                <span class="icon i-closefolder"></span>
+              </div>
+              <span class="mf-aside__group-name">个人任务</span>
+              <div class="mf-aside__group-actions">
+                <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+                <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+              </div>
+            </div>
+
+
+            <!-- 对话 label（sticky） -->            <div class="mf-aside__section-label">
+              <span>对话</span>
+              <div class="mf-aside__section-label-actions">
+                <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+              </div>
+            </div>
+
+            <!-- 未分组会话列表 -->
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <!-- active + generating -->
+              <div class="mf-aside__session">
+                <span class="mf-aside__session-status"><span class="icon i-generating" style="color:var(--text-brand);"></span></span>
+                <span class="mf-aside__session-title">构建 MyFlicker 世界</span>
+                <span class="mf-aside__session-meta">
+                  <span class="mf-aside__session-time">16:22</span>
+                  <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+                </span>
+              </div>
+              <!-- pintotop -->
+              <div class="mf-aside__session">
+                <span class="mf-aside__session-status"><span class="icon i-pintotop" style="color:var(--text-tertiary);"></span></span>
+                <span class="mf-aside__session-title">帮我顶会议</span>
+                <span class="mf-aside__session-meta">
+                  <span class="mf-aside__session-time">今天</span>
+                  <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+                </span>
+              </div>
+              <!-- default -->
+              <div class="mf-aside__session">
+                <span class="mf-aside__session-status"></span>
+                <span class="mf-aside__session-title">订机票</span>
+                <span class="mf-aside__session-meta">
+                  <span class="mf-aside__session-time">昨天</span>
+                  <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+                </span>
+              </div>
+              <!-- draft -->
+              <div class="mf-aside__session">
+                <span class="mf-aside__session-status"><span class="icon i-draft" style="color:var(--text-tertiary);"></span></span>
+                <span class="mf-aside__session-title">设计规范草稿</span>
+                <span class="mf-aside__session-meta">
+                  <span class="mf-aside__session-time">2026/7/13</span>
+                  <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+                </span>
+              </div>
+            </div>
+
+          </div><!-- /body -->
+
+          <!-- footer -->
+          <div class="mf-aside__footer">
+            <button class="mf-aside__footer-setting">
+              <span class="icon i-setting"></span>
+              <span>设置</span>
+            </button>
+            <div class="mf-aside__footer-credit">
+              <img src="../assets/icons/points-gradient.svg" width="14" height="14" style="flex-shrink:0;" />
+              <span>积分：剩余 92%</span>
+            </div>
+          </div>
+
+        </aside>
+      </div><!-- /frame -->
+    </div><!-- /demo -->
+  </div><!-- /section 1 -->
+
+  <!-- ═══════════════════════════════════════
+       SECTION 2 — 子组件拆解
+  ═══════════════════════════════════════ -->
+  <div class="pv-section">
+    <div class="pv-section__title">子组件拆解</div>
+    <div class="pv-section__sub">各区块独立展示，便于 review token 和间距</div>
+
+    <div style="display:grid; grid-template-columns: 240px 240px; gap:24px; align-items:start;">
+
+      <!-- 导航项状态 -->
+      <div>
+        <div class="pv-section__sub" style="margin-bottom:8px;">主导航 — 各状态</div>
+        <div style="background:var(--bg-brand-subtle); border-radius:8px; padding:8px;">
+          <nav class="mf-aside__nav">
+            <div class="mf-aside__nav-item">
+              <span class="icon i-newchat"></span>
+              <span class="mf-aside__nav-item__label">默认</span>
+            </div>
+            <div class="mf-aside__nav-item" style="background:var(--fill-default);">
+              <span class="icon i-search"></span>
+              <span class="mf-aside__nav-item__label">hover（模拟）</span>
+            </div>
+            <div class="mf-aside__nav-item is-active">
+              <span class="icon i-schedule"></span>
+              <span class="mf-aside__nav-item__label">is-active</span>
+            </div>
+          </nav>
+        </div>
+      </div>
+
+      <!-- 会话状态图标 -->
+      <div>
+        <div class="pv-section__sub" style="margin-bottom:8px;">SessionItem — 5 种状态图标</div>
+        <div style="background:var(--bg-brand-subtle); border-radius:8px; padding:8px; display:flex; flex-direction:column; gap:4px;">
+          <div class="mf-aside__session">
+            <span class="mf-aside__session-status"><span class="icon i-generating" style="color:var(--text-brand);"></span></span>
+            <span class="mf-aside__session-title">generating — 生成中</span>
+          </div>
+          <div class="mf-aside__session is-active">
+            <span class="mf-aside__session-status"></span>
+            <span class="mf-aside__session-title">is-active — 当前会话</span>
+          </div>
+          <div class="mf-aside__session">
+            <span class="mf-aside__session-status"><span class="icon i-generationcompleted" style="color:var(--text-secondary);"></span></span>
+            <span class="mf-aside__session-title">generationcompleted</span>
+          </div>
+          <div class="mf-aside__session">
+            <span class="mf-aside__session-status"><span class="icon i-pintotop" style="color:var(--text-tertiary);"></span></span>
+            <span class="mf-aside__session-title">pintotop — 已置顶</span>
+          </div>
+          <div class="mf-aside__session">
+            <span class="mf-aside__session-status"><span class="icon i-error2" style="color:var(--status-error-default);"></span></span>
+            <span class="mf-aside__session-title">error — 生成失败</span>
+          </div>
+          <div class="mf-aside__session">
+            <span class="mf-aside__session-status"><span class="icon i-draft" style="color:var(--text-tertiary);"></span></span>
+            <span class="mf-aside__session-title">draft — 有草稿</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 分组行状态 -->
+      <div>
+        <div class="pv-section__sub" style="margin-bottom:8px;">SessionGroupItem — 展开 / 折叠</div>
+        <div style="background:var(--bg-brand-subtle); border-radius:8px; padding:8px; display:flex; flex-direction:column; gap:4px;">
+          <div class="mf-aside__group">
+            <div class="mf-aside__group-icon"><span class="icon i-openfolder"></span></div>
+            <span class="mf-aside__group-name">展开态分组</span>
+            <div class="mf-aside__group-actions">
+              <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+              <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+            </div>
+          </div>
+          <div class="mf-aside__group">
+            <div class="mf-aside__group-icon"><span class="icon i-closefolder"></span></div>
+            <span class="mf-aside__group-name">折叠态分组</span>
+            <div class="mf-aside__group-actions">
+              <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+              <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- footer -->
+      <div>
+        <div class="pv-section__sub" style="margin-bottom:8px;">Footer — 设置 + 积分胶囊</div>
+        <div style="background:var(--bg-brand-subtle); border-radius:8px; padding:8px;">
+          <div class="mf-aside__footer" style="margin-right:0;">
+            <button class="mf-aside__footer-setting">
+              <span class="icon i-setting"></span>
+              <span>设置</span>
+            </button>
+            <div class="mf-aside__footer-credit">
+              <img src="../assets/icons/points-gradient.svg" width="14" height="14" style="flex-shrink:0;" />
+              <span>积分：剩余 92%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 3 — Token 表
+  ═══════════════════════════════════════ -->
+  <div class="pv-section">
+    <div class="pv-section__title">Token 对照</div>
+    <div class="pv-section__sub">Design token → CSS var → 原始值（Light 模式）</div>
+    <table class="ann-table">
+      <thead>
+        <tr>
+          <th>用途</th>
+          <th>CSS Token</th>
+          <th>值</th>
+          <th>前端库变量</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>侧边栏背景</td><td><span class="chip">--bg-brand-subtle</span></td><td>#F6F6F6</td><td>--color-bg_brand</td></tr>
+        <tr><td>hover / active 背景</td><td><span class="chip">--fill-default</span></td><td>#E1E3E6</td><td>--color-fill_primary</td></tr>
+        <tr><td>文字 primary</td><td><span class="chip">--text-default</span></td><td>#1F2329</td><td>--color-flicker_text_primary</td></tr>
+        <tr><td>文字 secondary</td><td><span class="chip">--text-secondary</span></td><td>#5C6066</td><td>—</td></tr>
+        <tr><td>文字 tertiary</td><td><span class="chip">--text-tertiary</span></td><td>#95999E</td><td>--color-text_tertiary</td></tr>
+        <tr><td>积分胶囊边框</td><td><span class="chip">--border-neutral-l1</span></td><td>#F0F2F5</td><td>--color-border_secondary</td></tr>
+        <tr><td>积分胶囊背景</td><td><span class="chip">--bg-base-default</span></td><td>#FFFFFF</td><td>--color-bg_container</td></tr>
+        <tr><td>workspace 头像背景</td><td><span class="chip">--bg-brand</span></td><td>品牌色</td><td>—</td></tr>
+        <tr><td>generating 图标色</td><td><span class="chip">--text-brand</span></td><td>品牌色</td><td>—</td></tr>
+        <tr><td>error 图标色</td><td><span class="chip">--status-error-default</span></td><td>红色</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

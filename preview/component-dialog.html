@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dialog</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../colors_and_type.css" />
+  <style data-preview-shell>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html,
+    body {
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      letter-spacing: var(--body-sm-letter-spacing);
+      min-height: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+
+    body { padding: var(--spacer-32); }
+    img, svg, video, canvas { max-width: 100%; }
+    a { color: var(--text-default); text-decoration: none; }
+    a:hover { color: var(--text-default-hover); }
+    hr { border: 0; border-top: 1px solid var(--border-neutral-l1); margin: var(--spacer-24) 0; }
+
+    .h1 { font-family: var(--heading-2xl-font-family); font-size: var(--heading-2xl-font-size); line-height: var(--heading-2xl-line-height); font-weight: var(--heading-2xl-font-weight); color: var(--text-default); }
+    .h2 { font-family: var(--heading-md-font-family); font-size: var(--heading-md-font-size); line-height: var(--heading-md-line-height); font-weight: var(--heading-md-font-weight); color: var(--text-default); }
+    .h3 { font-family: var(--heading-sm-font-family); font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); color: var(--text-default); }
+    .eyebrow { font-size: var(--body-xs-font-size); line-height: var(--body-xs-line-height); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: var(--body-xs-letter-spacing); }
+    .text-secondary { color: var(--text-secondary); }
+    .text-tertiary { color: var(--text-tertiary); }
+
+    .row { display: flex; gap: var(--spacer-12); flex-wrap: wrap; align-items: center; }
+    .col { display: flex; flex-direction: column; gap: var(--spacer-12); }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacer-24); }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacer-24); }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacer-24); }
+    .stack-8 { display: flex; flex-direction: column; gap: var(--spacer-8); }
+    .stack-12 { display: flex; flex-direction: column; gap: var(--spacer-12); }
+    .stack-16 { display: flex; flex-direction: column; gap: var(--spacer-16); }
+    .stack-24 { display: flex; flex-direction: column; gap: var(--spacer-24); }
+    .stack-40 { display: flex; flex-direction: column; gap: var(--spacer-40); }
+
+    .pv-header { margin-bottom: var(--spacer-32); padding-bottom: var(--spacer-16); border-bottom: 1px solid var(--border-neutral-l1); }
+    .pv-header h1 { font-size: var(--heading-lg-font-size); line-height: var(--heading-lg-line-height); font-weight: var(--heading-lg-font-weight); margin-bottom: var(--spacer-4); }
+    .pv-header p { color: var(--text-secondary); font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); }
+    .pv-section { margin-bottom: var(--spacer-32); }
+    .pv-section__title { font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); margin-bottom: var(--spacer-12); color: var(--text-default); }
+    .pv-section__sub { font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height); color: var(--text-tertiary); margin-bottom: var(--spacer-12); }
+
+    @media (max-width: 720px) {
+      body { padding: var(--spacer-16); }
+      .grid-2,
+      .grid-3,
+      .grid-4 { grid-template-columns: 1fr; }
+    }
+  </style>
+  <link rel="stylesheet" href="../components.css" />
+  <style>
+/* Inline asset icon normalization: keep uploaded HTML independent from external SVG styling. */
+    [data-asset-icon] {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent !important;
+      -webkit-mask: none !important;
+      mask: none !important;
+    }
+
+    [data-asset-icon] > svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      flex: 0 0 auto;
+    }
+
+    .asset-inline-icon {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+    }
+
+    /* Form dialog padding overrides */
+    .mf-dialog--form .mf-dialog__head {
+      padding: var(--spacer-24) var(--spacer-24) var(--spacer-12);
+      border-bottom: none;
+    }
+    .mf-dialog--form .mf-dialog__body {
+      padding: var(--spacer-8) var(--spacer-24) 0;
+    }
+    .mf-dialog--form .mf-dialog__foot {
+      padding: var(--spacer-24) var(--spacer-24) var(--spacer-24);
+      border-top: none;
+    }
+
+    /* Form field layout */
+    .dialog-form {
+      display: flex;
+      flex-direction: column;
+    }
+    .dialog-field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-8);
+      margin-bottom: var(--spacer-24);
+      position: relative;
+    }
+    .dialog-field:last-child {
+      margin-bottom: 0;
+    }
+    .dialog-field__label {
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+    .dialog-field__hint {
+      font-size: var(--body-xs-font-size);
+      line-height: var(--body-xs-line-height);
+      color: var(--text-tertiary);
+    }
+    .dialog-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacer-24);
+      margin-bottom: var(--spacer-24);
+    }
+    .dialog-grid .dialog-field {
+      margin-bottom: 0;
+    }
+    .dialog-grid:last-child {
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="pv-header">
+    <h1>Dialog / Modal</h1>
+    <p>Surface <code>--bg-base-default</code>, radius <code>--radius-8</code>. Width 360 / 420 / 560. Backdrop <code>--bg-overlay-l4</code>.</p>
+  </div>
+
+  <div class="pv-section">
+    <div class="pv-section__title">Confirmation</div>
+    <div class="mf-backdrop" style="border-radius: var(--radius-8);">
+      <div class="mf-dialog">
+        <div class="mf-dialog__head">
+          <span class="mf-dialog__title" style="display:inline-flex;align-items:center;gap:var(--spacer-8);"><span class="icon" style="width:20px;height:20px;flex:0 0 auto;color:var(--status-error-default);" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M960 512A448 448 0 1 1 64 512 448 448 0 0 1 960 512Z"></path><path style="fill:white" d="M448 320A64 64 0 0 1 576 320V512A64 64 0 0 1 448 512V320zM448 704A64 64 0 1 1 576 704 64 64 0 0 1 448 704z"></path></svg></span>Delete project</span>
+          <button class="mf-dialog__close" aria-label="Close"><span class="icon" style="width: 16px; height: 16px;" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M820.352 149.312A38.421 38.421 0 0 1 874.688 203.648L566.336 512 874.688 820.352A38.421 38.421 0 0 1 820.352 874.688L512 566.336 203.648 874.688A38.421 38.421 0 0 1 149.312 820.352L457.664 512 149.312 203.648A38.421 38.421 0 0 1 203.648 149.312L512 457.664 820.352 149.312Z"></path></svg></span></button>
+        </div>
+        <div class="mf-dialog__body">
+          This action cannot be undone. The project <span style="color:var(--text-default);">MyFlicker</span>
+          and all of its tokens will be permanently removed.
+        </div>
+        <div class="mf-dialog__foot">
+          <button class="mf-btn mf-btn--secondary mf-btn--lg">Cancel</button>
+          <button class="mf-btn mf-btn--danger mf-btn--lg">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pv-section">
+    <div class="pv-section__title">Form dialog</div>
+    <div class="mf-backdrop" style="border-radius: var(--radius-8);">
+      <div class="mf-dialog mf-dialog--form">
+        <div class="mf-dialog__head">
+          <span class="mf-dialog__title">Invite member</span>
+          <button class="mf-dialog__close" aria-label="Close"><span class="icon" style="width: 16px; height: 16px;" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M820.352 149.312A38.421 38.421 0 0 1 874.688 203.648L566.336 512 874.688 820.352A38.421 38.421 0 0 1 820.352 874.688L512 566.336 203.648 874.688A38.421 38.421 0 0 1 149.312 820.352L457.664 512 149.312 203.648A38.421 38.421 0 0 1 203.648 149.312L512 457.664 820.352 149.312Z"></path></svg></span></button>
+        </div>
+        <div class="mf-dialog__body">
+          <form class="dialog-form">
+            <div class="dialog-field">
+              <label class="dialog-field__label" for="invite-email">Email address</label>
+              <div class="mf-input"><span class="mf-input__icon"><span class="icon" style="width: 16px; height: 16px;" aria-hidden="true" data-asset-icon="../assets/icons/kid/envelope.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M900.224 368.64 575.744 575.36 574.272 576.256A123.776 123.776 0 0 1 449.92 576.192L448.704 575.424 123.712 368.512V768C123.712 793.856 144.64 814.912 170.624 814.912H853.312A46.912 46.912 0 0 0 900.224 767.936V368.64ZM900.224 256A46.976 46.976 0 0 0 853.312 209.024H170.624A46.976 46.976 0 0 0 123.712 256V277.504L488.768 509.824A46.976 46.976 0 0 0 535.232 509.952L900.224 277.504V256ZM977.024 768A123.776 123.776 0 0 1 853.376 891.648H170.624A123.712 123.712 0 0 1 46.912 768V256C46.912 187.712 102.4 132.352 170.624 132.352H853.312A123.648 123.648 0 0 1 977.088 256V768Z"></path></svg></span></span><input id="invite-email" type="email" value="maria@myflicker.com" /></div>
+              <div class="dialog-field__hint">Invitation will be sent to this workspace email.</div>
+            </div>
+            <div class="dialog-grid">
+              <div class="dialog-field">
+                <label class="dialog-field__label" for="invite-role">Role</label>
+                <div class="mf-select-wrap"><select class="mf-select" id="invite-role"><option>Editor</option><option>Viewer</option><option>Admin</option></select><span class="mf-select__icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/arrowdown.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M230.72 409.664A38.4 38.4 0 0 1 287.552 358.08L480.896 571.392C493.248 584.96 502.016 593.152 508.672 597.76 514.88 602.112 516.48 601.472 515.136 601.472 513.92 601.472 515.392 602.112 521.664 597.76 528.256 593.088 536.96 584.96 549.376 571.392L742.656 358.08A38.425 38.425 0 0 1 799.68 409.6L606.272 622.912A257.92 257.92 0 0 1 565.76 660.672C551.744 670.4 534.912 678.144 515.2 678.144 495.36 678.272 478.464 670.464 464.448 660.608A255.744 255.744 0 0 1 424 622.912L230.72 409.664Z"></path></svg></span></div>
+              </div>
+              <div class="dialog-field">
+                <label class="dialog-field__label" for="invite-team">Team</label>
+                <div class="mf-select-wrap"><select class="mf-select" id="invite-team"><option>Design System</option><option>Product</option><option>Growth</option></select><span class="mf-select__icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/arrowdown.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M230.72 409.664A38.4 38.4 0 0 1 287.552 358.08L480.896 571.392C493.248 584.96 502.016 593.152 508.672 597.76 514.88 602.112 516.48 601.472 515.136 601.472 513.92 601.472 515.392 602.112 521.664 597.76 528.256 593.088 536.96 584.96 549.376 571.392L742.656 358.08A38.425 38.425 0 0 1 799.68 409.6L606.272 622.912A257.92 257.92 0 0 1 565.76 660.672C551.744 670.4 534.912 678.144 515.2 678.144 495.36 678.272 478.464 670.464 464.448 660.608A255.744 255.744 0 0 1 424 622.912L230.72 409.664Z"></path></svg></span></div>
+              </div>
+            </div>
+            <div class="dialog-grid">
+              <div class="dialog-field">
+                <label class="dialog-field__label" for="invite-expiry">Access expires</label>
+                <div class="mf-input"><input id="invite-expiry" type="text" inputmode="numeric" value="2026/07/16" /><span class="mf-input__icon dialog-calendar-icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/time.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M900.288 512A388.288 388.288 0 1 0 123.712 512 388.288 388.288 0 0 0 900.288 512ZM473.6 256A38.464 38.464 0 0 1 550.4 256V488.192L699.904 562.944A38.41 38.41 0 0 1 665.6 631.68L494.848 546.304A38.4 38.4 0 0 1 473.6 512V256ZM977.152 512A465.12 465.12 0 1 1 46.912 512 465.12 465.12 0 0 1 977.152 512Z"></path></svg></span></div>
+              </div>
+              <div class="dialog-field">
+                <label class="dialog-field__label" for="invite-seat">Seat type</label>
+                <div class="mf-select-wrap"><select class="mf-select" id="invite-seat"><option>Full seat</option><option>Review only</option><option>Temporary seat</option></select><span class="mf-select__icon" aria-hidden="true" data-asset-icon="../assets/icons/kid/arrowdown.svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor"><path fill="currentColor" d="M230.72 409.664A38.4 38.4 0 0 1 287.552 358.08L480.896 571.392C493.248 584.96 502.016 593.152 508.672 597.76 514.88 602.112 516.48 601.472 515.136 601.472 513.92 601.472 515.392 602.112 521.664 597.76 528.256 593.088 536.96 584.96 549.376 571.392L742.656 358.08A38.425 38.425 0 0 1 799.68 409.6L606.272 622.912A257.92 257.92 0 0 1 565.76 660.672C551.744 670.4 534.912 678.144 515.2 678.144 495.36 678.272 478.464 670.464 464.448 660.608A255.744 255.744 0 0 1 424 622.912L230.72 409.664Z"></path></svg></span></div>
+              </div>
+            </div>
+            <div class="dialog-field">
+              <label class="dialog-field__label" for="invite-message">Message</label>
+              <textarea class="mf-textarea" id="invite-message">Welcome to the MyFlicker project. You can edit components and review token updates.</textarea>
+            </div>
+          </form>
+        </div>
+        <div class="mf-dialog__foot">
+          <button class="mf-btn mf-btn--secondary mf-btn--lg">Cancel</button>
+          <button class="mf-btn mf-btn--primary mf-btn--lg">Send invite</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
