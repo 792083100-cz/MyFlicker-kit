@@ -1,0 +1,1232 @@
+{
+  "version": "1.0.1023",
+  "source": "@kid/enterprise-icon@1.0.1023",
+  "syncedAt": "2026-07-15",
+  "count": 204,
+  "icons": [
+    {
+      "name": "add",
+      "fullName": "myflicker_system_add",
+      "viewBox": "0 0 1024 1024",
+      "file": "add.svg"
+    },
+    {
+      "name": "addfiles",
+      "fullName": "myflicker_system_addfiles",
+      "viewBox": "0 0 1024 1024",
+      "file": "addfiles.svg"
+    },
+    {
+      "name": "addgroup",
+      "fullName": "myflicker_system_addgroup",
+      "viewBox": "0 0 1024 1024",
+      "file": "addgroup.svg"
+    },
+    {
+      "name": "addteam",
+      "fullName": "myflicker_system_addteam",
+      "viewBox": "0 0 1024 1024",
+      "file": "addteam.svg"
+    },
+    {
+      "name": "adjustment",
+      "fullName": "myflicker_system_adjustment",
+      "viewBox": "0 0 1024 1024",
+      "file": "adjustment.svg"
+    },
+    {
+      "name": "agent",
+      "fullName": "myflicker_system_agent",
+      "viewBox": "0 0 1024 1024",
+      "file": "agent.svg"
+    },
+    {
+      "name": "ai",
+      "fullName": "myflicker_system_ai",
+      "viewBox": "0 0 1024 1024",
+      "file": "ai.svg"
+    },
+    {
+      "name": "aite",
+      "fullName": "myflicker_system_aite",
+      "viewBox": "0 0 1024 1024",
+      "file": "aite.svg"
+    },
+    {
+      "name": "appearance",
+      "fullName": "myflicker_system_appearance",
+      "viewBox": "0 0 1024 1024",
+      "file": "appearance.svg"
+    },
+    {
+      "name": "archive",
+      "fullName": "myflicker_system_archive",
+      "viewBox": "0 0 1024 1024",
+      "file": "archive.svg"
+    },
+    {
+      "name": "around",
+      "fullName": "myflicker_system_around",
+      "viewBox": "0 0 1024 1024",
+      "file": "around.svg"
+    },
+    {
+      "name": "arrowdown",
+      "fullName": "myflicker_system_arrowdown",
+      "viewBox": "0 0 1024 1024",
+      "file": "arrowdown.svg"
+    },
+    {
+      "name": "arrowleft",
+      "fullName": "myflicker_system_arrowleft",
+      "viewBox": "0 0 1024 1024",
+      "file": "arrowleft.svg"
+    },
+    {
+      "name": "arrowright",
+      "fullName": "myflicker_system_arrowright",
+      "viewBox": "0 0 1024 1024",
+      "file": "arrowright.svg"
+    },
+    {
+      "name": "arrowup",
+      "fullName": "myflicker_system_arrowup",
+      "viewBox": "0 0 1024 1024",
+      "file": "arrowup.svg"
+    },
+    {
+      "name": "ask",
+      "fullName": "myflicker_system_ask",
+      "viewBox": "0 0 1024 1024",
+      "file": "ask.svg"
+    },
+    {
+      "name": "assets",
+      "fullName": "myflicker_system_assets",
+      "viewBox": "0 0 1024 1024",
+      "file": "assets.svg"
+    },
+    {
+      "name": "attention",
+      "fullName": "myflicker_system_attention",
+      "viewBox": "0 0 1024 1024",
+      "file": "attention.svg"
+    },
+    {
+      "name": "bag",
+      "fullName": "myflicker_system_bag",
+      "viewBox": "0 0 1024 1024",
+      "file": "bag.svg"
+    },
+    {
+      "name": "base",
+      "fullName": "myflicker_system_base",
+      "viewBox": "0 0 1024 1024",
+      "file": "base.svg"
+    },
+    {
+      "name": "batchselection",
+      "fullName": "myflicker_system_batchselection",
+      "viewBox": "0 0 1024 1024",
+      "file": "batchselection.svg"
+    },
+    {
+      "name": "bath",
+      "fullName": "myflicker_system_bath",
+      "viewBox": "0 0 1024 1024",
+      "file": "bath.svg"
+    },
+    {
+      "name": "book",
+      "fullName": "myflicker_system_book",
+      "viewBox": "0 0 1024 1024",
+      "file": "book.svg"
+    },
+    {
+      "name": "brain",
+      "fullName": "myflicker_system_brain",
+      "viewBox": "0 0 1024 1024",
+      "file": "brain.svg"
+    },
+    {
+      "name": "brainsetting",
+      "fullName": "myflicker_system_brainsetting",
+      "viewBox": "0 0 1024 1024",
+      "file": "brainsetting.svg"
+    },
+    {
+      "name": "brainstorage",
+      "fullName": "myflicker_system_brainstorage",
+      "viewBox": "0 0 1024 1024",
+      "file": "brainstorage.svg"
+    },
+    {
+      "name": "brightcolor",
+      "fullName": "myflicker_system_brightcolor",
+      "viewBox": "0 0 1024 1024",
+      "file": "brightcolor.svg"
+    },
+    {
+      "name": "cash",
+      "fullName": "myflicker_system_cash",
+      "viewBox": "0 0 1024 1024",
+      "file": "cash.svg"
+    },
+    {
+      "name": "chatgpt",
+      "fullName": "myflicker_system_chatgpt",
+      "viewBox": "0 0 1024 1024",
+      "file": "chatgpt.svg"
+    },
+    {
+      "name": "check",
+      "fullName": "myflicker_system_check",
+      "viewBox": "0 0 1024 1024",
+      "file": "check.svg"
+    },
+    {
+      "name": "circular",
+      "fullName": "myflicker_system_circular",
+      "viewBox": "0 0 1024 1024",
+      "file": "circular.svg"
+    },
+    {
+      "name": "claude",
+      "fullName": "myflicker_system_claude",
+      "viewBox": "0 0 1024 1024",
+      "file": "claude.svg"
+    },
+    {
+      "name": "clean",
+      "fullName": "myflicker_system_clean",
+      "viewBox": "0 0 1024 1024",
+      "file": "clean.svg"
+    },
+    {
+      "name": "close",
+      "fullName": "myflicker_system_close",
+      "viewBox": "0 0 1024 1024",
+      "file": "close.svg"
+    },
+    {
+      "name": "closefolder",
+      "fullName": "myflicker_system_closefolder",
+      "viewBox": "0 0 1024 1024",
+      "file": "closefolder.svg"
+    },
+    {
+      "name": "closem",
+      "fullName": "myflicker_system_closem",
+      "viewBox": "0 0 1024 1024",
+      "file": "closem.svg"
+    },
+    {
+      "name": "closure",
+      "fullName": "myflicker_system_closure",
+      "viewBox": "0 0 1024 1024",
+      "file": "closure.svg"
+    },
+    {
+      "name": "cloud",
+      "fullName": "myflicker_system_cloud",
+      "viewBox": "0 0 1024 1024",
+      "file": "cloud.svg"
+    },
+    {
+      "name": "code",
+      "fullName": "myflicker_system_code",
+      "viewBox": "0 0 1024 1024",
+      "file": "code.svg"
+    },
+    {
+      "name": "code1",
+      "fullName": "myflicker_system_code1",
+      "viewBox": "0 0 1024 1024",
+      "file": "code1.svg"
+    },
+    {
+      "name": "codework",
+      "fullName": "myflicker_system_codework",
+      "viewBox": "0 0 1024 1024",
+      "file": "codework.svg"
+    },
+    {
+      "name": "compile",
+      "fullName": "myflicker_system_compile",
+      "viewBox": "0 0 1024 1024",
+      "file": "compile.svg"
+    },
+    {
+      "name": "computer",
+      "fullName": "myflicker_system_computer",
+      "viewBox": "0 0 1024 1024",
+      "file": "computer.svg"
+    },
+    {
+      "name": "contactthecreator",
+      "fullName": "myflicker_system_contactthecreator",
+      "viewBox": "0 0 1024 1024",
+      "file": "contactthecreator.svg"
+    },
+    {
+      "name": "copresent",
+      "fullName": "myflicker_system_copresent",
+      "viewBox": "0 0 1024 1024",
+      "file": "copresent.svg"
+    },
+    {
+      "name": "copy",
+      "fullName": "myflicker_system_copy",
+      "viewBox": "0 0 1024 1024",
+      "file": "copy.svg"
+    },
+    {
+      "name": "copyconversation",
+      "fullName": "myflicker_system_copyconversation",
+      "viewBox": "0 0 1024 1024",
+      "file": "copyconversation.svg"
+    },
+    {
+      "name": "creator",
+      "fullName": "myflicker_system_creator",
+      "viewBox": "0 0 1024 1024",
+      "file": "creator.svg"
+    },
+    {
+      "name": "creatorcenter",
+      "fullName": "myflicker_system_creatorcenter",
+      "viewBox": "0 0 1024 1024",
+      "file": "creatorcenter.svg"
+    },
+    {
+      "name": "creatorcenter02",
+      "fullName": "myflicker_system_creatorcenter02",
+      "viewBox": "0 0 1024 1024",
+      "file": "creatorcenter02.svg"
+    },
+    {
+      "name": "csv",
+      "fullName": "myflicker_system_csv",
+      "viewBox": "0 0 1024 1024",
+      "file": "csv.svg"
+    },
+    {
+      "name": "darkcolor",
+      "fullName": "myflicker_system_darkcolor",
+      "viewBox": "0 0 1024 1024",
+      "file": "darkcolor.svg"
+    },
+    {
+      "name": "data",
+      "fullName": "myflicker_system_data",
+      "viewBox": "0 0 1024 1024",
+      "file": "data.svg"
+    },
+    {
+      "name": "deepresearch",
+      "fullName": "myflicker_system_deepresearch",
+      "viewBox": "0 0 1024 1024",
+      "file": "deepresearch.svg"
+    },
+    {
+      "name": "deepseek",
+      "fullName": "myflicker_system_deepseek",
+      "viewBox": "0 0 1024 1024",
+      "file": "deepseek.svg"
+    },
+    {
+      "name": "delete",
+      "fullName": "myflicker_system_delete",
+      "viewBox": "0 0 1024 1024",
+      "file": "delete.svg"
+    },
+    {
+      "name": "deploymenttools",
+      "fullName": "myflicker_system_deploymenttools",
+      "viewBox": "0 0 1024 1024",
+      "file": "deploymenttools.svg"
+    },
+    {
+      "name": "disconnected",
+      "fullName": "myflicker_system_disconnected",
+      "viewBox": "0 0 1024 1024",
+      "file": "disconnected.svg"
+    },
+    {
+      "name": "discuss",
+      "fullName": "myflicker_system_discuss",
+      "viewBox": "0 0 1024 1024",
+      "file": "discuss.svg"
+    },
+    {
+      "name": "docs",
+      "fullName": "myflicker_system_docs",
+      "viewBox": "0 0 1024 1024",
+      "file": "docs.svg"
+    },
+    {
+      "name": "document",
+      "fullName": "myflicker_system_document",
+      "viewBox": "0 0 1024 1024",
+      "file": "document.svg"
+    },
+    {
+      "name": "document16",
+      "fullName": "myflicker_system_document16",
+      "viewBox": "0 0 1024 1024",
+      "file": "document16.svg"
+    },
+    {
+      "name": "downleft",
+      "fullName": "myflicker_system_downleft",
+      "viewBox": "0 0 1024 1024",
+      "file": "downleft.svg"
+    },
+    {
+      "name": "download",
+      "fullName": "myflicker_system_download",
+      "viewBox": "0 0 1024 1024",
+      "file": "download.svg"
+    },
+    {
+      "name": "draft",
+      "fullName": "myflicker_system_draft",
+      "viewBox": "0 0 1024 1024",
+      "file": "draft.svg"
+    },
+    {
+      "name": "earth",
+      "fullName": "myflicker_system_earth",
+      "viewBox": "0 0 1024 1024",
+      "file": "earth.svg"
+    },
+    {
+      "name": "edit",
+      "fullName": "myflicker_system_edit",
+      "viewBox": "0 0 1024 1024",
+      "file": "edit.svg"
+    },
+    {
+      "name": "enlarge",
+      "fullName": "myflicker_system_enlarge",
+      "viewBox": "0 0 1024 1024",
+      "file": "enlarge.svg"
+    },
+    {
+      "name": "enlarge02",
+      "fullName": "myflicker_system_enlarge02",
+      "viewBox": "0 0 1024 1024",
+      "file": "enlarge02.svg"
+    },
+    {
+      "name": "enterkey",
+      "fullName": "myflicker_system_enterkey",
+      "viewBox": "0 0 1024 1024",
+      "file": "enterkey.svg"
+    },
+    {
+      "name": "envelope",
+      "fullName": "myflicker_system_envelope",
+      "viewBox": "0 0 1024 1024",
+      "file": "envelope.svg"
+    },
+    {
+      "name": "error2",
+      "fullName": "myflicker_system_error2",
+      "viewBox": "0 0 1024 1024",
+      "file": "error2.svg"
+    },
+    {
+      "name": "excel16",
+      "fullName": "myflicker_system_excel16",
+      "viewBox": "0 0 1024 1024",
+      "file": "excel16.svg"
+    },
+    {
+      "name": "executeagain",
+      "fullName": "myflicker_system_executeagain",
+      "viewBox": "0 0 1024 1024",
+      "file": "executeagain.svg"
+    },
+    {
+      "name": "expandtotheright",
+      "fullName": "myflicker_system_expandtotheright",
+      "viewBox": "0 0 1024 1024",
+      "file": "expandtotheright.svg"
+    },
+    {
+      "name": "filelistsearch",
+      "fullName": "myflicker_system_filelistsearch",
+      "viewBox": "0 0 1024 1024",
+      "file": "filelistsearch.svg"
+    },
+    {
+      "name": "filesearch",
+      "fullName": "myflicker_system_filesearch",
+      "viewBox": "0 0 1024 1024",
+      "file": "filesearch.svg"
+    },
+    {
+      "name": "filetree",
+      "fullName": "myflicker_system_filetree",
+      "viewBox": "0 0 1024 1024",
+      "file": "filetree.svg"
+    },
+    {
+      "name": "filter",
+      "fullName": "myflicker_system_filter",
+      "viewBox": "0 0 1024 1024",
+      "file": "filter.svg"
+    },
+    {
+      "name": "fire",
+      "fullName": "myflicker_system_fire",
+      "viewBox": "0 0 1024 1024",
+      "file": "fire.svg"
+    },
+    {
+      "name": "flash",
+      "fullName": "myflicker_system_flash",
+      "viewBox": "0 0 1024 1024",
+      "file": "flash.svg"
+    },
+    {
+      "name": "food",
+      "fullName": "myflicker_system_food",
+      "viewBox": "0 0 1024 1024",
+      "file": "food.svg"
+    },
+    {
+      "name": "forkchat",
+      "fullName": "myflicker_system_forkchat",
+      "viewBox": "0 0 1024 1024",
+      "file": "forkchat.svg"
+    },
+    {
+      "name": "function",
+      "fullName": "myflicker_system_function",
+      "viewBox": "0 0 1024 1024",
+      "file": "function.svg"
+    },
+    {
+      "name": "game",
+      "fullName": "myflicker_system_game",
+      "viewBox": "0 0 1024 1024",
+      "file": "game.svg"
+    },
+    {
+      "name": "gemini",
+      "fullName": "myflicker_system_gemini",
+      "viewBox": "0 0 1024 1024",
+      "file": "gemini.svg"
+    },
+    {
+      "name": "generating",
+      "fullName": "myflicker_system_generating",
+      "viewBox": "0 0 1024 1024",
+      "file": "generating.svg"
+    },
+    {
+      "name": "generationcompleted",
+      "fullName": "myflicker_system_generationcompleted",
+      "viewBox": "0 0 1024 1024",
+      "file": "generationcompleted.svg"
+    },
+    {
+      "name": "glm",
+      "fullName": "myflicker_system_glm",
+      "viewBox": "0 0 1024 1024",
+      "file": "glm.svg"
+    },
+    {
+      "name": "hamburger",
+      "fullName": "myflicker_system_hamburger",
+      "viewBox": "0 0 1024 1024",
+      "file": "hamburger.svg"
+    },
+    {
+      "name": "hammer",
+      "fullName": "myflicker_system_hammer",
+      "viewBox": "0 0 1024 1024",
+      "file": "hammer.svg"
+    },
+    {
+      "name": "help",
+      "fullName": "myflicker_system_help",
+      "viewBox": "0 0 1024 1024",
+      "file": "help.svg"
+    },
+    {
+      "name": "home",
+      "fullName": "myflicker_system_home",
+      "viewBox": "0 0 1024 1024",
+      "file": "home.svg"
+    },
+    {
+      "name": "hooks",
+      "fullName": "myflicker_system_hooks",
+      "viewBox": "0 0 1024 1024",
+      "file": "hooks.svg"
+    },
+    {
+      "name": "html16",
+      "fullName": "myflicker_system_html16",
+      "viewBox": "0 0 1024 1024",
+      "file": "html16.svg"
+    },
+    {
+      "name": "index",
+      "fullName": "myflicker_system_index",
+      "viewBox": "0 0 1024 1024",
+      "file": "index.svg"
+    },
+    {
+      "name": "info2",
+      "fullName": "myflicker_system_info2",
+      "viewBox": "0 0 1024 1024",
+      "file": "info2.svg"
+    },
+    {
+      "name": "inspiration",
+      "fullName": "myflicker_system_inspiration",
+      "viewBox": "0 0 1024 1024",
+      "file": "inspiration.svg"
+    },
+    {
+      "name": "install",
+      "fullName": "myflicker_system_install",
+      "viewBox": "0 0 1024 1024",
+      "file": "install.svg"
+    },
+    {
+      "name": "internet",
+      "fullName": "myflicker_system_internet",
+      "viewBox": "0 0 1024 1024",
+      "file": "internet.svg"
+    },
+    {
+      "name": "joinusergroup",
+      "fullName": "myflicker_system_joinusergroup",
+      "viewBox": "0 0 1024 1024",
+      "file": "joinusergroup.svg"
+    },
+    {
+      "name": "json",
+      "fullName": "myflicker_system_json",
+      "viewBox": "0 0 1024 1024",
+      "file": "json.svg"
+    },
+    {
+      "name": "jumppage",
+      "fullName": "myflicker_system_jumppage",
+      "viewBox": "0 0 1024 1024",
+      "file": "jumppage.svg"
+    },
+    {
+      "name": "kat",
+      "fullName": "myflicker_system_kat",
+      "viewBox": "0 0 1024 1024",
+      "file": "kat.svg"
+    },
+    {
+      "name": "kimi",
+      "fullName": "myflicker_system_kimi",
+      "viewBox": "0 0 1024 1024",
+      "file": "kimi.svg"
+    },
+    {
+      "name": "knowledge",
+      "fullName": "myflicker_system_knowledge",
+      "viewBox": "0 0 1024 1024",
+      "file": "knowledge.svg"
+    },
+    {
+      "name": "knowledgebase",
+      "fullName": "myflicker_system_knowledgebase",
+      "viewBox": "0 0 1024 1024",
+      "file": "knowledgebase.svg"
+    },
+    {
+      "name": "layers",
+      "fullName": "myflicker_system_layers",
+      "viewBox": "0 0 1024 1024",
+      "file": "layers.svg"
+    },
+    {
+      "name": "leftsidebar",
+      "fullName": "myflicker_system_leftsidebar",
+      "viewBox": "0 0 1024 1024",
+      "file": "leftsidebar.svg"
+    },
+    {
+      "name": "light",
+      "fullName": "myflicker_system_light",
+      "viewBox": "0 0 1024 1024",
+      "file": "light.svg"
+    },
+    {
+      "name": "lightanddarkswitching",
+      "fullName": "myflicker_system_lightanddarkswitching",
+      "viewBox": "0 0 1024 1024",
+      "file": "lightanddarkswitching.svg"
+    },
+    {
+      "name": "loading02",
+      "fullName": "myflicker_system_loading02",
+      "viewBox": "0 0 1024 1024",
+      "file": "loading02.svg"
+    },
+    {
+      "name": "lock",
+      "fullName": "myflicker_system_lock",
+      "viewBox": "0 0 1024 1024",
+      "file": "lock.svg"
+    },
+    {
+      "name": "m4a16",
+      "fullName": "myflicker_system_m4a16",
+      "viewBox": "0 0 1024 1024",
+      "file": "m4a16.svg"
+    },
+    {
+      "name": "map",
+      "fullName": "myflicker_system_map",
+      "viewBox": "0 0 1024 1024",
+      "file": "map.svg"
+    },
+    {
+      "name": "markdown",
+      "fullName": "myflicker_system_markdown",
+      "viewBox": "0 0 1024 1024",
+      "file": "markdown.svg"
+    },
+    {
+      "name": "md16",
+      "fullName": "myflicker_system_md16",
+      "viewBox": "0 0 1024 1024",
+      "file": "md16.svg"
+    },
+    {
+      "name": "memory",
+      "fullName": "myflicker_system_memory",
+      "viewBox": "0 0 1024 1024",
+      "file": "memory.svg"
+    },
+    {
+      "name": "message",
+      "fullName": "myflicker_system_message",
+      "viewBox": "0 0 1024 1024",
+      "file": "message.svg"
+    },
+    {
+      "name": "messagesending",
+      "fullName": "myflicker_system_messagesending",
+      "viewBox": "0 0 1024 1024",
+      "file": "messagesending.svg"
+    },
+    {
+      "name": "minimax",
+      "fullName": "myflicker_system_minimax",
+      "viewBox": "0 0 1024 1024",
+      "file": "minimax.svg"
+    },
+    {
+      "name": "minimise",
+      "fullName": "myflicker_system_minimise",
+      "viewBox": "0 0 1024 1024",
+      "file": "minimise.svg"
+    },
+    {
+      "name": "minimise02",
+      "fullName": "myflicker_system_minimise02",
+      "viewBox": "0 0 1024 1024",
+      "file": "minimise02.svg"
+    },
+    {
+      "name": "models",
+      "fullName": "myflicker_system_models",
+      "viewBox": "0 0 1024 1024",
+      "file": "models.svg"
+    },
+    {
+      "name": "more",
+      "fullName": "myflicker_system_more",
+      "viewBox": "0 0 1024 1024",
+      "file": "more.svg"
+    },
+    {
+      "name": "multimedia",
+      "fullName": "myflicker_system_multimedia",
+      "viewBox": "0 0 1024 1024",
+      "file": "multimedia.svg"
+    },
+    {
+      "name": "music",
+      "fullName": "myflicker_system_music",
+      "viewBox": "0 0 1024 1024",
+      "file": "music.svg"
+    },
+    {
+      "name": "myflicker",
+      "fullName": "myflicker_system_myflicker",
+      "viewBox": "0 0 1024 1024",
+      "file": "myflicker.svg"
+    },
+    {
+      "name": "myflicker02",
+      "fullName": "myflicker_system_myflicker02",
+      "viewBox": "0 0 1024 1024",
+      "file": "myflicker02.svg"
+    },
+    {
+      "name": "newconversation",
+      "fullName": "myflicker_system_newconversation",
+      "viewBox": "0 0 1024 1024",
+      "file": "newconversation.svg"
+    },
+    {
+      "name": "newconversation02",
+      "fullName": "myflicker_system_newconversation02",
+      "viewBox": "0 0 1024 1024",
+      "file": "newconversation02.svg"
+    },
+    {
+      "name": "nogroup",
+      "fullName": "myflicker_system_nogroup",
+      "viewBox": "0 0 1024 1024",
+      "file": "nogroup.svg"
+    },
+    {
+      "name": "oncall",
+      "fullName": "myflicker_system_oncall",
+      "viewBox": "0 0 1024 1024",
+      "file": "oncall.svg"
+    },
+    {
+      "name": "openfolder",
+      "fullName": "myflicker_system_openfolder",
+      "viewBox": "0 0 1024 1024",
+      "file": "openfolder.svg"
+    },
+    {
+      "name": "openpicture",
+      "fullName": "myflicker_system_openpicture",
+      "viewBox": "0 0 1024 1024",
+      "file": "openpicture.svg"
+    },
+    {
+      "name": "pdf16",
+      "fullName": "myflicker_system_pdf16",
+      "viewBox": "0 0 1024 1024",
+      "file": "pdf16.svg"
+    },
+    {
+      "name": "pencil",
+      "fullName": "myflicker_system_pencil",
+      "viewBox": "0 0 1024 1024",
+      "file": "pencil.svg"
+    },
+    {
+      "name": "person",
+      "fullName": "myflicker_system_person",
+      "viewBox": "0 0 1024 1024",
+      "file": "person.svg"
+    },
+    {
+      "name": "phone",
+      "fullName": "myflicker_system_phone",
+      "viewBox": "0 0 1024 1024",
+      "file": "phone.svg"
+    },
+    {
+      "name": "pintotop",
+      "fullName": "myflicker_system_pintotop",
+      "viewBox": "0 0 1024 1024",
+      "file": "pintotop.svg"
+    },
+    {
+      "name": "plan",
+      "fullName": "myflicker_system_plan",
+      "viewBox": "0 0 1024 1024",
+      "file": "plan.svg"
+    },
+    {
+      "name": "plug",
+      "fullName": "myflicker_system_plug",
+      "viewBox": "0 0 1024 1024",
+      "file": "plug.svg"
+    },
+    {
+      "name": "png16",
+      "fullName": "myflicker_system_png16",
+      "viewBox": "0 0 1024 1024",
+      "file": "png16.svg"
+    },
+    {
+      "name": "points",
+      "fullName": "myflicker_system_points",
+      "viewBox": "0 0 1024 1024",
+      "file": "points.svg"
+    },
+    {
+      "name": "ppt16",
+      "fullName": "myflicker_system_ppt16",
+      "viewBox": "0 0 1024 1024",
+      "file": "ppt16.svg"
+    },
+    {
+      "name": "problemfeedback",
+      "fullName": "myflicker_system_problemfeedback",
+      "viewBox": "0 0 1024 1024",
+      "file": "problemfeedback.svg"
+    },
+    {
+      "name": "public",
+      "fullName": "myflicker_system_public",
+      "viewBox": "0 0 1024 1024",
+      "file": "public.svg"
+    },
+    {
+      "name": "pushto",
+      "fullName": "myflicker_system_pushto",
+      "viewBox": "0 0 1024 1024",
+      "file": "pushto.svg"
+    },
+    {
+      "name": "putaway",
+      "fullName": "myflicker_system_putaway",
+      "viewBox": "0 0 1024 1024",
+      "file": "putaway.svg"
+    },
+    {
+      "name": "qwen",
+      "fullName": "myflicker_system_qwen",
+      "viewBox": "0 0 1024 1024",
+      "file": "qwen.svg"
+    },
+    {
+      "name": "readfile",
+      "fullName": "myflicker_system_readfile",
+      "viewBox": "0 0 1024 1024",
+      "file": "readfile.svg"
+    },
+    {
+      "name": "refresh",
+      "fullName": "myflicker_system_refresh",
+      "viewBox": "0 0 1024 1024",
+      "file": "refresh.svg"
+    },
+    {
+      "name": "rightsidebar",
+      "fullName": "myflicker_system_rightsidebar",
+      "viewBox": "0 0 1024 1024",
+      "file": "rightsidebar.svg"
+    },
+    {
+      "name": "robot",
+      "fullName": "myflicker_system_robot",
+      "viewBox": "0 0 1024 1024",
+      "file": "robot.svg"
+    },
+    {
+      "name": "rule",
+      "fullName": "myflicker_system_rule",
+      "viewBox": "0 0 1024 1024",
+      "file": "rule.svg"
+    },
+    {
+      "name": "rulessearch",
+      "fullName": "myflicker_system_rulessearch",
+      "viewBox": "0 0 1024 1024",
+      "file": "rulessearch.svg"
+    },
+    {
+      "name": "safe",
+      "fullName": "myflicker_system_safe",
+      "viewBox": "0 0 1024 1024",
+      "file": "safe.svg"
+    },
+    {
+      "name": "saved",
+      "fullName": "myflicker_system_saved",
+      "viewBox": "0 0 1024 1024",
+      "file": "saved.svg"
+    },
+    {
+      "name": "scheduledtasks",
+      "fullName": "myflicker_system_scheduledtasks",
+      "viewBox": "0 0 1024 1024",
+      "file": "scheduledtasks.svg"
+    },
+    {
+      "name": "search",
+      "fullName": "myflicker_system_search",
+      "viewBox": "0 0 1024 1024",
+      "file": "search.svg"
+    },
+    {
+      "name": "send",
+      "fullName": "myflicker_system_send",
+      "viewBox": "0 0 1024 1024",
+      "file": "send.svg"
+    },
+    {
+      "name": "sendmessage",
+      "fullName": "myflicker_system_sendmessage",
+      "viewBox": "0 0 1024 1024",
+      "file": "sendmessage.svg"
+    },
+    {
+      "name": "setting",
+      "fullName": "myflicker_system_setting",
+      "viewBox": "0 0 1024 1024",
+      "file": "setting.svg"
+    },
+    {
+      "name": "share",
+      "fullName": "myflicker_system_share",
+      "viewBox": "0 0 1024 1024",
+      "file": "share.svg"
+    },
+    {
+      "name": "share02",
+      "fullName": "myflicker_system_share02",
+      "viewBox": "0 0 1024 1024",
+      "file": "share02.svg"
+    },
+    {
+      "name": "skill",
+      "fullName": "myflicker_system_skill",
+      "viewBox": "0 0 1024 1024",
+      "file": "skill.svg"
+    },
+    {
+      "name": "skillmanagement",
+      "fullName": "myflicker_system_skillmanagement",
+      "viewBox": "0 0 1024 1024",
+      "file": "skillmanagement.svg"
+    },
+    {
+      "name": "skip",
+      "fullName": "myflicker_system_skip",
+      "viewBox": "0 0 1024 1024",
+      "file": "skip.svg"
+    },
+    {
+      "name": "snack",
+      "fullName": "myflicker_system_snack",
+      "viewBox": "0 0 1024 1024",
+      "file": "snack.svg"
+    },
+    {
+      "name": "star",
+      "fullName": "myflicker_system_star",
+      "viewBox": "0 0 1024 1024",
+      "file": "star.svg"
+    },
+    {
+      "name": "statepoint",
+      "fullName": "myflicker_system_statepoint",
+      "viewBox": "0 0 1024 1024",
+      "file": "statepoint.svg"
+    },
+    {
+      "name": "stop",
+      "fullName": "myflicker_system_stop",
+      "viewBox": "0 0 1024 1024",
+      "file": "stop.svg"
+    },
+    {
+      "name": "stop2",
+      "fullName": "myflicker_system_stop2",
+      "viewBox": "0 0 1024 1024",
+      "file": "stop2.svg"
+    },
+    {
+      "name": "subscription",
+      "fullName": "myflicker_system_subscription",
+      "viewBox": "0 0 1024 1024",
+      "file": "subscription.svg"
+    },
+    {
+      "name": "success",
+      "fullName": "myflicker_system_success",
+      "viewBox": "0 0 1024 1024",
+      "file": "success.svg"
+    },
+    {
+      "name": "success02",
+      "fullName": "myflicker_system_success02",
+      "viewBox": "0 0 1024 1024",
+      "file": "success02.svg"
+    },
+    {
+      "name": "thinking",
+      "fullName": "myflicker_system_thinking",
+      "viewBox": "0 0 1024 1024",
+      "file": "thinking.svg"
+    },
+    {
+      "name": "time",
+      "fullName": "myflicker_system_time",
+      "viewBox": "0 0 1024 1024",
+      "file": "time.svg"
+    },
+    {
+      "name": "tips",
+      "fullName": "myflicker_system_tips",
+      "viewBox": "0 0 1024 1024",
+      "file": "tips.svg"
+    },
+    {
+      "name": "tool",
+      "fullName": "myflicker_system_tool",
+      "viewBox": "0 0 1024 1024",
+      "file": "tool.svg"
+    },
+    {
+      "name": "txt",
+      "fullName": "myflicker_system_txt",
+      "viewBox": "0 0 1024 1024",
+      "file": "txt.svg"
+    },
+    {
+      "name": "undo",
+      "fullName": "myflicker_system_undo",
+      "viewBox": "0 0 1024 1024",
+      "file": "undo.svg"
+    },
+    {
+      "name": "undo2",
+      "fullName": "myflicker_system_undo2",
+      "viewBox": "0 0 1024 1024",
+      "file": "undo2.svg"
+    },
+    {
+      "name": "unknow16",
+      "fullName": "myflicker_system_unknow16",
+      "viewBox": "0 0 1024 1024",
+      "file": "unknow16.svg"
+    },
+    {
+      "name": "updated",
+      "fullName": "myflicker_system_updated",
+      "viewBox": "0 0 1024 1024",
+      "file": "updated.svg"
+    },
+    {
+      "name": "upload",
+      "fullName": "myflicker_system_upload",
+      "viewBox": "0 0 1024 1024",
+      "file": "upload.svg"
+    },
+    {
+      "name": "upload02",
+      "fullName": "myflicker_system_upload02",
+      "viewBox": "0 0 1024 1024",
+      "file": "upload02.svg"
+    },
+    {
+      "name": "uploadfile",
+      "fullName": "myflicker_system_uploadfile",
+      "viewBox": "0 0 1024 1024",
+      "file": "uploadfile.svg"
+    },
+    {
+      "name": "uploadtocloud",
+      "fullName": "myflicker_system_uploadtocloud",
+      "viewBox": "0 0 1024 1024",
+      "file": "uploadtocloud.svg"
+    },
+    {
+      "name": "url",
+      "fullName": "myflicker_system_url",
+      "viewBox": "0 0 1024 1024",
+      "file": "url.svg"
+    },
+    {
+      "name": "user",
+      "fullName": "myflicker_system_user",
+      "viewBox": "0 0 1024 1024",
+      "file": "user.svg"
+    },
+    {
+      "name": "video02",
+      "fullName": "myflicker_system_video02",
+      "viewBox": "0 0 1024 1024",
+      "file": "video02.svg"
+    },
+    {
+      "name": "videoplaying",
+      "fullName": "myflicker_system_videoplaying",
+      "viewBox": "0 0 1024 1024",
+      "file": "videoplaying.svg"
+    },
+    {
+      "name": "voice",
+      "fullName": "myflicker_system_voice",
+      "viewBox": "0 0 1024 1024",
+      "file": "voice.svg"
+    },
+    {
+      "name": "waitingforgeneration",
+      "fullName": "myflicker_system_waitingforgeneration",
+      "viewBox": "0 0 1024 1024",
+      "file": "waitingforgeneration.svg"
+    },
+    {
+      "name": "wallet",
+      "fullName": "myflicker_system_wallet",
+      "viewBox": "0 0 1024 1024",
+      "file": "wallet.svg"
+    },
+    {
+      "name": "warn",
+      "fullName": "myflicker_system_warn",
+      "viewBox": "0 0 1024 1024",
+      "file": "warn.svg"
+    },
+    {
+      "name": "webp",
+      "fullName": "myflicker_system_webp",
+      "viewBox": "0 0 1024 1024",
+      "file": "webp.svg"
+    },
+    {
+      "name": "word6",
+      "fullName": "myflicker_system_word6",
+      "viewBox": "0 0 1024 1024",
+      "file": "word6.svg"
+    },
+    {
+      "name": "wrench",
+      "fullName": "myflicker_system_wrench",
+      "viewBox": "0 0 1024 1024",
+      "file": "wrench.svg"
+    },
+    {
+      "name": "xmind16",
+      "fullName": "myflicker_system_xmind16",
+      "viewBox": "0 0 1024 1024",
+      "file": "xmind16.svg"
+    },
+    {
+      "name": "zip16",
+      "fullName": "myflicker_system_zip16",
+      "viewBox": "0 0 1024 1024",
+      "file": "zip16.svg"
+    },
+    {
+      "name": "zoomin",
+      "fullName": "myflicker_system_zoomin",
+      "viewBox": "0 0 1024 1024",
+      "file": "zoomin.svg"
+    },
+    {
+      "name": "zoomout",
+      "fullName": "myflicker_system_zoomout",
+      "viewBox": "0 0 1024 1024",
+      "file": "zoomout.svg"
+    }
+  ]
+}
