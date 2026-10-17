@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>原型 · 大文本粘贴转 TXT + 富文本编辑</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../../colors_and_type.css" />
+  <link rel="stylesheet" href="../../components.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── icon (CSS mask — 继承 currentColor) ── */
+    .icon {
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      width: 16px; height: 16px;
+      -webkit-mask-size: contain; mask-size: contain;
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      -webkit-mask-position: center; mask-position: center;
+      background-color: currentColor;
+    }
+    .icon--20 { width: 20px; height: 20px; }
+    .icon--24 { width: 24px; height: 24px; }
+    .icon--16 { width: 16px; height: 16px; }
+    .icon--14 { width: 14px; height: 14px; }
+    .icon--12 { width: 12px; height: 12px; }
+
+    /* kid icon instances — 路径相对于 prototypes/2026-07-21_rich-text-input/ */
+    .i-newchat            { -webkit-mask-image: url(../../assets/icons/kid/edit.svg);              mask-image: url(../../assets/icons/kid/edit.svg); }
+    .i-search             { -webkit-mask-image: url(../../assets/icons/kid/search.svg);             mask-image: url(../../assets/icons/kid/search.svg); }
+    .i-schedule           { -webkit-mask-image: url(../../assets/icons/kid/scheduledtasks.svg);     mask-image: url(../../assets/icons/kid/scheduledtasks.svg); }
+    .i-skill              { -webkit-mask-image: url(../../assets/icons/kid/skill.svg);              mask-image: url(../../assets/icons/kid/skill.svg); }
+    .i-knowledge          { -webkit-mask-image: url(../../assets/icons/kid/knowledge.svg);          mask-image: url(../../assets/icons/kid/knowledge.svg); }
+    .i-closefolder        { -webkit-mask-image: url(../../assets/icons/kid/closefolder.svg);        mask-image: url(../../assets/icons/kid/closefolder.svg); }
+    .i-openfolder         { -webkit-mask-image: url(../../assets/icons/kid/openfolder.svg);         mask-image: url(../../assets/icons/kid/openfolder.svg); }
+    .i-leftsidebar        { -webkit-mask-image: url(../../assets/icons/kid/leftsidebar.svg);        mask-image: url(../../assets/icons/kid/leftsidebar.svg); }
+    .i-unfold { -webkit-mask-image: url(../../assets/icons/kid/myflicker_system_unfold.svg); mask-image: url(../../assets/icons/kid/myflicker_system_unfold.svg); }
+    .i-arrowdown          { -webkit-mask-image: url(../../assets/icons/kid/arrowdown.svg);          mask-image: url(../../assets/icons/kid/arrowdown.svg); }
+    .i-add                { -webkit-mask-image: url(../../assets/icons/kid/add.svg);                mask-image: url(../../assets/icons/kid/add.svg); }
+    .i-addgroup           { -webkit-mask-image: url(../../assets/icons/kid/addgroup.svg);           mask-image: url(../../assets/icons/kid/addgroup.svg); }
+    .i-more               { -webkit-mask-image: url(../../assets/icons/kid/more.svg);               mask-image: url(../../assets/icons/kid/more.svg); }
+    .i-setting            { -webkit-mask-image: url(../../assets/icons/kid/setting.svg);            mask-image: url(../../assets/icons/kid/setting.svg); }
+    .i-points             { -webkit-mask-image: url(../../assets/icons/kid/points.svg);             mask-image: url(../../assets/icons/kid/points.svg); }
+    .i-generating         { -webkit-mask-image: url(../../assets/icons/kid/generating.svg);         mask-image: url(../../assets/icons/kid/generating.svg); }
+    .i-draft              { -webkit-mask-image: url(../../assets/icons/kid/draft.svg);              mask-image: url(../../assets/icons/kid/draft.svg); }
+    .i-edit-pencil        { -webkit-mask-image: url(../../assets/icons/kid/draft.svg);              mask-image: url(../../assets/icons/kid/draft.svg); }
+    .i-pintotop           { -webkit-mask-image: url(../../assets/icons/kid/pintotop.svg);           mask-image: url(../../assets/icons/kid/pintotop.svg); }
+    .i-generationcompleted{ -webkit-mask-image: url(../../assets/icons/kid/generationcompleted.svg);mask-image: url(../../assets/icons/kid/generationcompleted.svg); }
+    .i-share              { -webkit-mask-image: url(../../assets/icons/kid/share.svg);              mask-image: url(../../assets/icons/kid/share.svg); }
+    .i-copy               { -webkit-mask-image: url(../../assets/icons/kid/copy.svg);               mask-image: url(../../assets/icons/kid/copy.svg); }
+    .i-like               { -webkit-mask-image: url(../../assets/icons/kid/ask.svg);                mask-image: url(../../assets/icons/kid/ask.svg); }
+    .i-send               { -webkit-mask-image: url(../../assets/icons/kid/send.svg);               mask-image: url(../../assets/icons/kid/send.svg); }
+    .i-attach             { -webkit-mask-image: url(../../assets/icons/kid/addfiles.svg);           mask-image: url(../../assets/icons/kid/addfiles.svg); }
+    .i-txt2               { -webkit-mask-image: url(../../assets/icons/kid/txt2.svg);               mask-image: url(../../assets/icons/kid/txt2.svg); }
+    .i-closure            { -webkit-mask-image: url(../../assets/icons/kid/closure.svg);            mask-image: url(../../assets/icons/kid/closure.svg); }
+    .i-close              { -webkit-mask-image: url(../../assets/icons/kid/close.svg);               mask-image: url(../../assets/icons/kid/close.svg); }
+    .i-inspiration        { -webkit-mask-image: url(../../assets/icons/kid/inspiration.svg);        mask-image: url(../../assets/icons/kid/inspiration.svg); }
+
+    /* ── App Shell ── */
+    .app-shell {
+      display: flex;
+      height: 100vh;
+      width: 100%;
+      background: var(--bg-brand-subtle);
+      gap: 4px;
+    }
+
+    /* ── icon-btn ── */
+    .icon-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px;
+      border-radius: var(--radius-4); border: none; background: transparent;
+      cursor: pointer; color: var(--text-tertiary);
+      transition: background 120ms, color 120ms; flex-shrink: 0;
+    }
+    .icon-btn:hover { background: var(--fill-default); color: var(--text-default); }
+
+    /* ── Main ── */
+    .chat-main {
+      flex: 1; display: flex; flex-direction: column;
+      min-width: 0;
+      background: var(--bg-base-default);
+      border-radius: 8px; overflow: hidden;
+      margin: 8px 8px 8px 0;
+      height: calc(100vh - 16px);
+    }
+
+    /* ── Welcome screen ── */
+    .chat-welcome-wrap {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 0 var(--spacer-24) var(--spacer-20);
+      overflow: hidden;
+    }
+    .chat-welcome__headline {
+      display: flex; align-items: center; gap: 12px;
+      user-select: none;
+    }
+    .chat-welcome__headline img { height: 48px; width: auto; display: block; }
+
+    .chat-input-inner--welcome { max-width: 800px; width: 100%; margin-top: 40px; }
+
+    :root {
+      --spacer-6: 6px; --spacer-10: 10px;
+      --spacer-16: 16px; --spacer-20: 20px;
+    }
+
+    /* ── chat-input 覆盖 ── */
+    .mf-chat-input { padding: 12px !important; }
+    .mf-chat-input__textarea { max-height: 336px !important; overflow-y: hidden; resize: none; }
+    .mf-chat-input__textarea.is-overflow { overflow-y: auto; }
+    .mf-chat-input__model-arrow { width: 16px !important; height: 16px !important; flex: 0 0 16px !important; }
+
+    /* ── 附件横向滚动行 ── */
+    .mf-chat-input__attachments {
+      display: flex; flex-wrap: nowrap; gap: 8px;
+      overflow-x: auto; overflow-y: hidden;
+      padding-bottom: 12px;
+      scrollbar-width: none;
+    }
+    .mf-chat-input__attachments::-webkit-scrollbar { display: none; }
+    .mf-chat-input__attachments:empty { display: none; }
+
+    /* ── 附件卡片：对齐 components.css 规范，原型层补充 hover 行为 ── */
+    .mf-chat-input__attachment {
+      /* 覆盖原型前序样式：背景对齐 components.css */
+      background: var(--bg-base-default) !important;
+      cursor: default;
+      user-select: none;
+    }
+    .mf-chat-input__attachment-icon--txt { color: var(--icon-secondary); }
+
+    /* 关闭按钮：对齐 components.css — 圆形 20px，bg-overlay-inverse，opacity 0→1 */
+    .mf-chat-input__attachment-remove {
+      position: absolute; top: 4px; right: 4px;
+      display: flex; align-items: center; justify-content: center;
+      width: 20px; height: 20px;
+      border: none; border-radius: var(--radius-full);
+      background: var(--bg-overlay-inverse);
+      color: var(--text-default); cursor: pointer; padding: 0;
+      opacity: 0; transition: opacity .15s;
+      z-index: 2;
+    }
+    .mf-chat-input__attachment:hover .mf-chat-input__attachment-remove { opacity: 1; }
+
+    /* 右侧渐变遮罩：默认隐藏，hover 出现，盖文字在按钮下 */
+    .mf-chat-input__attachment::after {
+      content: ''; pointer-events: none;
+      position: absolute; top: 0; right: 0; bottom: 0;
+      width: 80px; z-index: 1;
+      background: linear-gradient(270deg, #FFF 58.06%, rgba(255, 255, 255, 0.00) 100%);
+      border-radius: 0 var(--radius-8) var(--radius-8) 0;
+      opacity: 0; transition: opacity .15s;
+    }
+    .mf-chat-input__attachment:hover::after { opacity: 1; }
+
+    /* hover 编辑图标（TXT 专属，close 左侧 4px，浮在渐变上）*/
+    .mf-chat-input__attachment-edit {
+      position: absolute; top: 4px; right: 28px;
+      display: flex; align-items: center; justify-content: center;
+      width: 20px; height: 20px;
+      border: none; border-radius: var(--radius-full);
+      background: var(--bg-overlay-inverse);
+      color: var(--text-default); cursor: pointer; padding: 0;
+      opacity: 0; transition: opacity .15s;
+      z-index: 2;
+    }
+    .mf-chat-input__attachment:hover .mf-chat-input__attachment-edit { opacity: 1; }
+    .mf-chat-input__attachment-edit:hover { opacity: .8; }
+
+    /* ── Paste toast ── */
+    .paste-toast {
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(8px);
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 32px; padding: 0 14px;
+      background: var(--bg-invert); color: var(--text-onbrand);
+      border-radius: var(--radius-full);
+      font-size: 12px; font-weight: 500;
+      box-shadow: 0 4px 12px color-mix(in srgb, var(--text-default) 18%, transparent);
+      z-index: 400;
+      opacity: 0; pointer-events: none;
+      transition: opacity .2s, transform .2s;
+    }
+    .paste-toast.is-visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── Editor Overlay ── */
+    .txt-editor-overlay {
+      position: fixed; inset: 0;
+      background: var(--bg-mask);
+      z-index: 300;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity .2s;
+    }
+    .txt-editor-overlay.is-open { opacity: 1; pointer-events: all; }
+
+    .txt-editor-panel {
+      width: 680px; max-width: calc(100vw - 48px);
+      max-height: calc(100vh - 80px);
+      background: var(--bg-base-default);
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-12);
+      box-shadow: 0 24px 64px color-mix(in srgb, var(--text-default) 14%, transparent), 0 4px 16px color-mix(in srgb, var(--text-default) 8%, transparent);
+      display: flex; flex-direction: column; overflow: hidden;
+      transform: scale(.96) translateY(8px);
+      transition: transform .2s cubic-bezier(.34,1.56,.64,1);
+    }
+    .txt-editor-overlay.is-open .txt-editor-panel { transform: scale(1) translateY(0); }
+
+    /* panel header — 对齐 mf-dialog__head */
+    .txt-editor__header {
+      display: flex; align-items: center; gap: 10px;
+      padding: var(--spacer-16) var(--spacer-20);
+      border-bottom: 1px solid var(--border-neutral-l1);
+      flex-shrink: 0;
+    }
+    .txt-editor__file-icon {
+      width: 24px; height: 24px; flex: 0 0 24px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .txt-editor__title-area { flex: 1; min-width: 0; }
+    .txt-editor__filename-row { display: flex; align-items: center; min-width: 0; }
+    .txt-editor__filename-input {
+      font-size: 13px; font-weight: 500; color: var(--text-default);
+      background: transparent; border: none; outline: none;
+      min-width: 0; flex: 1;
+      border-radius: var(--radius-4); padding: 2px 4px; margin: -2px -4px;
+      transition: background .12s;
+    }
+    .txt-editor__filename-input:hover { background: var(--bg-overlay-l1); }
+    .txt-editor__filename-input:focus { background: var(--bg-brand-subtle); }
+    .txt-editor__meta { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+
+    /* close — 对齐 mf-dialog__close */
+    .txt-editor__close {
+      width: 16px; height: 16px; flex: 0 0 16px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border: none; background: transparent;
+      color: var(--icon-secondary); cursor: pointer; padding: 0;
+    }
+    .txt-editor__close:hover { color: var(--icon-default); }
+
+    /* toolbar */
+    .txt-editor__toolbar {
+      display: flex; align-items: center; gap: 2px;
+      padding: 6px 12px;
+      border-bottom: 1px solid var(--border-neutral-l1);
+      flex-wrap: wrap; flex-shrink: 0;
+    }
+    .txt-editor__toolbar-sep {
+      width: 1px; height: 16px;
+      background: var(--border-neutral-l1); margin: 0 4px; flex-shrink: 0;
+    }
+    .tb {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 28px; height: 28px; padding: 0 6px;
+      border: none; border-radius: var(--radius-6);
+      background: transparent; color: var(--icon-secondary);
+      font-family: var(--font-family-default); font-size: 12px;
+      cursor: pointer; white-space: nowrap;
+      transition: background .1s, color .1s;
+    }
+    .tb:hover { background: var(--bg-overlay-l1); color: var(--icon-default); }
+    .tb.is-active { background: var(--bg-overlay-l2); color: var(--text-default); }
+    .tb--b  { font-weight: 700; font-size: 13px; }
+    .tb--i  { font-style: italic; font-size: 13px; }
+    .tb--s  { text-decoration: line-through; font-size: 13px; }
+    .tb--u  { text-decoration: underline; font-size: 13px; }
+    .tb--code { font-family: var(--font-family-mono); font-size: 11px; }
+    .tb-select {
+      height: 28px; padding: 0 6px 0 6px; padding-right: 20px;
+      border: none; border-radius: var(--radius-6);
+      background: transparent; color: var(--text-secondary);
+      font-family: var(--font-family-default); font-size: 12px;
+      cursor: pointer; outline: none;
+      -webkit-appearance: none; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='10' viewBox='0 0 10 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 3.5l3 3 3-3' stroke='%2395999E' stroke-width='1.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 4px center;
+    }
+    .tb-select:hover { background-color: var(--bg-overlay-l1); color: var(--text-default); }
+
+    /* editable area */
+    .txt-editor__body {
+      flex: 1; min-height: 0; overflow-y: auto;
+      padding: 20px 24px;
+    }
+    .txt-editor__body::-webkit-scrollbar { width: 4px; }
+    .txt-editor__body::-webkit-scrollbar-track { background: transparent; }
+    .txt-editor__body::-webkit-scrollbar-thumb { background: var(--border-neutral-l1); border-radius: 2px; }
+    .txt-editor__content {
+      min-height: 220px;
+      outline: none; color: var(--text-default);
+      font-family: var(--font-family-default);
+      font-size: 13px; line-height: 1.75;
+      word-break: break-word; white-space: pre-wrap;
+    }
+    .txt-editor__content:empty::before {
+      content: attr(data-placeholder); color: var(--text-tertiary); pointer-events: none;
+    }
+    .txt-editor__content b, .txt-editor__content strong { font-weight: 600; }
+    .txt-editor__content i, .txt-editor__content em { font-style: italic; }
+    .txt-editor__content u { text-decoration: underline; }
+    .txt-editor__content s { text-decoration: line-through; }
+    .txt-editor__content code {
+      font-family: var(--font-family-mono); font-size: 12px;
+      background: var(--bg-base-tertiary); border-radius: var(--radius-4); padding: 0 4px;
+    }
+    .txt-editor__content h1 { font-size: 20px; font-weight: 600; line-height: 1.4; margin: 8px 0 4px; }
+    .txt-editor__content h2 { font-size: 17px; font-weight: 600; line-height: 1.4; margin: 8px 0 4px; }
+    .txt-editor__content h3 { font-size: 15px; font-weight: 600; line-height: 1.4; margin: 6px 0 4px; }
+    .txt-editor__content ul, .txt-editor__content ol { padding-left: 20px; margin: 4px 0; }
+    .txt-editor__content li { margin: 2px 0; }
+    .txt-editor__content blockquote {
+      border-left: 3px solid var(--border-neutral-l2);
+      margin: 6px 0; padding: 4px 12px;
+      color: var(--text-secondary);
+    }
+
+    /* footer — 对齐 mf-dialog--form__foot */
+    .txt-editor__footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px var(--spacer-24) var(--spacer-24);
+      flex-shrink: 0;
+    }
+    .txt-editor__stat { font-size: 11px; color: var(--text-tertiary); display: flex; align-items: center; gap: 10px; }
+    .txt-editor__saved {
+      display: inline-flex; align-items: center; gap: 4px;
+      height: 24px; padding: 0 10px;
+      background: var(--bg-success); color: var(--status-success-default);
+      border-radius: var(--radius-full); font-size: 11px; font-weight: 500;
+      opacity: 0; transition: opacity .2s; pointer-events: none;
+    }
+    .txt-editor__saved.is-visible { opacity: 1; }
+    .txt-editor__footer-actions { display: flex; gap: 8px; }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <aside class="mf-aside">
+    <div class="mf-aside__header">
+      <div class="mf-aside__workspace">
+        <img class="mf-aside__workspace-avatar" src="../../assets/icons/workspace-myflicker.svg" alt="workspace" />
+        <span class="mf-aside__workspace-name">个人空间</span>
+        <span class="icon i-unfold mf-aside__workspace-unfold"></span>
+      </div>
+      <button class="mf-aside__collapse" aria-label="收起侧边栏">
+        <span class="icon i-leftsidebar"></span>
+      </button>
+    </div>
+    <nav class="mf-aside__nav">
+      <div class="mf-aside__nav-item is-active">
+        <span class="icon i-newchat"></span>
+        <span class="mf-aside__nav-item__label">新对话</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-search"></span>
+        <span class="mf-aside__nav-item__label">搜索</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-schedule"></span>
+        <span class="mf-aside__nav-item__label">定时任务</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-skill"></span>
+        <span class="mf-aside__nav-item__label">技能</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-knowledge"></span>
+        <span class="mf-aside__nav-item__label">知识</span>
+      </div>
+    </nav>
+    <div class="mf-aside__body">
+      <div class="mf-aside__section-label is-always-show">
+        <span>分组</span>
+        <div class="mf-aside__section-label-actions">
+          <button class="mf-aside__icon-btn" aria-label="新建分组"><span class="icon i-addgroup"></span></button>
+        </div>
+      </div>
+      <div class="mf-aside__group">
+        <div class="mf-aside__group-icon"><span class="icon i-openfolder"></span></div>
+        <span class="mf-aside__group-name">设计系统项目</span>
+        <div class="mf-aside__group-actions">
+          <button class="mf-aside__icon-btn" aria-label="新建会话"><span class="icon i-add"></span></button>
+          <button class="mf-aside__icon-btn" aria-label="更多"><span class="icon i-more"></span></button>
+        </div>
+      </div>
+      <div class="mf-aside__group-sessions">
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status"><span class="icon i-generating" style="color:var(--text-brand);"></span></span>
+          <span class="mf-aside__session-title">组件 Token 绑定机制</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">14:30</span>
+            <button class="mf-aside__icon-btn" aria-label="更多"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+        <div class="mf-aside__session is-active">
+          <span class="mf-aside__session-status"></span>
+          <span class="mf-aside__session-title">大文本粘贴 + 富文本编辑</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">今天</span>
+            <button class="mf-aside__icon-btn" aria-label="更多"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+      </div>
+      <div class="mf-aside__section-label">
+        <span>对话</span>
+        <div class="mf-aside__section-label-actions">
+          <button class="mf-aside__icon-btn" aria-label="新建对话"><span class="icon i-add"></span></button>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:4px;">
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status"><span class="icon i-pintotop" style="color:var(--text-tertiary);"></span></span>
+          <span class="mf-aside__session-title">帮我顶会议</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">今天</span>
+            <button class="mf-aside__icon-btn" aria-label="更多"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status"><span class="icon i-draft" style="color:var(--text-tertiary);"></span></span>
+          <span class="mf-aside__session-title">设计规范草稿</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">2026/7/13</span>
+            <button class="mf-aside__icon-btn" aria-label="更多"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="mf-aside__footer">
+      <button class="mf-aside__footer-setting">
+        <span class="icon i-setting"></span>
+        <span>设置</span>
+      </button>
+      <div class="mf-aside__footer-credit">
+        <img src="../../assets/icons/points-gradient.svg" width="14" height="14" style="flex-shrink:0;" />
+        <span>积分：剩余 92%</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="chat-main">
+    <div class="chat-welcome-wrap">
+      <div class="chat-welcome__headline">
+        <img src="../../assets/icons/welcome-work-light.svg" alt="Work with Flicker" />
+      </div>
+      <div class="chat-input-inner--welcome">
+        <div class="mf-chat-input-wrap">
+          <div class="mf-chat-input">
+
+            <!-- 附件行：粘贴后出现 TXT chip，空态时 :empty 自动隐藏 -->
+            <div class="mf-chat-input__attachments" id="chipArea">
+              <!-- 预置演示卡片（模拟粘贴后状态）-->
+              <div class="mf-chat-input__attachment" id="chip1">
+                <div class="mf-chat-input__attachment-icon mf-chat-input__attachment-icon--txt">
+                  <span class="icon icon--20 i-txt2"></span>
+                </div>
+                <div class="mf-chat-input__attachment-body">
+                  <div class="mf-chat-input__attachment-name">粘贴内容-1784606075712.txt</div>
+                  <div class="mf-chat-input__attachment-meta" id="chip1-size">6 KB · 1,248 字</div>
+                </div>
+                <button class="mf-chat-input__attachment-edit" onclick="openTxtEditor('chip1');event.stopPropagation()" title="编辑">
+                  <span class="icon i-edit-pencil"></span>
+                </button>
+                <button class="mf-chat-input__attachment-remove" onclick="removeChip(event,'chip1')" title="移除">
+                  <span class="icon i-close"></span>
+                </button>
+              </div>
+            </div>
+
+            <textarea class="mf-chat-input__textarea" rows="1" placeholder="粘贴大段文本试试 → 自动转为 TXT 气泡" id="mainTextarea"></textarea>
+            <div class="mf-chat-input__toolbar">
+              <div class="mf-chat-input__toolbar-left">
+                <button class="mf-chat-input__btn" aria-label="添加">
+                  <span class="icon i-add"></span>
+                </button>
+                <button class="mf-chat-input__action">
+                  <span class="icon i-knowledge"></span>
+                  <span>技能</span>
+                </button>
+                <button class="mf-chat-input__action">
+                  <span class="icon i-inspiration"></span>
+                  <span>灵感触发</span>
+                </button>
+              </div>
+              <div class="mf-chat-input__toolbar-right">
+                <button class="mf-chat-input__model">
+                  <img src="../../assets/icons/brand/claude.svg" width="14" height="14" alt="Claude" style="flex-shrink:0;">
+                  <span>Claude Sonnet 4.6</span>
+                  <span class="icon i-arrowdown mf-chat-input__model-arrow"></span>
+                </button>
+                <button class="mf-chat-input__send" aria-label="发送">
+                  <span class="icon i-send"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <p class="mf-chat-input__notice">当前模型为公有云模型，请勿外泄公司内部信息</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<!-- paste toast -->
+<div class="paste-toast" id="pasteToast">
+  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  已转为 TXT 附件
+</div>
+
+<!-- TXT 编辑器 Overlay -->
+<div class="txt-editor-overlay" id="txtEditorOverlay" onclick="handleEditorOverlayClick(event)">
+  <div class="txt-editor-panel">
+
+    <div class="txt-editor__header">
+      <div class="txt-editor__file-icon">
+        <span class="icon icon--24 i-txt2" style="color:var(--purple-fill);"></span>
+      </div>
+      <div class="txt-editor__title-area">
+        <div class="txt-editor__filename-row">
+          <input class="txt-editor__filename-input" id="txtEditorFilename" type="text" value="粘贴内容-1784606075712" spellcheck="false" />
+        </div>
+        <div class="txt-editor__meta" id="txtEditorMeta">6 KB · 1,248 字 · 已附加到对话</div>
+      </div>
+      <button class="txt-editor__close" onclick="closeTxtEditor()" title="关闭 Esc" aria-label="关闭">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 1024 1024" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M820.352 149.312A38.421 38.421 0 0 1 874.688 203.648L566.336 512 874.688 820.352A38.421 38.421 0 0 1 820.352 874.688L512 566.336 203.648 874.688A38.421 38.421 0 0 1 149.312 820.352L457.664 512 149.312 203.648A38.421 38.421 0 0 1 203.648 149.312L512 457.664 820.352 149.312Z"></path></svg>
+      </button>
+    </div>
+
+    <div class="txt-editor__toolbar">
+      <select class="tb-select" id="tbHeading" onchange="tbCmd_heading(this.value)">
+        <option value="p">正文</option>
+        <option value="h1">标题 1</option>
+        <option value="h2">标题 2</option>
+        <option value="h3">标题 3</option>
+      </select>
+      <div class="txt-editor__toolbar-sep"></div>
+      <button class="tb tb--b"    title="加粗 ⌘B"      onclick="tbCmd('bold')">B</button>
+      <button class="tb tb--i"    title="斜体 ⌘I"      onclick="tbCmd('italic')">I</button>
+      <button class="tb tb--s"    title="删除线"        onclick="tbCmd('strikeThrough')">S</button>
+      <button class="tb tb--u"    title="下划线 ⌘U"     onclick="tbCmd('underline')">U</button>
+      <button class="tb tb--code" title="内联代码"      onclick="tbWrapCode()">&lt;/&gt;</button>
+      <div class="txt-editor__toolbar-sep"></div>
+      <button class="tb" title="无序列表" onclick="tbCmd('insertUnorderedList')">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="2.5" cy="4" r="1.2" fill="currentColor"/><circle cx="2.5" cy="7" r="1.2" fill="currentColor"/><circle cx="2.5" cy="10" r="1.2" fill="currentColor"/><path d="M5.5 4h7M5.5 7h7M5.5 10h7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      </button>
+      <button class="tb" title="有序列表" onclick="tbCmd('insertOrderedList')">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3h1.5v3M2 5.5h2M2 8.5h2l-2 2h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 4h6M6 7h6M6 10h6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      </button>
+      <button class="tb" title="引用块" onclick="tbCmd('formatBlock','blockquote')">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="1.5" width="3" height="11" rx="1.5" fill="currentColor" opacity=".3"/><path d="M6.5 4h6M6.5 7h6M6.5 10h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      </button>
+      <div class="txt-editor__toolbar-sep"></div>
+      <button class="tb" title="撤销 ⌘Z" onclick="tbCmd('undo')">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 5H8.5a3.5 3.5 0 0 1 0 7H5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 5L5.5 2.5M3 5L5.5 7.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="tb" title="重做 ⌘Y" onclick="tbCmd('redo')">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M11 5H5.5a3.5 3.5 0 0 0 0 7H9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 5L8.5 2.5M11 5L8.5 7.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="txt-editor__toolbar-sep"></div>
+      <button class="tb" title="清除格式" onclick="tbCmd('removeFormat')" style="font-size:11px;padding:0 6px;">清除格式</button>
+    </div>
+
+    <div class="txt-editor__body">
+      <div class="txt-editor__content" id="txtEditorContent"
+        contenteditable="true" spellcheck="false"
+        data-placeholder="在此输入或编辑内容…"
+        oninput="onTxtEditorInput()"
+        onkeydown="onTxtEditorKeydown(event)">
+      </div>
+    </div>
+
+    <div class="txt-editor__footer">
+      <div class="txt-editor__stat">
+        <span id="txtEditorCharCount">0 字</span>
+        <span class="txt-editor__saved" id="txtEditorSaved">
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          已更新
+        </span>
+      </div>
+      <div class="txt-editor__footer-actions">
+        <button class="mf-btn mf-btn--secondary mf-btn--lg" onclick="closeTxtEditor()">取消</button>
+        <button class="mf-btn mf-btn--primary mf-btn--lg" onclick="saveTxtEditor()">确认更新</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const SAMPLE = `产品需求文档（PRD）— 对话输入框大文本编辑功能
+
+一、背景与目标
+
+当前系统支持用户将大段文本粘贴进对话输入框，系统会自动将其转换为 .txt 文件附件形式展示（如"粘贴内容-xxxx.txt"）。此举减少了输入区的视觉噪音，但带来一个新问题：用户粘贴后无法对文本进行二次修改，只能删除后重新粘贴，使用体验较差。
+
+二、问题描述
+
+• 用户粘贴大段内容后，内容被"锁定"为不可编辑的 txt 文件气泡
+• 若用户需要修改粘贴内容（如删除敏感信息、补充背景、格式化段落），目前必须删除附件、重新粘贴
+• 在手机端，重新选取并粘贴大段文本操作成本更高
+
+三、解决方案
+
+在 TXT 气泡上增加编辑下钻能力：
+
+1. Hover 态：当用户将鼠标悬停在 TXT 气泡上时，右侧渐显"编辑"按钮（胶囊样式）
+2. 编辑器：点击后打开富文本编辑器 Modal，加载气泡中的原始文本内容
+3. 保存更新：编辑完成后点击"确认更新"，内容写回到 TXT 气泡，字数/大小同步刷新`;
+
+  const chipData = {
+    chip1: { text: SAMPLE, filename: '粘贴内容-1784606075712' }
+  };
+  let activeChipId = null;
+
+  // 粘贴检测：同步读取，超过 300 字符转 chip
+  document.getElementById('mainTextarea').addEventListener('paste', function (e) {
+    const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+    if (pastedText.length < 300) return;
+    e.preventDefault();
+    addChip(pastedText);
+    showPasteToast();
+  });
+
+  function addChip(text) {
+    const id = 'chip_' + Date.now();
+    chipData[id] = { text, filename: '粘贴内容-' + Date.now() };
+    const size = (new Blob([text]).size / 1024).toFixed(1);
+    const len  = text.trim().length;
+
+    const chip = document.createElement('div');
+    chip.className = 'mf-chat-input__attachment';
+    chip.id = id;
+    chip.style.cssText = 'opacity:0;transform:scale(.88) translateY(4px);transition:opacity .22s,transform .22s cubic-bezier(.34,1.56,.64,1)';
+    chip.innerHTML = `
+      <div class="mf-chat-input__attachment-icon mf-chat-input__attachment-icon--txt">
+        <span class="icon icon--20 i-txt2"></span>
+      </div>
+      <div class="mf-chat-input__attachment-body">
+        <div class="mf-chat-input__attachment-name">${chipData[id].filename}.txt</div>
+        <div class="mf-chat-input__attachment-meta">${size} KB · ${len.toLocaleString()} 字</div>
+      </div>
+      <button class="mf-chat-input__attachment-edit" onclick="openTxtEditor('${id}');event.stopPropagation()" title="编辑">
+        <span class="icon i-edit-pencil"></span>
+      </button>
+      <button class="mf-chat-input__attachment-remove" onclick="removeChip(event,'${id}')" title="移除">
+        <span class="icon i-close"></span>
+      </button>
+    `;
+    /* 编辑仅通过笔图标按钮触发，卡片整体不绑 onclick */
+    document.getElementById('chipArea').appendChild(chip);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      chip.style.opacity = '1';
+      chip.style.transform = 'scale(1) translateY(0)';
+    }));
+  }
+
+  function showPasteToast() {
+    const t = document.getElementById('pasteToast');
+    t.classList.add('is-visible');
+    setTimeout(() => t.classList.remove('is-visible'), 2200);
+  }
+
+  function openTxtEditor(chipId) {
+    activeChipId = chipId;
+    const data = chipData[chipId];
+    document.getElementById('txtEditorFilename').value = data.filename;
+    const content = document.getElementById('txtEditorContent');
+    content.innerText = data.text;
+    refreshStat();
+    document.getElementById('txtEditorOverlay').classList.add('is-open');
+    setTimeout(() => content.focus(), 220);
+  }
+
+  function closeTxtEditor() {
+    document.getElementById('txtEditorOverlay').classList.remove('is-open');
+    activeChipId = null;
+    setTimeout(() => document.getElementById('mainTextarea').focus(), 50);
+  }
+
+  function handleEditorOverlayClick(e) {
+    if (e.target === document.getElementById('txtEditorOverlay')) closeTxtEditor();
+  }
+
+  function normalizeFilename(raw) {
+    const next = raw.trim().replace(/\.txt$/i, '');
+    return next || ('粘贴内容-' + Date.now());
+  }
+
+  function saveTxtEditor() {
+    if (!activeChipId) return;
+    const content = document.getElementById('txtEditorContent');
+    const text = content.innerText.trim();
+    const filename = normalizeFilename(document.getElementById('txtEditorFilename').value);
+    document.getElementById('txtEditorFilename').value = filename;
+    chipData[activeChipId] = { text, filename };
+
+    const chip = document.getElementById(activeChipId);
+    if (chip) {
+      const size = (new Blob([text]).size / 1024).toFixed(1);
+      chip.querySelector('.mf-chat-input__attachment-meta').textContent = `${size} KB · ${text.length.toLocaleString()} 字`;
+      chip.querySelector('.mf-chat-input__attachment-name').textContent = filename + '.txt';
+    }
+
+    const saved = document.getElementById('txtEditorSaved');
+    saved.classList.add('is-visible');
+    setTimeout(() => { saved.classList.remove('is-visible'); closeTxtEditor(); }, 900);
+  }
+
+  function tbCmd(cmd, val) {
+    document.getElementById('txtEditorContent').focus();
+    document.execCommand(cmd, false, val || null);
+  }
+  function tbCmd_heading(tag) {
+    document.getElementById('txtEditorContent').focus();
+    document.execCommand('formatBlock', false, tag);
+    setTimeout(() => { document.getElementById('tbHeading').value = 'p'; }, 10);
+  }
+  function tbWrapCode() {
+    const sel = window.getSelection();
+    if (!sel.rangeCount || !sel.toString()) return;
+    const range = sel.getRangeAt(0);
+    const code = document.createElement('code');
+    code.textContent = range.toString();
+    range.deleteContents();
+    range.insertNode(code);
+    const r2 = document.createRange();
+    r2.setStartAfter(code); r2.collapse(true);
+    sel.removeAllRanges(); sel.addRange(r2);
+  }
+
+  function onTxtEditorInput() { refreshStat(); }
+  function refreshStat() {
+    const text = document.getElementById('txtEditorContent').innerText;
+    const len  = text.trim().length;
+    const kb   = (new Blob([text]).size / 1024).toFixed(1);
+    document.getElementById('txtEditorCharCount').textContent = `${len.toLocaleString()} 字 · ${kb} KB`;
+    document.getElementById('txtEditorMeta').textContent = `${kb} KB · ${len.toLocaleString()} 字 · 已附加到对话`;
+  }
+  function onTxtEditorKeydown(e) {
+    if (e.key === 'Escape') { e.preventDefault(); closeTxtEditor(); }
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); saveTxtEditor(); }
+  }
+
+  function removeChip(e, id) {
+    e.stopPropagation();
+    const chip = document.getElementById(id);
+    if (!chip) return;
+    chip.style.transition = 'opacity .15s, transform .15s';
+    chip.style.opacity = '0'; chip.style.transform = 'scale(.88)';
+    setTimeout(() => { chip.remove(); delete chipData[id]; }, 150);
+  }
+
+  const ta = document.getElementById('mainTextarea');
+  function resizeTextarea() {
+    ta.style.height = 'auto';
+    const next = Math.min(ta.scrollHeight, 336);
+    ta.style.height = next + 'px';
+    ta.classList.toggle('is-overflow', ta.scrollHeight > 336);
+  }
+  ta.addEventListener('input', resizeTextarea);
+  resizeTextarea();
+</script>
+
+</body>
+</html>

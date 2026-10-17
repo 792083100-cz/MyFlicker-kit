@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyFlicker · 设置 · 桌宠配置</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../../colors_and_type.css" />
+  <link rel="stylesheet" href="../../components.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg-base-secondary);
+      color: var(--text-tertiary);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── KID icon mask ── */
+    .icon {
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      width: 16px; height: 16px;
+      -webkit-mask-size: contain; mask-size: contain;
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      -webkit-mask-position: center; mask-position: center;
+      background-color: currentColor;
+    }
+    .icon--20 { width: 20px; height: 20px; }
+    .icon--14 { width: 14px; height: 14px; }
+    .icon--12 { width: 12px; height: 12px; }
+
+    .i-arrowleft      { -webkit-mask-image: url(../../assets/icons/kid/arrowleft.svg);      mask-image: url(../../assets/icons/kid/arrowleft.svg); }
+    .i-search         { -webkit-mask-image: url(../../assets/icons/kid/search.svg);         mask-image: url(../../assets/icons/kid/search.svg); }
+    .i-person         { -webkit-mask-image: url(../../assets/icons/kid/person.svg);         mask-image: url(../../assets/icons/kid/person.svg); }
+    .i-appearance     { -webkit-mask-image: url(../../assets/icons/kid/appearance.svg);     mask-image: url(../../assets/icons/kid/appearance.svg); }
+    .i-models         { -webkit-mask-image: url(../../assets/icons/kid/models.svg);         mask-image: url(../../assets/icons/kid/models.svg); }
+    .i-command        { -webkit-mask-image: url(../../assets/icons/kid/command.svg);        mask-image: url(../../assets/icons/kid/command.svg); }
+    .i-keyboard       { -webkit-mask-image: url(../../assets/icons/kid/keyboard.svg);       mask-image: url(../../assets/icons/kid/keyboard.svg); }
+    .i-memory         { -webkit-mask-image: url(../../assets/icons/kid/memory.svg);         mask-image: url(../../assets/icons/kid/memory.svg); }
+    .i-adjustment     { -webkit-mask-image: url(../../assets/icons/kid/adjustment.svg);     mask-image: url(../../assets/icons/kid/adjustment.svg); }
+    .i-hooks          { -webkit-mask-image: url(../../assets/icons/kid/hooks.svg);          mask-image: url(../../assets/icons/kid/hooks.svg); }
+    .i-arrowdown      { -webkit-mask-image: url(../../assets/icons/kid/arrowdown.svg);      mask-image: url(../../assets/icons/kid/arrowdown.svg); }
+    .i-wrench         { -webkit-mask-image: url(../../assets/icons/kid/wrench.svg);         mask-image: url(../../assets/icons/kid/wrench.svg); }
+    .i-agent          { -webkit-mask-image: url(../../assets/icons/kid/agent.svg);          mask-image: url(../../assets/icons/kid/agent.svg); }
+    .i-robot          { -webkit-mask-image: url(../../assets/icons/kid/robot.svg);          mask-image: url(../../assets/icons/kid/robot.svg); }
+    .i-game           { -webkit-mask-image: url(../../assets/icons/kid/game.svg);           mask-image: url(../../assets/icons/kid/game.svg); }
+    .i-star           { -webkit-mask-image: url(../../assets/icons/kid/star.svg);           mask-image: url(../../assets/icons/kid/star.svg); }
+    .i-upload         { -webkit-mask-image: url(../../assets/icons/kid/upload.svg);         mask-image: url(../../assets/icons/kid/upload.svg); }
+    .i-jumppage       { -webkit-mask-image: url(../../assets/icons/kid/jumppage.svg);       mask-image: url(../../assets/icons/kid/jumppage.svg); }
+    .i-close          { -webkit-mask-image: url(../../assets/icons/kid/close.svg);          mask-image: url(../../assets/icons/kid/close.svg); }
+    .i-setting        { -webkit-mask-image: url(../../assets/icons/kid/setting.svg);        mask-image: url(../../assets/icons/kid/setting.svg); }
+
+    /* ══════════════════════════════════
+       SHELL
+    ══════════════════════════════════ */
+    .setting-shell {
+      display: flex;
+      height: 100vh;
+      width: 100%;
+      background: var(--bg-brand-subtle);
+    }
+
+    /* ══════════════════════════════════
+       LEFT NAV — 240px
+    ══════════════════════════════════ */
+    .setting-nav {
+      width: 240px;
+      flex-shrink: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: transparent;
+      padding: 12px 8px 16px;
+      gap: 4px;
+    }
+
+    .setting-nav__back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 8px;
+      border-radius: var(--radius-8);
+      color: var(--text-tertiary);
+      font-size: var(--body-sm-font-size);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      transition: background 120ms, color 120ms;
+      margin-bottom: 4px;
+    }
+    .setting-nav__back:hover { background: var(--fill-default); color: var(--text-default); }
+
+    .setting-nav__search {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 10px;
+      border-radius: var(--radius-8);
+      background: var(--bg-base-default);
+      border: 1px solid var(--border-neutral-l1);
+      color: var(--text-tertiary);
+      font-size: var(--body-sm-font-size);
+      margin-bottom: 8px;
+    }
+    .setting-nav__search input {
+      flex: 1; border: none; outline: none; background: transparent;
+      font-size: var(--body-sm-font-size); color: var(--text-default);
+      font-family: inherit;
+    }
+    .setting-nav__search input::placeholder { color: var(--text-tertiary); }
+
+    .setting-nav__group-label {
+      padding: 4px 8px 2px;
+      font-size: 12px;
+      color: var(--text-tertiary);
+      font-weight: 400;
+    }
+
+    .setting-nav__item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 32px;
+      padding: 0 8px;
+      border-radius: var(--radius-8);
+      color: var(--text-default);
+      font-size: var(--body-sm-font-size);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      transition: background 120ms, color 120ms;
+    }
+    .setting-nav__item:hover { background: var(--fill-default); color: var(--text-default); }
+    .setting-nav__item.is-active {
+      background: var(--fill-default);
+      color: var(--text-default);
+      font-weight: 500;
+    }
+    .setting-nav__item .icon { color: var(--text-default); }
+    .setting-nav__item.is-active .icon { color: var(--text-default); }
+
+    /* ══════════════════════════════════
+       RIGHT CONTENT
+    ══════════════════════════════════ */
+    .setting-content {
+      flex: 1;
+      height: calc(100vh - 16px);
+      margin: 8px 8px 8px 0;
+      overflow-y: auto;
+      background: var(--bg-base-default);
+      border-radius: 12px;
+      padding: 48px 48px 64px;
+    }
+    .setting-content::-webkit-scrollbar { width: 4px; }
+    .setting-content::-webkit-scrollbar-track { background: transparent; }
+    .setting-content::-webkit-scrollbar-thumb { background: var(--border-neutral-l1); border-radius: 2px; }
+
+    .setting-page__title {
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.4;
+      color: var(--text-default);
+      margin-bottom: 24px;
+    }
+
+    .setting-group {
+      margin-bottom: 32px;
+    }
+    .setting-group__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .setting-group__title {
+      font-size: var(--body-sm-font-size);
+      font-weight: 600;
+      color: var(--text-default);
+    }
+    .setting-group__desc {
+      font-size: var(--body-xs-font-size);
+      color: var(--text-tertiary);
+      margin-top: 2px;
+    }
+    .setting-group__desc a { color: var(--color-info); text-decoration: none; }
+    .setting-group__desc a:hover { text-decoration: underline; }
+
+    /* 内容卡片 */
+    .setting-card {
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-8);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    /* 卡片内单行 */
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 16px;
+      gap: 12px;
+      min-height: 52px;
+      position: relative;
+    }
+    .setting-row:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 16px;
+      right: 16px;
+      height: 1px;
+      background: var(--border-neutral-l1);
+    }
+
+    .setting-row__left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1;
+      min-width: 0;
+    }
+    .setting-row__label {
+      font-size: var(--body-sm-font-size);
+      color: var(--text-default);
+      font-weight: 500;
+    }
+    .setting-row__hint {
+      font-size: var(--body-xs-font-size);
+      color: var(--text-tertiary);
+      line-height: 1.4;
+    }
+    .setting-row__right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      justify-content: flex-end;
+    }
+
+    /* ── Toggle 开关 ── */
+    .s-toggle {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    .s-toggle input { opacity: 0; width: 0; height: 0; }
+    .s-toggle__track {
+      position: absolute;
+      inset: 0;
+      background: var(--fill-default);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 200ms;
+    }
+    .s-toggle__track::after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 2px;
+      width: 16px; height: 16px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 200ms;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .s-toggle input:checked + .s-toggle__track { background: #34C759; }
+    .s-toggle input:checked + .s-toggle__track::after { transform: translateX(16px); }
+
+    /* ── 按钮 ── */
+    .s-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      height: 28px; padding: 0 12px;
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-6);
+      background: var(--bg-base-default);
+      font-size: var(--body-sm-font-size);
+      color: var(--text-default);
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 120ms, border-color 120ms;
+      white-space: nowrap;
+    }
+    .s-btn:hover { background: var(--fill-tertiary); }
+
+    .setting-body { max-width: 880px; margin: 0 auto; }
+
+    /* ══════════════════════════════════
+       PROTO: 宠物大小滑块
+    ══════════════════════════════════ */
+    .proto-slider-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 320px;
+      justify-content: flex-end;
+    }
+    .proto-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      flex: 1;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border-neutral-l1);
+      outline: none;
+      cursor: pointer;
+    }
+    .proto-slider::-webkit-slider-runnable-track {
+      height: 4px;
+      border-radius: 2px;
+    }
+    .proto-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--bg-brand);
+      cursor: pointer;
+      margin-top: -6px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    .proto-slider-val {
+      font-size: var(--body-sm-font-size);
+      color: var(--text-secondary);
+      min-width: 36px;
+      text-align: right;
+    }
+
+    /* ══════════════════════════════════
+       PROTO: 宠物卡片网格
+    ══════════════════════════════════ */
+
+    /* 卡片区顶部 Tab + 操作行 */
+    .proto-pet-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px 8px;
+    }
+
+    /* 导入下拉包裹 */
+    .proto-import-wrap {
+      position: relative;
+      display: inline-flex;
+    }
+    /* 下拉面板定位：复用 mf-menu 基础组件 */
+    .proto-import-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      right: 0;
+      z-index: 100;
+      display: none;
+    }
+    .proto-import-dropdown.is-open { display: block; }
+
+    /* 卡片网格容器：4 列 */
+    #pet-list {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      padding: 16px;
+    }
+
+    /* 单个宠物卡片 */
+    .proto-pet-card {
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-8);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 150ms;
+    }
+    .proto-pet-card:hover { border-color: var(--border-neutral-l2); }
+    .proto-pet-card.is-active { border-color: var(--bg-brand); }
+
+    /* 宠物图片区域：1:1 正方形，统一用 colorPrimaryBg */
+    .proto-pet-card__thumb {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-brand-subtle);
+      border-radius: var(--radius-8) var(--radius-8) 0 0;
+    }
+
+    /* 宠物名称 */
+    .proto-pet-card__name {
+      font-size: var(--body-sm-font-size);
+      font-weight: 500;
+      color: var(--text-default);
+      text-align: center;
+      padding: 8px 8px 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* 操作按钮区 */
+    .proto-pet-card__foot {
+      padding: 0 8px 10px;
+    }
+    .proto-pet-card__foot .s-btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* disabled 已选按钮 */
+    .s-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* 宠物像素图 */
+    .proto-pet-pixel {
+      image-rendering: pixelated;
+      width: 72px;
+      height: 72px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="setting-shell">
+
+  <!-- ══════════════════════════════════
+       LEFT NAV
+  ══════════════════════════════════ -->
+  <nav class="setting-nav">
+
+    <button class="setting-nav__back">
+      <span class="icon i-arrowleft icon--14"></span>
+      返回应用
+    </button>
+
+    <div class="setting-nav__search">
+      <span class="icon i-search" style="color:var(--text-tertiary);"></span>
+      <input type="text" placeholder="请输入" />
+    </div>
+
+    <!-- 个人 -->
+    <div class="setting-nav__group-label">个人</div>
+    <button class="setting-nav__item">
+      <span class="icon i-adjustment"></span>
+      通用
+    </button>
+    <button class="setting-nav__item">
+      <span class="icon i-appearance"></span>
+      外观
+    </button>
+    <button class="setting-nav__item">
+      <span class="icon i-models"></span>
+      模型
+    </button>
+    <button class="setting-nav__item">
+      <span class="icon i-keyboard"></span>
+      快捷键
+    </button>
+    <button class="setting-nav__item">
+      <span class="icon i-memory"></span>
+      记忆
+    </button>
+    <button class="setting-nav__item">
+      <span class="icon i-adjustment"></span>
+      高级
+    </button>
+
+    <!-- 编码 -->
+    <div class="setting-nav__group-label" style="margin-top:8px;">编码</div>
+    <button class="setting-nav__item">
+      <span class="icon i-agent"></span>
+      Agent
+    </button>
+    <button class="setting-nav__item">
+      <span class="icon i-robot"></span>
+      Subagents
+    </button>
+    <button class="setting-nav__item">
+      <span class="icon i-hooks"></span>
+      Hooks
+    </button>
+    <button class="setting-nav__item">
+      <span class="icon i-wrench"></span>
+      设备管理
+    </button>
+    <!-- 新增：桌宠配置，编码分组最后一项 -->
+    <button class="setting-nav__item is-active" id="nav-pet">
+      <span class="icon i-game"></span>
+      桌宠配置
+    </button>
+
+  </nav>
+
+  <!-- ══════════════════════════════════
+       RIGHT CONTENT
+  ══════════════════════════════════ -->
+  <div class="setting-content">
+    <div class="setting-body">
+
+      <div class="setting-page__title">桌宠配置</div>
+
+      <!-- ── 分组一：基础开关 ── -->
+      <div class="setting-group">
+        <div class="setting-card">
+
+          <!-- 桌面宠物主开关 -->
+          <div class="setting-row" id="row-main-toggle">
+            <div class="setting-row__left">
+              <div class="setting-row__label">桌面宠物</div>
+              <div class="setting-row__hint">在屏幕右下角显示可爱的桌面宠物，宠物会根据 Agent 工作状态做出动作</div>
+            </div>
+            <div class="setting-row__right">
+              <label class="s-toggle" id="toggle-main">
+                <input type="checkbox" id="chk-main" checked />
+                <span class="s-toggle__track"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 宠物大小 -->
+          <div class="setting-row" id="row-size">
+            <div class="setting-row__left">
+              <div class="setting-row__label">宠物大小</div>
+              <div class="setting-row__hint">调整桌面宠物的显示大小（20% ～ 100%）</div>
+            </div>
+            <div class="setting-row__right">
+              <div class="proto-slider-wrap">
+                <input type="range" class="proto-slider" id="slider-size" min="20" max="100" value="40" />
+                <span class="proto-slider-val" id="slider-size-val">40%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 打字时宠物跳起来 -->
+          <div class="setting-row" id="row-typing">
+            <div class="setting-row__left">
+              <div class="setting-row__label">打字时宠物跳起来</div>
+              <div class="setting-row__hint">在输入框打字时，宠物会欢快地跳动</div>
+            </div>
+            <div class="setting-row__right">
+              <label class="s-toggle">
+                <input type="checkbox" />
+                <span class="s-toggle__track"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 健康提醒 -->
+          <div class="setting-row" id="row-health">
+            <div class="setting-row__left">
+              <div class="setting-row__label">健康提醒</div>
+              <div class="setting-row__hint">到达设定时间后，宠物会变大并弹出提醒文案</div>
+            </div>
+            <div class="setting-row__right">
+              <label class="s-toggle">
+                <input type="checkbox" />
+                <span class="s-toggle__track"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 展示会话信息 -->
+          <div class="setting-row" id="row-session">
+            <div class="setting-row__left">
+              <div class="setting-row__label">展示会话信息</div>
+              <div class="setting-row__hint">在宠物角标和面板中展示当前会话信息</div>
+            </div>
+            <div class="setting-row__right">
+              <label class="s-toggle">
+                <input type="checkbox" />
+                <span class="s-toggle__track"></span>
+              </label>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── 分组二：宠物形象 ── -->
+      <div class="setting-group">
+        <div class="setting-group__header">
+          <div>
+            <div class="setting-group__title">宠物形象</div>
+            <div class="setting-group__desc">设置自定义宠物形象，<a href="#">查看说明</a></div>
+          </div>
+        </div>
+
+        <div class="setting-card" style="overflow:visible;">
+          <div class="proto-pet-card-header">
+            <div class="mf-tabs--pill">
+              <button class="mf-tab--pill is-active" data-tab="installed">已安装 (6)</button>
+              <button class="mf-tab--pill" data-tab="all">全部 (10)</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <button class="s-btn">创建宠物</button>
+              <div class="proto-import-wrap">
+                <button class="s-btn" id="import-trigger">
+                  导入
+                  <span class="icon i-arrowdown icon--12"></span>
+                </button>
+                <div class="proto-import-dropdown" id="import-dropdown">
+                  <div class="mf-menu" style="min-width:140px;">
+                    <button class="mf-menu__item">
+                      <span class="icon i-upload icon--14"></span>
+                      导入 ZIP
+                    </button>
+                    <button class="mf-menu__item">
+                      <span class="icon i-upload icon--14"></span>
+                      导入文件夹
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="pet-list"></div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /setting-content -->
+
+</div><!-- /setting-shell -->
+
+<script>
+  /* 导入下拉开关 */
+  var importTrigger = document.getElementById('import-trigger');
+  var importDropdown = document.getElementById('import-dropdown');
+  importTrigger.addEventListener('click', function(e) {
+    e.stopPropagation();
+    importDropdown.classList.toggle('is-open');
+  });
+  document.addEventListener('click', function() {
+    importDropdown.classList.remove('is-open');
+  });
+
+  /* 左侧导航切换高亮 */
+  document.querySelectorAll('.setting-nav__item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      document.querySelectorAll('.setting-nav__item').forEach(function(i) { i.classList.remove('is-active'); });
+      this.classList.add('is-active');
+    });
+  });
+
+  /* 宠物大小滑块 */
+  var slider = document.getElementById('slider-size');
+  var sliderVal = document.getElementById('slider-size-val');
+  function updateSlider() {
+    sliderVal.textContent = slider.value + '%';
+    var pct = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+    slider.style.background = 'linear-gradient(to right, var(--bg-brand) ' + pct + '%, var(--border-neutral-l1) ' + pct + '%)';
+  }
+  slider.addEventListener('input', updateSlider);
+  updateSlider();
+
+  /* 主开关控制其余行的启用/禁用状态 */
+  var chkMain = document.getElementById('chk-main');
+  var dependentRows = ['row-size', 'row-typing', 'row-health', 'row-session'];
+  function applyMainToggle() {
+    dependentRows.forEach(function(id) {
+      var row = document.getElementById(id);
+      if (row) {
+        row.style.opacity = chkMain.checked ? '1' : '0.4';
+        row.style.pointerEvents = chkMain.checked ? '' : 'none';
+      }
+    });
+  }
+  chkMain.addEventListener('change', applyMainToggle);
+  applyMainToggle();
+
+  /* ══ 宠物数据 ══ */
+  var selectedPet = 'ghost-gradient';
+
+  var PETS_INSTALLED = [
+    { id: 'block-dash',      name: 'Block Dash',       desc: 'The original Block Dash companion.',             bg: '#e8fffe', svgBody: '<rect x="2" y="4" width="12" height="8" rx="1" fill="#5CE1E6"/><rect x="2" y="7" width="12" height="5" fill="#4AD4D9"/><rect x="0" y="9" width="2" height="4" fill="#5CE1E6"/><rect x="14" y="9" width="2" height="4" fill="#5CE1E6"/><rect x="4" y="10" width="2" height="3" fill="#5CE1E6"/><rect x="10" y="10" width="2" height="3" fill="#5CE1E6"/><rect x="2" y="2" width="3" height="3" fill="#1C1C1E"/><rect x="11" y="2" width="3" height="3" fill="#1C1C1E"/><rect x="5" y="6" width="2" height="2" fill="#1C1C1E"/><rect x="9" y="6" width="2" height="2" fill="#1C1C1E"/><rect x="6" y="8" width="4" height="1" fill="#1C1C1E"/>' },
+    { id: 'block-dash-feet', name: 'Block Dash Feet',  desc: 'Block Dash with springy feet for extra bounce.', bg: '#e8fffe', svgBody: '<rect x="2" y="3" width="12" height="8" rx="1" fill="#5CE1E6"/><rect x="2" y="7" width="12" height="4" fill="#4AD4D9"/><rect x="0" y="8" width="2" height="4" fill="#5CE1E6"/><rect x="14" y="8" width="2" height="4" fill="#5CE1E6"/><rect x="3" y="11" width="2" height="4" fill="#5CE1E6"/><rect x="7" y="11" width="2" height="4" fill="#5CE1E6"/><rect x="11" y="11" width="2" height="3" fill="#5CE1E6"/><rect x="2" y="1" width="3" height="3" fill="#1C1C1E"/><rect x="11" y="1" width="3" height="3" fill="#1C1C1E"/><rect x="5" y="5" width="2" height="2" fill="#1C1C1E"/><rect x="9" y="5" width="2" height="2" fill="#1C1C1E"/><rect x="6" y="7" width="4" height="1" fill="#1C1C1E"/>' },
+    { id: 'neon-cat',        name: 'Neon Cat',          desc: 'A cyberpunk kitty that glows in the dark.',      bg: '#1a1a2e', svgBody: '<rect x="3" y="3" width="10" height="8" rx="1" fill="#FF6EC7"/><rect x="3" y="7" width="10" height="4" fill="#E055AE"/><rect x="1" y="5" width="2" height="4" fill="#FF6EC7"/><rect x="13" y="5" width="2" height="4" fill="#FF6EC7"/><rect x="4" y="11" width="2" height="3" fill="#FF6EC7"/><rect x="10" y="11" width="2" height="3" fill="#FF6EC7"/><rect x="2" y="1" width="3" height="3" fill="#FF6EC7"/><rect x="11" y="1" width="3" height="3" fill="#FF6EC7"/><rect x="5" y="5" width="2" height="2" fill="#00FFFF"/><rect x="9" y="5" width="2" height="2" fill="#00FFFF"/><rect x="7" y="7" width="2" height="1" fill="#1a1a2e"/>' },
+    { id: 'pixel-dino',      name: 'Pixel Dino',        desc: 'A cheerful green dino who loves long runs.',     bg: '#e8f5e9', svgBody: '<rect x="6" y="1" width="6" height="5" rx="1" fill="#4CAF50"/><rect x="4" y="4" width="8" height="7" rx="1" fill="#4CAF50"/><rect x="4" y="8" width="8" height="3" fill="#388E3C"/><rect x="2" y="6" width="3" height="2" fill="#4CAF50"/><rect x="4" y="11" width="2" height="4" fill="#4CAF50"/><rect x="8" y="11" width="2" height="4" fill="#4CAF50"/><rect x="10" y="11" width="2" height="3" fill="#4CAF50"/><rect x="8" y="2" width="2" height="2" fill="#1B5E20"/><rect x="11" y="2" width="1" height="1" fill="white"/><rect x="6" y="8" width="4" height="1" fill="#1B5E20"/>' },
+    { id: 'cloud-bunny',     name: 'Cloud Bunny',       desc: 'A fluffy bunny floating on soft clouds.',        bg: '#f0f4ff', svgBody: '<rect x="5" y="1" width="2" height="4" rx="1" fill="#C8D8FF"/><rect x="9" y="1" width="2" height="4" rx="1" fill="#C8D8FF"/><rect x="3" y="4" width="10" height="8" rx="2" fill="#E8EEFF"/><rect x="3" y="8" width="10" height="4" fill="#D0DAFF"/><rect x="2" y="7" width="2" height="3" fill="#E8EEFF"/><rect x="12" y="7" width="2" height="3" fill="#E8EEFF"/><rect x="4" y="12" width="2" height="3" fill="#E8EEFF"/><rect x="10" y="12" width="2" height="3" fill="#E8EEFF"/><rect x="6" y="6" width="1" height="2" fill="#7986CB"/><rect x="9" y="6" width="1" height="2" fill="#7986CB"/><rect x="7" y="9" width="2" height="1" fill="#7986CB"/>' },
+    { id: 'ghost-gradient',  name: 'GhostGradient',     desc: 'A soft gradient ghost for late-night sessions.', bg: 'linear-gradient(135deg,#FFD6CC,#FFCCE0 30%,#E0CCFF 60%,#CCE8FF)', svgBody: '<ellipse cx="8" cy="7" rx="5" ry="5.5" fill="rgba(255,255,255,0.75)"/><rect x="3" y="11" width="10" height="4" fill="rgba(255,255,255,0.75)"/><rect x="6" y="6" width="2" height="2" fill="#555"/><rect x="8" y="6" width="2" height="2" fill="#555"/><rect x="7" y="9" width="2" height="1" fill="#555"/>' }
+  ];
+
+  var PETS_ALL = PETS_INSTALLED.concat([
+    { id: 'lava-crab',   name: 'Lava Crab',    desc: 'A fiery crab that scuttles across your screen.',   bg: '#fff3e0', svgBody: '<rect x="4" y="4" width="8" height="6" rx="1" fill="#FF5722"/><rect x="4" y="7" width="8" height="3" fill="#E64A19"/><rect x="1" y="5" width="3" height="2" fill="#FF5722"/><rect x="12" y="5" width="3" height="2" fill="#FF5722"/><rect x="1" y="7" width="2" height="2" fill="#FF5722"/><rect x="13" y="7" width="2" height="2" fill="#FF5722"/><rect x="3" y="10" width="2" height="3" fill="#FF5722"/><rect x="6" y="10" width="2" height="3" fill="#FF5722"/><rect x="8" y="10" width="2" height="3" fill="#FF5722"/><rect x="11" y="10" width="2" height="3" fill="#FF5722"/><rect x="6" y="5" width="2" height="2" fill="#FFF9C4"/><rect x="8" y="5" width="2" height="2" fill="#FFF9C4"/><rect x="7" y="7" width="2" height="1" fill="#E64A19"/>' },
+    { id: 'spark-fox',   name: 'Spark Fox',    desc: 'An electric fox with a crackling tail.',           bg: '#fffde7', svgBody: '<rect x="3" y="3" width="8" height="8" rx="1" fill="#FF9800"/><rect x="3" y="7" width="8" height="4" fill="#F57C00"/><rect x="1" y="4" width="3" height="2" fill="#FF9800"/><rect x="1" y="6" width="2" height="3" fill="#FF9800"/><rect x="11" y="3" width="4" height="3" fill="#FF9800"/><rect x="13" y="6" width="2" height="2" fill="#FF9800"/><rect x="4" y="11" width="2" height="3" fill="#FF9800"/><rect x="8" y="11" width="2" height="3" fill="#FF9800"/><rect x="5" y="5" width="2" height="2" fill="#1C1C1E"/><rect x="8" y="5" width="2" height="2" fill="#1C1C1E"/><rect x="6" y="7" width="3" height="1" fill="#1C1C1E"/><rect x="11" y="2" width="2" height="2" fill="#FFEB3B"/>' },
+    { id: 'deep-jellyfish', name: 'Deep Jellyfish', desc: 'A bioluminescent jellyfish from the abyss.',   bg: '#0d1b2a', svgBody: '<ellipse cx="8" cy="6" rx="5" ry="4" fill="#7C4DFF"/><rect x="5" y="9" width="1" height="5" fill="#B39DDB"/><rect x="7" y="9" width="1" height="6" fill="#B39DDB"/><rect x="9" y="9" width="1" height="5" fill="#B39DDB"/><rect x="11" y="9" width="1" height="4" fill="#B39DDB"/><rect x="6" y="5" width="2" height="2" fill="#E8D5FF"/><rect x="8" y="5" width="2" height="2" fill="#E8D5FF"/>' },
+    { id: 'robo-penguin', name: 'Robo Penguin', desc: 'A mechanical penguin ready to debug your code.',  bg: '#eceff1', svgBody: '<rect x="4" y="2" width="8" height="10" rx="2" fill="#455A64"/><rect x="5" y="7" width="6" height="5" rx="1" fill="#ECEFF1"/><rect x="2" y="6" width="3" height="4" fill="#455A64"/><rect x="11" y="6" width="3" height="4" fill="#455A64"/><rect x="5" y="12" width="2" height="3" fill="#FF9800"/><rect x="9" y="12" width="2" height="3" fill="#FF9800"/><rect x="6" y="4" width="2" height="2" fill="#00BCD4"/><rect x="8" y="4" width="2" height="2" fill="#00BCD4"/><rect x="6" y="9" width="4" height="1" fill="#455A64"/><rect x="7" y="6" width="2" height="1" fill="#FF9800"/>' }
+  ]);
+
+  function renderPetList(pets) {
+    var list = document.getElementById('pet-list');
+    list.innerHTML = '';
+    pets.forEach(function(pet) {
+      var isActive = pet.id === selectedPet;
+      var actionHtml = isActive
+        ? '<button class="s-btn" disabled>已选</button>'
+        : '<button class="s-btn proto-pet-select-btn">选择</button>';
+      var card = document.createElement('div');
+      card.className = 'proto-pet-card' + (isActive ? ' is-active' : '');
+      card.dataset.pet = pet.id;
+      card.innerHTML =
+        '<div class="proto-pet-card__thumb">'
+          + '<svg class="proto-pet-pixel" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">' + pet.svgBody + '</svg>'
+        + '</div>'
+        + '<div class="proto-pet-card__name">' + pet.name + '</div>'
+        + '<div class="proto-pet-card__foot">' + actionHtml + '</div>';
+      list.appendChild(card);
+    });
+    bindSelectBtns();
+  }
+
+  function bindSelectBtns() {
+    document.querySelectorAll('.proto-pet-select-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        selectedPet = btn.closest('.proto-pet-card').dataset.pet;
+        var activeTab = document.querySelector('.mf-tab--pill[data-tab].is-active').dataset.tab;
+        renderPetList(activeTab === 'all' ? PETS_ALL : PETS_INSTALLED);
+      });
+    });
+  }
+
+  /* 初始渲染：已安装 */
+  renderPetList(PETS_INSTALLED);
+
+  /* Tab 切换：渲染对应数据集 */
+  document.querySelectorAll('.mf-tab--pill[data-tab]').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.mf-tab--pill[data-tab]').forEach(function(t) { t.classList.remove('is-active'); });
+      this.classList.add('is-active');
+      renderPetList(this.dataset.tab === 'all' ? PETS_ALL : PETS_INSTALLED);
+    });
+  });
+</script>
+
+</body>
+</html>

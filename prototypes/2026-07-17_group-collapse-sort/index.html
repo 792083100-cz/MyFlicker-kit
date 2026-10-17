@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>原型：分组展开收起 & 排序 — MyFlicker</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../../colors_and_type.css" />
+  <link rel="stylesheet" href="../../components.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%; width: 100%;
+      background: #E8E8E8;
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      -webkit-font-smoothing: antialiased;
+    }
+    body {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 40px;
+      padding: 40px;
+      min-height: 100vh;
+    }
+
+    /* ── 标注卡片 ── */
+    .proto-label {
+      font-size: 11px;
+      color: #888;
+      margin-bottom: 8px;
+      font-family: monospace;
+    }
+    .proto-col { display: flex; flex-direction: column; }
+
+    /* ── 侧边栏容器 ── */
+    .proto-aside-wrap {
+      background: var(--bg-brand-subtle);
+      border-radius: 12px;
+      width: 240px;
+      height: 680px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    /* ══════════════════════════════
+       新增：分组行 toggle 按钮
+    ══════════════════════════════ */
+    .mf-aside__group-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: var(--radius-4);
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: var(--text-tertiary);
+      flex-shrink: 0;
+      visibility: hidden;        /* hover 热区才显示 */
+      transition: background 120ms, color 120ms;
+    }
+    .mf-aside__group-toggle .icon {
+      transition: transform 200ms ease;
+    }
+    .mf-aside__group-toggle:hover {
+      background: var(--fill-default);
+      color: var(--text-default);
+    }
+    /* 折叠态：箭头旋转 -90deg */
+    .mf-aside__group.is-collapsed .mf-aside__group-toggle .icon {
+      transform: rotate(-90deg);
+    }
+    /* hover 分组整行时，toggle 显现 */
+    .mf-aside__group:hover .mf-aside__group-toggle {
+      visibility: visible;
+    }
+
+    /* ── 折叠态隐藏 sessions ── */
+    .mf-aside__group.is-collapsed + .mf-aside__group-sessions {
+      display: none;
+    }
+
+    /* ══════════════════════════════
+       新增：section-label 排序下拉
+    ══════════════════════════════ */
+    .proto-sort-dropdown {
+      position: relative;
+    }
+    .proto-sort-panel {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      right: 0;
+      min-width: 120px;
+      z-index: 100;
+    }
+    .proto-sort-panel.is-open {
+      display: block;
+    }
+    /* mf-menu__check 默认隐藏，is-selected 时显示 */
+    .mf-menu__check {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      margin-left: auto;
+      color: var(--icon-brand, var(--text-default));
+    }
+
+    /* ── 全局 collapse-all toggle ── */
+    .mf-aside__collapse-all-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: var(--radius-4);
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: var(--text-tertiary);
+      flex-shrink: 0;
+      visibility: hidden;
+      transition: background 120ms, color 120ms;
+    }
+    /* section-label hover 时显现 */
+    .mf-aside__section-label:hover .mf-aside__collapse-all-btn,
+    .mf-aside__section-label .mf-aside__collapse-all-btn:focus {
+      visibility: visible;
+    }
+    .mf-aside__collapse-all-btn:hover {
+      background: var(--fill-default);
+      color: var(--text-default);
+    }
+    /* 全部收起时图标旋转 */
+    .mf-aside__collapse-all-btn.is-collapsed .icon {
+      transform: rotate(180deg);
+    }
+    .mf-aside__collapse-all-btn .icon {
+      transition: transform 200ms ease;
+    }
+
+    /* ── i-newchat / i-schedule 别名（本页面路径 ../../assets/...）── */
+    .i-newchat   { -webkit-mask-image: url(../../assets/icons/kid/newconversation02.svg); mask-image: url(../../assets/icons/kid/newconversation02.svg); }
+    .i-schedule  { -webkit-mask-image: url(../../assets/icons/kid/scheduledtasks.svg);   mask-image: url(../../assets/icons/kid/scheduledtasks.svg); }
+  </style>
+</head>
+<body>
+
+<!-- ═══ 左列：Before（现状） ═══ -->
+<div class="proto-col">
+  <div class="proto-label">Before — 现状（无展开收起 / 无排序）</div>
+  <div class="proto-aside-wrap">
+    <aside class="mf-aside" style="border-radius:0;height:100%;box-shadow:none;">
+
+      <div class="mf-aside__header">
+        <div class="mf-aside__workspace">
+          <img class="mf-aside__workspace-avatar" src="../../assets/icons/workspace-myflicker.svg" alt="workspace" />
+          <span class="mf-aside__workspace-name">个人空间</span>
+          <span class="icon i-unfold mf-aside__workspace-unfold"></span>
+        </div>
+        <button class="mf-aside__collapse"><span class="icon i-leftsidebar"></span></button>
+      </div>
+
+      <nav class="mf-aside__nav">
+        <div class="mf-aside__nav-item is-active"><span class="icon i-newchat"></span><span class="mf-aside__nav-item__label">新对话</span></div>
+        <div class="mf-aside__nav-item"><span class="icon i-search"></span><span class="mf-aside__nav-item__label">搜索</span></div>
+        <div class="mf-aside__nav-item"><span class="icon i-schedule"></span><span class="mf-aside__nav-item__label">定时任务</span></div>
+        <div class="mf-aside__nav-item"><span class="icon i-skill"></span><span class="mf-aside__nav-item__label">技能</span></div>
+        <div class="mf-aside__nav-item"><span class="icon i-knowledge"></span><span class="mf-aside__nav-item__label">知识</span></div>
+      </nav>
+
+      <div class="mf-aside__body">
+        <div class="mf-aside__section-label is-always-show">
+          <span>分组</span>
+          <div class="mf-aside__section-label-actions" style="gap:6px;">
+            <button class="mf-aside__icon-btn"><span class="icon i-addgroup"></span></button>
+          </div>
+        </div>
+
+        <div class="mf-aside__group">
+          <div class="mf-aside__group-icon"><span class="icon i-openfolder"></span></div>
+          <span class="mf-aside__group-name">最高优先任务</span>
+          <div class="mf-aside__group-actions">
+            <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+            <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+          </div>
+        </div>
+        <div class="mf-aside__group-sessions">
+          <div class="mf-aside__session"><span class="mf-aside__session-status"></span><span class="mf-aside__session-title">根据附件生成PRD文档及竞品截图</span><span class="mf-aside__session-meta"><span class="mf-aside__session-time">今天</span><button class="mf-aside__icon-btn"><span class="icon i-more"></span></button></span></div>
+          <div class="mf-aside__session"><span class="mf-aside__session-status"></span><span class="mf-aside__session-title">数字员工提醒与燕雀比赛机制设计</span><span class="mf-aside__session-meta"><span class="mf-aside__session-time">昨天</span><button class="mf-aside__icon-btn"><span class="icon i-more"></span></button></span></div>
+          <div class="mf-aside__session"><span class="mf-aside__session-status"></span><span class="mf-aside__session-title">优化目录路径与机器tab关联原型</span><span class="mf-aside__session-meta"><span class="mf-aside__session-time">昨天</span><button class="mf-aside__icon-btn"><span class="icon i-more"></span></button></span></div>
+        </div>
+
+        <div class="mf-aside__group" style="margin-top:4px;">
+          <div class="mf-aside__group-icon"><span class="icon i-openfolder"></span></div>
+          <span class="mf-aside__group-name">设计系统项目</span>
+          <div class="mf-aside__group-actions">
+            <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+            <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+          </div>
+        </div>
+        <div class="mf-aside__group-sessions">
+          <div class="mf-aside__session"><span class="mf-aside__session-status"></span><span class="mf-aside__session-title">组件 Token 绑定机制</span><span class="mf-aside__session-meta"><span class="mf-aside__session-time">14:30</span><button class="mf-aside__icon-btn"><span class="icon i-more"></span></button></span></div>
+          <div class="mf-aside__session"><span class="mf-aside__session-status"></span><span class="mf-aside__session-title">AI 对话页 UI Kit</span><span class="mf-aside__session-meta"><span class="mf-aside__session-time">昨天</span><button class="mf-aside__icon-btn"><span class="icon i-more"></span></button></span></div>
+        </div>
+      </div>
+
+      <div class="mf-aside__footer">
+        <button class="mf-aside__footer-setting"><span class="icon i-setting"></span><span>设置</span></button>
+        <div class="mf-aside__footer-credit"><img src="../../assets/icons/points-gradient.svg" width="14" height="14" style="flex-shrink:0;" /><span>积分：剩余 51%</span></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ═══ 右列：After（方案） ═══ -->
+<div class="proto-col">
+  <div class="proto-label">After — 方案（支持展开收起 + 排序）</div>
+  <div class="proto-aside-wrap">
+    <aside class="mf-aside" style="border-radius:0;height:100%;box-shadow:none;">
+
+      <div class="mf-aside__header">
+        <div class="mf-aside__workspace">
+          <img class="mf-aside__workspace-avatar" src="../../assets/icons/workspace-myflicker.svg" alt="workspace" />
+          <span class="mf-aside__workspace-name">个人空间</span>
+          <span class="icon i-unfold mf-aside__workspace-unfold"></span>
+        </div>
+        <button class="mf-aside__collapse"><span class="icon i-leftsidebar"></span></button>
+      </div>
+
+      <nav class="mf-aside__nav">
+        <div class="mf-aside__nav-item is-active"><span class="icon i-newchat"></span><span class="mf-aside__nav-item__label">新对话</span></div>
+        <div class="mf-aside__nav-item"><span class="icon i-search"></span><span class="mf-aside__nav-item__label">搜索</span></div>
+        <div class="mf-aside__nav-item"><span class="icon i-schedule"></span><span class="mf-aside__nav-item__label">定时任务</span></div>
+        <div class="mf-aside__nav-item"><span class="icon i-skill"></span><span class="mf-aside__nav-item__label">技能</span></div>
+        <div class="mf-aside__nav-item"><span class="icon i-knowledge"></span><span class="mf-aside__nav-item__label">知识</span></div>
+      </nav>
+
+      <div class="mf-aside__body">
+
+        <!-- 分组 section-label -->
+        <div class="mf-aside__section-label" id="group-label">
+          <span style="display:inline-flex;align-items:center;gap:4px;">
+            <span>分组</span>
+            <!-- arrowdown：控制整个分组区块的显示/隐藏 -->
+            <button class="mf-aside__collapse-all-btn" id="toggle-groups-btn" title="收起分组区块">
+              <span class="icon i-arrowdown"></span>
+            </button>
+          </span>
+          <div class="mf-aside__section-label-actions" style="gap:6px;">
+            <!-- 排序 -->
+            <div class="proto-sort-dropdown">
+              <button class="mf-aside__icon-btn" id="sort-btn" title="排序方式">
+                <span class="icon i-filter02"></span>
+              </button>
+              <div class="proto-sort-panel" id="sort-panel">
+                <div class="mf-menu">
+                  <button class="mf-menu__item is-selected" data-sort="recent-open">
+                    最近打开
+                    <span class="mf-menu__check"><span class="icon i-check"></span></span>
+                  </button>
+                  <button class="mf-menu__item" data-sort="recent-active">
+                    最近活跃
+                    <span class="mf-menu__check"><span class="icon i-check"></span></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- 全部展开/收起任务列表 -->
+            <button class="mf-aside__icon-btn" id="fold-all-btn" title="全部折叠任务">
+              <span class="icon i-fold" id="fold-all-icon"></span>
+            </button>
+            <!-- 新建分组 -->
+            <button class="mf-aside__icon-btn"><span class="icon i-addgroup"></span></button>
+          </div>
+        </div>
+
+        <!-- 分组容器（整体可隐藏） -->
+        <div id="groups-container">
+        <div class="mf-aside__group" id="group-1">
+          <div class="mf-aside__group-icon"><span class="icon i-openfolder" id="group-1-icon"></span></div>
+          <span class="mf-aside__group-name">最高优先任务</span>
+          <!-- 新增：展开收起 toggle，在 add/more 左侧 -->
+          <button class="mf-aside__group-toggle" onclick="toggleGroup('group-1')" title="折叠分组">
+            <span class="icon i-arrowdown"></span>
+          </button>
+          <div class="mf-aside__group-actions">
+            <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+            <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+          </div>
+        </div>
+        <div class="mf-aside__group-sessions" id="group-1-sessions">
+          <div class="mf-aside__session"><span class="mf-aside__session-status"></span><span class="mf-aside__session-title">根据附件生成PRD文档及竞品截图</span><span class="mf-aside__session-meta"><span class="mf-aside__session-time">今天</span><button class="mf-aside__icon-btn"><span class="icon i-more"></span></button></span></div>
+          <div class="mf-aside__session"><span class="mf-aside__session-status"></span><span class="mf-aside__session-title">数字员工提醒与燕雀比赛机制设计</span><span class="mf-aside__session-meta"><span class="mf-aside__session-time">昨天</span><button class="mf-aside__icon-btn"><span class="icon i-more"></span></button></span></div>
+          <div class="mf-aside__session"><span class="mf-aside__session-status"></span><span class="mf-aside__session-title">优化目录路径与机器tab关联原型</span><span class="mf-aside__session-meta"><span class="mf-aside__session-time">昨天</span><button class="mf-aside__icon-btn"><span class="icon i-more"></span></button></span></div>
+        </div>
+
+        <!-- 分组 2 — 展开态 -->
+        <div class="mf-aside__group" id="group-2" style="margin-top:4px;">
+          <div class="mf-aside__group-icon"><span class="icon i-openfolder" id="group-2-icon"></span></div>
+          <span class="mf-aside__group-name">设计系统项目</span>
+          <button class="mf-aside__group-toggle" onclick="toggleGroup('group-2')" title="折叠分组">
+            <span class="icon i-arrowdown"></span>
+          </button>
+          <div class="mf-aside__group-actions">
+            <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+            <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+          </div>
+        </div>
+        <div class="mf-aside__group-sessions" id="group-2-sessions">
+          <div class="mf-aside__session"><span class="mf-aside__session-status"></span><span class="mf-aside__session-title">组件 Token 绑定机制</span><span class="mf-aside__session-meta"><span class="mf-aside__session-time">14:30</span><button class="mf-aside__icon-btn"><span class="icon i-more"></span></button></span></div>
+          <div class="mf-aside__session"><span class="mf-aside__session-status"></span><span class="mf-aside__session-title">AI 对话页 UI Kit</span><span class="mf-aside__session-meta"><span class="mf-aside__session-time">昨天</span><button class="mf-aside__icon-btn"><span class="icon i-more"></span></button></span></div>
+        </div>
+
+        </div><!-- /groups-container -->
+
+      </div><!-- /body -->
+
+      <div class="mf-aside__footer">
+        <button class="mf-aside__footer-setting"><span class="icon i-setting"></span><span>设置</span></button>
+        <div class="mf-aside__footer-credit"><img src="../../assets/icons/points-gradient.svg" width="14" height="14" style="flex-shrink:0;" /><span>积分：剩余 51%</span></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+  const GROUPS = ['group-1', 'group-2'];
+
+  /* ── 1. arrowdown：控制整个分组区块显示/隐藏 ── */
+  const toggleGroupsBtn = document.getElementById('toggle-groups-btn');
+  const groupsContainer = document.getElementById('groups-container');
+  const toggleGroupsIcon = toggleGroupsBtn.querySelector('.icon');
+  let groupsVisible = true;
+
+  toggleGroupsBtn.addEventListener('click', () => {
+    groupsVisible = !groupsVisible;
+    groupsContainer.style.display = groupsVisible ? '' : 'none';
+    // 箭头旋转：展开=0deg，收起=-90deg
+    toggleGroupsIcon.style.transform = groupsVisible ? '' : 'rotate(-90deg)';
+    toggleGroupsBtn.title = groupsVisible ? '收起分组区块' : '展开分组区块';
+  });
+
+  /* ── 2. fold-all：控制所有分组内任务列表展开/收起 ── */
+  const foldAllBtn = document.getElementById('fold-all-btn');
+  const foldAllIcon = document.getElementById('fold-all-icon');
+  let allFolded = false;
+
+  foldAllBtn.addEventListener('click', () => {
+    allFolded = !allFolded;
+    GROUPS.forEach(id => {
+      const sessions = document.getElementById(id + '-sessions');
+      const folderIcon = document.getElementById(id + '-icon');
+      const group = document.getElementById(id);
+      sessions.style.display = allFolded ? 'none' : '';
+      if (allFolded) {
+        group.classList.add('is-collapsed');
+        folderIcon.classList.replace('i-openfolder', 'i-closefolder');
+      } else {
+        group.classList.remove('is-collapsed');
+        folderIcon.classList.replace('i-closefolder', 'i-openfolder');
+      }
+    });
+    foldAllIcon.classList.replace(allFolded ? 'i-unfold' : 'i-fold', allFolded ? 'i-fold' : 'i-unfold');
+    foldAllBtn.title = allFolded ? '全部展开任务' : '全部折叠任务';
+  });
+
+  /* ── 3. 单个分组行内任务展开/收起 ── */
+  function toggleGroup(id) {
+    const group = document.getElementById(id);
+    const sessions = document.getElementById(id + '-sessions');
+    const folderIcon = document.getElementById(id + '-icon');
+    const isCollapsed = group.classList.toggle('is-collapsed');
+    sessions.style.display = isCollapsed ? 'none' : '';
+    if (isCollapsed) {
+      folderIcon.classList.replace('i-openfolder', 'i-closefolder');
+    } else {
+      folderIcon.classList.replace('i-closefolder', 'i-openfolder');
+    }
+  }
+
+  /* ── 4. 排序下拉 ── */
+  const sortBtn = document.getElementById('sort-btn');
+  const sortPanel = document.getElementById('sort-panel');
+  sortBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    sortPanel.classList.toggle('is-open');
+  });
+  document.querySelectorAll('.mf-menu__item[data-sort]').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.mf-menu__item[data-sort]').forEach(o => o.classList.remove('is-selected'));
+      opt.classList.add('is-selected');
+      sortPanel.classList.remove('is-open');
+    });
+  });
+  document.addEventListener('click', () => sortPanel.classList.remove('is-open'));
+
+  /* ── 5. section-label hover 控制 actions 显隐 ── */
+  const groupLabel = document.getElementById('group-label');
+  groupLabel.addEventListener('mouseenter', () => {
+    groupLabel.querySelector('.mf-aside__section-label-actions').style.visibility = 'visible';
+    toggleGroupsBtn.style.visibility = 'visible';
+  });
+  groupLabel.addEventListener('mouseleave', () => {
+    if (!sortPanel.classList.contains('is-open')) {
+      groupLabel.querySelector('.mf-aside__section-label-actions').style.visibility = '';
+      toggleGroupsBtn.style.visibility = '';
+    }
+  });
+</script>
+</body>
+</html>

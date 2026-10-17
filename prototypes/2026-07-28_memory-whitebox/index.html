@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>记忆设置白盒化 · 原型</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../../colors_and_type.css" />
+  <link rel="stylesheet" href="../../components.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg-base-secondary);
+      color: var(--text-tertiary);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      -webkit-font-smoothing: antialiased;
+    }
+    body { overflow: hidden; }
+
+    /* ══════════════════════════════════
+       封面页 · 需求卡片
+    ══════════════════════════════════ */
+    #coverPage { min-height: 100vh; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 48px 24px; background: var(--bg-base-secondary); overflow: auto; }
+    #coverPage.is-active { display: flex; }
+    .proto-req-card {
+      max-width: 880px; width: 100%;
+      background: var(--bg-base-default);
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-12);
+      padding: 32px 36px;
+      color: var(--text-default);
+    }
+    .proto-req-card h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+    .proto-req-card .subtitle { font-size: 13px; color: var(--text-tertiary); margin-bottom: 20px; }
+    .proto-req-card h2 { font-size: 14px; font-weight: 600; margin-top: 20px; margin-bottom: 8px; color: var(--text-default); }
+    .proto-req-card p, .proto-req-card li { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+    .proto-req-card ul { padding-left: 20px; }
+    .proto-req-card .tag-row { display: flex; gap: 8px; margin-top: 4px; }
+    .proto-req-card .tag { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 4px; font-size: 12px; background: var(--fill-tertiary); color: var(--text-secondary); }
+    .proto-req-card .tag.brand { background: var(--bg-brand-subtle); color: var(--bg-brand); }
+
+    /* ══════════════════════════════════
+       原型页 · 引用设置页样式
+    ══════════════════════════════════ */
+    #protoPage { display: none; height: 100vh; }
+
+    /* ── KID icon mask ── */
+    .icon {
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      width: 16px; height: 16px;
+      -webkit-mask-size: contain; mask-size: contain;
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      -webkit-mask-position: center; mask-position: center;
+      background-color: currentColor;
+    }
+    .icon--20 { width: 20px; height: 20px; }
+    .icon--14 { width: 14px; height: 14px; }
+    .icon--12 { width: 12px; height: 12px; }
+
+    .i-arrowleft      { -webkit-mask-image: url(../../assets/icons/kid/arrowleft.svg);      mask-image: url(../../assets/icons/kid/arrowleft.svg); }
+    .i-search         { -webkit-mask-image: url(../../assets/icons/kid/search.svg);         mask-image: url(../../assets/icons/kid/search.svg); }
+    .i-person         { -webkit-mask-image: url(../../assets/icons/kid/person.svg);         mask-image: url(../../assets/icons/kid/person.svg); }
+    .i-appearance     { -webkit-mask-image: url(../../assets/icons/kid/appearance.svg);     mask-image: url(../../assets/icons/kid/appearance.svg); }
+    .i-models         { -webkit-mask-image: url(../../assets/icons/kid/models.svg);         mask-image: url(../../assets/icons/kid/models.svg); }
+    .i-command        { -webkit-mask-image: url(../../assets/icons/kid/command.svg);        mask-image: url(../../assets/icons/kid/command.svg); }
+    .i-memory         { -webkit-mask-image: url(../../assets/icons/kid/memory.svg);         mask-image: url(../../assets/icons/kid/memory.svg); }
+    .i-skill          { -webkit-mask-image: url(../../assets/icons/kid/skill.svg);          mask-image: url(../../assets/icons/kid/skill.svg); }
+    .i-hooks          { -webkit-mask-image: url(../../assets/icons/kid/hooks.svg);          mask-image: url(../../assets/icons/kid/hooks.svg); }
+    .i-adjustment     { -webkit-mask-image: url(../../assets/icons/kid/adjustment.svg);     mask-image: url(../../assets/icons/kid/adjustment.svg); }
+    .i-rule           { -webkit-mask-image: url(../../assets/icons/kid/rule.svg);           mask-image: url(../../assets/icons/kid/rule.svg); }
+    .i-arrowdown      { -webkit-mask-image: url(../../assets/icons/kid/arrowdown.svg);      mask-image: url(../../assets/icons/kid/arrowdown.svg); }
+    .i-edit           { -webkit-mask-image: url(../../assets/icons/kid/edit.svg);           mask-image: url(../../assets/icons/kid/edit.svg); }
+    .i-draft          { -webkit-mask-image: url(../../assets/icons/kid/draft.svg);          mask-image: url(../../assets/icons/kid/draft.svg); }
+    .i-delete         { -webkit-mask-image: url(../../assets/icons/kid/delete.svg);         mask-image: url(../../assets/icons/kid/delete.svg); }
+    .i-keyboard       { -webkit-mask-image: url(../../assets/icons/kid/keyboard.svg);       mask-image: url(../../assets/icons/kid/keyboard.svg); }
+    .i-document       { -webkit-mask-image: url(../../assets/icons/kid/document.svg);       mask-image: url(../../assets/icons/kid/document.svg); }
+    .i-close          { -webkit-mask-image: url(../../assets/icons/kid/close.svg);          mask-image: url(../../assets/icons/kid/close.svg); }
+    .i-agent          { -webkit-mask-image: url(../../assets/icons/kid/agent.svg);          mask-image: url(../../assets/icons/kid/agent.svg); }
+    .i-computer       { -webkit-mask-image: url(../../assets/icons/kid/computer.svg);       mask-image: url(../../assets/icons/kid/computer.svg); }
+    .i-setting        { -webkit-mask-image: url(../../assets/icons/kid/setting.svg);        mask-image: url(../../assets/icons/kid/setting.svg); }
+
+    /* SHELL — 与 setting-shell 保持一致 */
+    .setting-shell { display: flex; height: 100vh; width: 100%; background: var(--bg-brand-subtle); }
+
+    /* LEFT NAV */
+    .setting-nav {
+      width: 240px; flex-shrink: 0; height: 100vh;
+      display: flex; flex-direction: column; background: transparent;
+      padding: 12px 8px 16px; gap: 4px;
+    }
+    .setting-nav__back {
+      display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 8px;
+      border-radius: var(--radius-8); color: var(--text-tertiary);
+      font-size: var(--body-sm-font-size); cursor: pointer; border: none;
+      background: transparent; transition: background 120ms, color 120ms; margin-bottom: 4px;
+    }
+    .setting-nav__back:hover { background: var(--fill-default); color: var(--text-default); }
+    .setting-nav__search {
+      display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px;
+      border-radius: var(--radius-8); background: var(--bg-base-default);
+      border: 1px solid var(--border-neutral-l1); color: var(--text-tertiary);
+      font-size: var(--body-sm-font-size); margin-bottom: 8px;
+    }
+    .setting-nav__search input { flex: 1; border: none; outline: none; background: transparent; font-size: var(--body-sm-font-size); color: var(--text-default); font-family: inherit; }
+    .setting-nav__search input::placeholder { color: var(--text-tertiary); }
+    .setting-nav__group-label { padding: 4px 8px 2px; font-size: 12px; color: var(--text-tertiary); }
+    .setting-nav__item {
+      display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 8px;
+      border-radius: var(--radius-8); color: var(--text-default);
+      font-size: var(--body-sm-font-size); cursor: pointer; border: none;
+      background: transparent; width: 100%; text-align: left;
+      transition: background 120ms, color 120ms;
+    }
+    .setting-nav__item:hover { background: var(--fill-default); }
+    .setting-nav__item.is-active { background: var(--fill-default); font-weight: 500; }
+
+    /* RIGHT CONTENT */
+    .setting-content {
+      flex: 1; height: calc(100vh - 16px); margin: 8px 8px 8px 0;
+      overflow-y: auto; background: var(--bg-base-default);
+      border-radius: 12px; padding: 48px 48px 64px;
+    }
+    .setting-content::-webkit-scrollbar { width: 4px; }
+    .setting-content::-webkit-scrollbar-thumb { background: var(--border-neutral-l1); border-radius: 2px; }
+
+    .setting-page__title { font-size: 20px; font-weight: 600; line-height: 1.4; color: var(--text-default); margin-bottom: 24px; }
+
+    .setting-group { margin-bottom: 32px; }
+    .setting-group__title { font-size: var(--body-sm-font-size); font-weight: 600; color: var(--text-default); margin-bottom: 12px; }
+
+    .setting-card { border: 1px solid var(--border-neutral-l1); border-radius: var(--radius-8); overflow: hidden; }
+
+    .setting-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px; gap: 12px; min-height: 52px; position: relative;
+    }
+    .setting-row:not(:last-child)::after {
+      content: ''; position: absolute; bottom: 0; left: 16px; right: 16px;
+      height: 1px; background: var(--border-neutral-l1);
+    }
+    .setting-row__left { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+    .setting-row__label { font-size: var(--body-sm-font-size); color: var(--text-default); font-weight: 500; }
+    .setting-row__hint { font-size: var(--body-xs-font-size); color: var(--text-tertiary); line-height: 1.4; }
+    .setting-row__right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; justify-content: flex-end; }
+
+    /* 父行 + 子分组样式 */
+    .setting-row--parent { padding-bottom: 0; }
+    .setting-row--parent::after { display: none !important; }
+    .setting-sub-group-wrap { padding: 8px 16px 16px; position: relative; }
+    .setting-sub-group-wrap + .setting-row::before {
+      content: ''; position: absolute; top: 0; left: 16px; right: 16px;
+      height: 1px; background: var(--border-neutral-l1);
+    }
+    .setting-sub-group {
+      margin: 0 8px;
+      border-left: 1.5px dashed var(--border-neutral-l1);
+      padding-left: 12px;
+    }
+    .setting-sub-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0; gap: 12px; position: relative;
+    }
+    .setting-sub-row__left { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+    .setting-sub-row__label { font-size: var(--body-sm-font-size); color: var(--text-default); font-weight: 500; }
+    .setting-sub-row__hint { font-size: var(--body-xs-font-size); color: var(--text-tertiary); line-height: 1.4; }
+
+    /* Toggle */
+    .s-toggle { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
+    .s-toggle input { opacity: 0; width: 0; height: 0; }
+    .s-toggle__track {
+      position: absolute; inset: 0; background: var(--fill-default);
+      border-radius: 10px; cursor: pointer; transition: background 200ms;
+    }
+    .s-toggle__track::after {
+      content: ''; position: absolute; top: 2px; left: 2px;
+      width: 16px; height: 16px; background: white; border-radius: 50%;
+      transition: transform 200ms; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .s-toggle input:checked + .s-toggle__track { background: #34C759; }
+    .s-toggle input:checked + .s-toggle__track::after { transform: translateX(16px); }
+
+    /* 按钮 */
+    .s-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      height: 28px; padding: 0 12px;
+      border: 1px solid var(--border-neutral-l1); border-radius: var(--radius-6);
+      background: var(--bg-base-default); font-size: var(--body-sm-font-size);
+      color: var(--text-default); cursor: pointer; font-family: inherit;
+      transition: background 120ms, border-color 120ms; white-space: nowrap;
+    }
+    .s-btn:hover { background: var(--fill-tertiary); }
+
+    /* 内容最大宽度 */
+    .setting-body { max-width: 880px; margin: 0 auto; }
+
+    /* ══════════════════════════════════
+       原型专有 · 提取频次行内输入
+    ══════════════════════════════════ */
+    .proto-mem-freq { display: inline-flex; align-items: center; gap: 6px; color: var(--text-secondary); font-size: var(--body-sm-font-size); }
+    .proto-mem-freq input {
+      width: 52px; height: 28px; text-align: center;
+      border: 1px solid var(--border-neutral-l1); border-radius: var(--radius-6);
+      background: var(--bg-base-default); font-size: var(--body-sm-font-size);
+      color: var(--text-default); font-family: inherit; outline: none;
+      transition: border-color 150ms;
+    }
+    .proto-mem-freq input:focus { border-color: var(--border-neutral-l2); }
+
+    /* ══════════════════════════════════
+       原型专有 · 记忆列表卡片
+    ══════════════════════════════════ */
+    .proto-mem-list-card { padding: 12px 16px 8px; }
+    .proto-mem-list-toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 4px 0 12px;
+    }
+    .proto-mem-list-tabs { display: flex; gap: 4px; }
+    .proto-mem-list-tab {
+      height: 28px; padding: 0 12px; border-radius: var(--radius-6);
+      background: transparent; border: none; cursor: pointer;
+      font-size: var(--body-sm-font-size); color: var(--text-secondary);
+      font-family: inherit; transition: background 120ms, color 120ms;
+    }
+    .proto-mem-list-tab:hover { color: var(--text-default); }
+    .proto-mem-list-tab.is-active { background: var(--fill-default); color: var(--text-default); font-weight: 500; }
+
+    .proto-mem-list { display: flex; flex-direction: column; }
+    .proto-mem-list-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 8px; position: relative;
+      border-radius: var(--radius-8); transition: background 120ms;
+    }
+    .proto-mem-list-item:hover { background: var(--bg-brand-subtle); }
+    .proto-mem-list-item:not(:last-child)::after {
+      content: ''; position: absolute; bottom: 0; left: 8px; right: 8px;
+      height: 1px; background: var(--border-neutral-l1);
+    }
+    .proto-mem-list-item__main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+    .proto-mem-list-item__title {
+      font-size: var(--body-sm-font-size); font-weight: 500; color: var(--text-default);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .proto-mem-list-item__desc {
+      font-size: var(--body-xs-font-size); color: var(--text-tertiary); line-height: 1.5;
+      display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
+      overflow: hidden; word-break: break-all;
+    }
+    .proto-mem-list-item__actions {
+      display: flex; align-items: center; gap: 4px; opacity: 0;
+      transition: opacity 120ms; flex-shrink: 0;
+    }
+    .proto-mem-list-item:hover .proto-mem-list-item__actions { opacity: 1; }
+    .proto-mem-icon-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border: none; background: transparent;
+      color: var(--text-tertiary); cursor: pointer;
+      border-radius: var(--radius-6); transition: background 120ms, color 120ms;
+    }
+    .proto-mem-icon-btn:hover { background: var(--fill-default); color: var(--text-default); }
+    .proto-mem-list-item { cursor: pointer; }
+
+    /* 图标 tooltip — 由 JS portal 渲染，以下仅给 body 上的浮动层样式 */
+    .proto-tooltip-float {
+      position: fixed; z-index: 9999; pointer-events: none;
+      padding: var(--spacer-6) var(--spacer-8);
+      background: var(--bg-tooltip); color: var(--text-white);
+      border-radius: var(--radius-8);
+      font-size: var(--body-sm-font-size); line-height: var(--body-sm-line-height);
+      white-space: nowrap;
+      box-shadow: 0 12px 32px color-mix(in srgb, var(--text-default) 16%, transparent);
+      opacity: 0; transition: opacity 120ms;
+      transform: translateX(-50%);
+    }
+    .proto-tooltip-float.is-visible { opacity: 1; }
+
+    /* ══════════════════════════════════
+       原型专有 · 记忆详情弹窗
+    ══════════════════════════════════ */
+    .proto-mem-mask {
+      position: fixed; inset: 0; z-index: 50;
+      background: color-mix(in srgb, var(--text-default) 32%, transparent);
+      display: none; align-items: center; justify-content: center; padding: 24px;
+    }
+    .proto-mem-mask.is-open { display: flex; }
+    .proto-mem-dialog {
+      background: var(--bg-base-default);
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-12);
+      width: 100%; max-width: 720px; height: 80vh;
+      display: flex; flex-direction: column; overflow: visible;
+      box-shadow: 0 24px 64px color-mix(in srgb, var(--text-default) 14%, transparent), 0 4px 16px color-mix(in srgb, var(--text-default) 8%, transparent);
+    }
+    /* 头部：文件图标 + 标题 + 摘要 + 操作 */
+    .proto-mem-dialog__head {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-12) var(--radius-12) 0 0;
+      overflow: hidden;
+      background: var(--bg-base-default);
+      flex-shrink: 0;
+    }
+    .proto-mem-dialog__file-icon {
+      width: 40px; height: 40px; flex-shrink: 0;
+      border-radius: var(--radius-8);
+      background: var(--bg-brand-subtle);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-tertiary);
+    }
+    .proto-mem-dialog__head-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+    .proto-mem-dialog__title { font-size: var(--heading-sm-font-size); font-weight: 600; color: var(--text-default); }
+    .proto-mem-dialog__summary {
+      font-size: var(--body-xs-font-size); color: var(--text-tertiary); line-height: 1.5;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: default;
+    }
+    .proto-mem-dialog__head-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .proto-mem-dialog__icon-btn {
+      width: 28px; height: 28px; border: none; background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--icon-secondary); cursor: pointer;
+      border-radius: var(--radius-6); transition: background 120ms, color 120ms;
+    }
+    .proto-mem-dialog__icon-btn .icon { width: 20px; height: 20px; }
+    .proto-mem-dialog__icon-btn:hover { background: var(--fill-default); color: var(--icon-default); }
+    /* 正文 */
+    .proto-mem-dialog__body {
+      flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden;
+      padding: 24px 20px;
+      color: var(--text-secondary); font-size: var(--body-sm-font-size); line-height: 1.7;
+    }
+    .proto-mem-dialog__body::-webkit-scrollbar { width: 4px; }
+    .proto-mem-dialog__body::-webkit-scrollbar-thumb { background: var(--border-neutral-l1); border-radius: 2px; }
+    .proto-mem-dialog__body h3 { font-size: 16px; font-weight: 600; color: var(--text-default); margin: 0 0 12px; }
+    .proto-mem-dialog__body h4 { font-size: 14px; font-weight: 600; color: var(--text-default); margin: 20px 0 8px; }
+    .proto-mem-dialog__body p { margin: 0 0 10px; }
+    .proto-mem-dialog__body ul { margin: 0 0 10px; padding-left: 20px; }
+    .proto-mem-dialog__body li { margin-bottom: 4px; }
+    .proto-mem-dialog__body a { color: var(--color-info); text-decoration: none; }
+    .proto-mem-dialog__body blockquote {
+      margin: 0 0 12px; padding-left: 12px;
+      border-left: 2px solid var(--border-neutral-l1); color: var(--text-secondary);
+    }
+    /* 编辑态 textarea */
+    .proto-mem-dialog__editor {
+      width: 100%; flex: 1; min-height: 0; resize: none;
+      border: none; outline: none; background: transparent;
+      color: var(--text-default); font-family: var(--code-editor-font-family);
+      font-size: var(--body-sm-font-size); line-height: 1.7;
+    }
+    /* 底部（编辑态） */
+    .proto-mem-dialog__foot {
+      display: none; align-items: center; justify-content: flex-end; gap: 8px;
+      padding: 12px 20px 20px;
+      border-radius: 0 0 var(--radius-12) var(--radius-12);
+      overflow: hidden;
+      background: var(--bg-base-default);
+      flex-shrink: 0;
+    }
+    /* 编辑态：body 变 flex 让 textarea 填充，上下间距 8px */
+    .proto-mem-dialog.is-editing .proto-mem-dialog__body { display: flex; flex-direction: column; padding: 8px 20px; }
+    /* 编辑态：显示 foot，隐藏头部编辑图标 */
+    .proto-mem-dialog.is-editing .proto-mem-dialog__foot { display: flex; }
+    .proto-mem-dialog.is-editing .js-mem-edit { display: none; }
+    .proto-mem-dialog:not(.is-editing) .proto-mem-dialog__editor { display: none; }
+    .proto-mem-dialog.is-editing .proto-mem-dialog__view { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     封面页
+══════════════════════════════════ -->
+<div id="coverPage" class="is-active">
+  <div class="proto-req-card">
+    <h1>记忆设置白盒化</h1>
+    <div class="subtitle">调整「记忆」设置模块的功能，让用户可以感知并管理记忆内容</div>
+
+    <div class="tag-row">
+      <span class="tag brand">设置页 · 记忆</span>
+      <span class="tag">交互变更</span>
+      <span class="tag">页面级原型</span>
+    </div>
+
+    <h2>背景</h2>
+    <p>目前「记忆」设置对用户是黑盒 — 有哪些记忆、都记住了什么、什么时候会被使用，都无处感知。</p>
+
+    <h2>痛点</h2>
+    <ul>
+      <li>不知道 MyFlicker 记住了哪些信息</li>
+      <li>想删除某条记忆时缺少入口</li>
+      <li>「自动记忆」下的子能力划分不清晰</li>
+      <li>提取频次、召回策略等参数无法调节</li>
+    </ul>
+
+    <h2>方案</h2>
+    <ul>
+      <li>基于 <code>ui_kits/setting/index.html</code> 的设置页壳复用</li>
+      <li>严格遵循已有设计规范（导航、卡片、行、Toggle）</li>
+      <li>顶部：<b>配置卡片</b> — 被动记忆 / 自动提取（含频次子项）/ 自动召回 / 近期活动摘要</li>
+      <li>底部：<b>记忆列表卡片</b> — Tab 分类 + 「创建」按钮 + 可编辑/删除的记忆条目</li>
+    </ul>
+  </div>
+  <div style="display:flex;justify-content:flex-end;max-width:880px;width:100%;margin-top:12px;">
+    <button class="mf-btn mf-btn--primary" id="gotoProtoBtn" style="height:36px;padding:0 20px;font-size:14px;">查看原型</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     原型页 · 记忆设置
+══════════════════════════════════ -->
+<div id="protoPage">
+  <div class="setting-shell">
+    <nav class="setting-nav">
+      <button class="setting-nav__back">
+        <span class="icon i-arrowleft icon--14"></span>
+        返回应用
+      </button>
+      <div class="setting-nav__search">
+        <span class="icon i-search" style="color:var(--text-tertiary);"></span>
+        <input type="text" placeholder="请输入" />
+      </div>
+
+      <div class="setting-nav__group-label">个人</div>
+      <button class="setting-nav__item"><span class="icon i-adjustment"></span>通用</button>
+      <button class="setting-nav__item"><span class="icon i-appearance"></span>外观</button>
+      <button class="setting-nav__item"><span class="icon i-models"></span>模型</button>
+      <button class="setting-nav__item"><span class="icon i-keyboard"></span>快捷键</button>
+
+      <div class="setting-nav__group-label" style="margin-top:8px;">编码</div>
+      <button class="setting-nav__item"><span class="icon i-agent"></span>Agent</button>
+      <button class="setting-nav__item"><span class="icon i-skill"></span>Skills</button>
+      <button class="setting-nav__item"><span class="icon i-hooks"></span>Hooks</button>
+      <button class="setting-nav__item is-active"><span class="icon i-memory"></span>记忆</button>
+      <button class="setting-nav__item"><span class="icon i-computer"></span>设备管理</button>
+      <button class="setting-nav__item"><span class="icon i-setting"></span>高级</button>
+    </nav>
+
+    <div class="setting-content">
+      <div class="setting-body">
+
+        <div class="setting-page__title">记忆</div>
+
+        <!-- 配置卡片 -->
+        <div class="setting-group">
+          <div class="setting-group__title">配置</div>
+          <div class="setting-card">
+
+            <div class="setting-row">
+              <div class="setting-row__left">
+                <div class="setting-row__label">被动记忆</div>
+                <div class="setting-row__hint">智能体对话时，自动从对话中提取并沉淀记忆</div>
+              </div>
+              <div class="setting-row__right">
+                <label class="s-toggle">
+                  <input type="checkbox" checked />
+                  <span class="s-toggle__track"></span>
+                </label>
+              </div>
+            </div>
+
+            <!-- 自动提取 + 频次子分组 -->
+            <div class="setting-row setting-row--parent">
+              <div class="setting-row__left">
+                <div class="setting-row__label">自动提取记忆</div>
+                <div class="setting-row__hint">开启后，每隔一段时间或对话轮次后，自动触发记忆捕获</div>
+              </div>
+              <div class="setting-row__right">
+                <label class="s-toggle js-sub-toggle">
+                  <input type="checkbox" checked />
+                  <span class="s-toggle__track"></span>
+                </label>
+              </div>
+            </div>
+            <div class="setting-sub-group-wrap js-sub-content">
+              <div class="setting-sub-group">
+                <div class="setting-sub-row">
+                  <div class="setting-sub-row__left">
+                    <div class="setting-sub-row__label">提取频次</div>
+                    <div class="setting-sub-row__hint">配置模型触发记忆提取的机制</div>
+                  </div>
+                  <div class="proto-mem-freq">
+                    <span>每</span>
+                    <input type="number" value="5" min="1" />
+                    <span>轮</span>
+                    <span style="margin: 0 4px;">或空闲</span>
+                    <input type="number" value="60" min="1" />
+                    <span>分钟</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-row__left">
+                <div class="setting-row__label">自动召回</div>
+                <div class="setting-row__hint">开启后，每次对话开始时自动从记忆库中召回相关内容注入上下文</div>
+              </div>
+              <div class="setting-row__right">
+                <label class="s-toggle">
+                  <input type="checkbox" />
+                  <span class="s-toggle__track"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-row__left">
+                <div class="setting-row__label">近期活动摘要</div>
+                <div class="setting-row__hint">在对话开始时注入近期活动摘要，帮助智能体快速了解近期工作</div>
+              </div>
+              <div class="setting-row__right">
+                <label class="s-toggle">
+                  <input type="checkbox" />
+                  <span class="s-toggle__track"></span>
+                </label>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 记忆列表卡片 -->
+        <div class="setting-group">
+          <div class="setting-group__title">记忆列表</div>
+          <div class="setting-card">
+            <div class="proto-mem-list-card">
+              <div class="proto-mem-list-toolbar">
+                <div class="mf-tabs--pill" style="flex-wrap:wrap;gap:4px;">
+                  <button class="mf-tab--pill is-active" data-tab="profile">profile</button>
+                  <button class="mf-tab--pill" data-tab="preferences">preferences</button>
+                  <button class="mf-tab--pill" data-tab="entities">entities</button>
+                  <button class="mf-tab--pill" data-tab="events">events</button>
+                  <button class="mf-tab--pill" data-tab="soul">soul</button>
+                  <button class="mf-tab--pill" data-tab="identity">identity</button>
+                  <button class="mf-tab--pill" data-tab="experiences">experiences</button>
+                  <button class="mf-tab--pill" data-tab="trajectories">trajectories</button>
+                  <button class="mf-tab--pill" data-tab="skills">skills</button>
+                  <button class="mf-tab--pill" data-tab="tools">tools</button>
+                </div>
+              </div>
+
+              <!-- profile -->
+              <div class="proto-mem-list" data-panel="profile">
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">profile.md</div>
+                    <div class="proto-mem-list-item__desc">用户身份摘要，稳定的个人属性（姓名、职业、技能方向等）</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- preferences -->
+              <div class="proto-mem-list" data-panel="preferences" style="display:none;">
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">coding.md</div>
+                    <div class="proto-mem-list-item__desc">代码风格偏好：TypeScript 优先，禁用 any，函数式风格为主</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">language.md</div>
+                    <div class="proto-mem-list-item__desc">语言偏好：中文回复，代码注释英文，技术术语保持英文</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">reply-style.md</div>
+                    <div class="proto-mem-list-item__desc">回复风格：简洁直接，先给结论再给理由，不需要过多客套</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">toolchain.md</div>
+                    <div class="proto-mem-list-item__desc">工具链偏好：Vite + pnpm，不用 webpack；终端用 zsh + starship</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">design.md</div>
+                    <div class="proto-mem-list-item__desc">设计偏好：极简风，偏好深色模式，用 Token 控色，避免硬编码颜色</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">output-format.md</div>
+                    <div class="proto-mem-list-item__desc">输出格式偏好：代码块要标注语言，长文档用 Markdown 标题分层</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- entities -->
+              <div class="proto-mem-list" data-panel="entities" style="display:none;">
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">项目/MyFlicker Design System.md</div>
+                    <div class="proto-mem-list-item__desc">MyFlicker 设计系统概况：组件库、Token 体系、Kit 工作空间结构</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">项目/前端工程/kp-fe.md</div>
+                    <div class="proto-mem-list-item__desc">kp-fe 前端工程结构、技术栈、主要模块说明</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">人物/张三.md</div>
+                    <div class="proto-mem-list-item__desc">PM，负责增长方向，沟通风格直接，偏好数据说话</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">人物/李四.md</div>
+                    <div class="proto-mem-list-item__desc">后端 TL，Go 专家，code review 严格，关注性能与安全</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">概念/长期记忆系统.md</div>
+                    <div class="proto-mem-list-item__desc">Viking 记忆系统架构：多层分类、提取策略、召回机制</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">概念/设计 Token.md</div>
+                    <div class="proto-mem-list-item__desc">设计 Token 是连接设计与代码的语义变量，分 Global / Alias / Component 三层</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">项目/增长实验平台.md</div>
+                    <div class="proto-mem-list-item__desc">AB 实验平台，支持流量分桶、CUPED 方差缩减、推全决策自动化</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- events -->
+              <div class="proto-mem-list" data-panel="events" style="display:none;">
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">2026-07-28_memory-whitebox.md</div>
+                    <div class="proto-mem-list-item__desc">完成记忆设置白盒化原型，覆盖配置卡片、列表、弹窗查看/编辑、删除确认</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- soul -->
+              <div class="proto-mem-list" data-panel="soul" style="display:none;">
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">soul.md</div>
+                    <div class="proto-mem-list-item__desc">Agent 灵魂：核心价值、边界、性格基调与连续性原则</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- identity -->
+              <div class="proto-mem-list" data-panel="identity" style="display:none;">
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">identity.md</div>
+                    <div class="proto-mem-list-item__desc">Agent 身份：名字、生物类型、vibe、emoji、头像描述</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- experiences -->
+              <div class="proto-mem-list" data-panel="experiences" style="display:none;">
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">code-review.md</div>
+                    <div class="proto-mem-list-item__desc">代码审查场景下的有效方法：先全局再细节，先问意图再提建议</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">ui-prototype.md</div>
+                    <div class="proto-mem-list-item__desc">UI 原型输出：先验收需求三要素再动手，样式隔离铁律不可绕过</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- trajectories -->
+              <div class="proto-mem-list" data-panel="trajectories" style="display:none;">
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">deploy-static-site.md</div>
+                    <div class="proto-mem-list-item__desc">静态站点部署操作合约：build → upload → verify → notify</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- skills -->
+              <div class="proto-mem-list" data-panel="skills" style="display:none;">
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">MyFlicker-AIUI-Kit.md</div>
+                    <div class="proto-mem-list-item__desc">成功率高，适用 UI 原型输出；需先过三要素门槛</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">code-review.md</div>
+                    <div class="proto-mem-list-item__desc">适用 Git diff 审查，产出结构化 CR 报告；非 Git 仓库不触发</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- tools -->
+              <div class="proto-mem-list" data-panel="tools" style="display:none;">
+                <div class="proto-mem-list-item">
+                  <div class="proto-mem-list-item__main">
+                    <div class="proto-mem-list-item__title">replace_in_file.md</div>
+                    <div class="proto-mem-list-item__desc">精准替换工具；大文件改动优先用此工具，避免全量重写截断</div>
+                  </div>
+                  <div class="proto-mem-list-item__actions">
+                    <button class="proto-mem-icon-btn proto-tip js-mem-edit-btn" data-tip="编辑"><span class="icon i-draft icon--14"></span></button>
+                    <button class="proto-mem-icon-btn proto-tip js-mem-del-btn" data-tip="删除"><span class="icon i-delete icon--14"></span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     记忆详情弹窗
+══════════════════════════════════ -->
+<div class="proto-mem-mask" id="memMask">
+  <div class="proto-mem-dialog" id="memDialog">
+    <div class="proto-mem-dialog__head">
+      <div class="proto-mem-dialog__file-icon">
+        <span class="icon i-document icon--20"></span>
+      </div>
+      <div class="proto-mem-dialog__head-main">
+        <div class="proto-mem-dialog__title">这里是文件名称</div>
+        <div class="proto-mem-dialog__summary" title="这里是文件的摘要这里是文件的摘要这里是文件的摘要这里是文件的摘要这里是文件的摘要这里是文件的摘要这里是文件的摘要这里是文件的摘要这里是文件的摘要这里是文件的摘要这里是文件的摘要…">这里是文件的摘要这里是文件的摘要这里是文件的摘要这里是文件的摘要这里是文件的摘要这里是文件的摘要这里是文件的摘要这里是文件的摘要这里是文件的摘要这里是文件的摘要这里是文件的摘要…</div>
+      </div>
+      <div class="proto-mem-dialog__head-actions">
+        <button class="proto-mem-dialog__icon-btn proto-tip js-mem-edit" data-tip="编辑"><span class="icon i-draft icon--20"></span></button>
+        <button class="proto-mem-dialog__icon-btn proto-tip js-mem-close" data-tip="关闭"><span class="icon i-close icon--20"></span></button>
+      </div>
+    </div>
+    <div class="proto-mem-dialog__body">
+      <!-- 查看态 -->
+      <div class="proto-mem-dialog__view">
+        <h3>MEMORY.md – Long-Term Memory</h3>
+        <h4>关于你</h4>
+        <p>本插件旨在优化 Figma 设计工具，支持管理颜色 Token</p>
+        <blockquote>
+          <p>功能描述：用户可以上传颜色值</p>
+          <p>功能描述：用户可以上传颜色值</p>
+          <p style="padding-left:12px;">用户交互：提供输入框或文件上传功能</p>
+        </blockquote>
+        <h4>2. 功能需求</h4>
+        <h4 style="margin-top:12px;">2.1 支持上传颜色 RGB 和 CMYK 格式</h4>
+        <p>本插件旨在优化 Figma 设计工具，支持管理颜色 Token</p>
+        <p>生成的图片可通过此链接查看 <a href="#">图片1.png</a></p>
+        <ul>
+          <li><b>2.1.1 功能描述：</b>用户可以上传颜色值</li>
+          <li><b>2.1.2 用户交互：</b>提供输入框或文件上传功能</li>
+          <li><b>2.1.3 数据处理：</b>解析上传的颜色值</li>
+        </ul>
+        <h4 style="margin-top:12px;">2.2 支持上传颜色 RGB 和 CMYK 格式</h4>
+        <p>本插件旨在优化 Figma 设计工具，支持管理颜色 Token</p>
+        <ul>
+          <li><b>2.2.1 功能描述：</b>用户可以上传颜色值</li>
+          <li><b>2.2.2 用户交互：</b>提供输入框或文件上传功能</li>
+          <li><b>2.2.3 数据处理：</b>解析上传的颜色值</li>
+        </ul>
+      </div>
+      <!-- 编辑态 -->
+      <textarea class="proto-mem-dialog__editor" spellcheck="false"># MEMORY.md – Long-Term Memory
+
+## 关于你
+本插件旨在优化 Figma 设计工具，支持管理颜色 Token
+> 功能描述：用户可以上传颜色值
+> 功能描述：用户可以上传颜色值
+>   用户交互：提供输入框或文件上传功能
+
+## 2. 功能需求
+### 2.1 支持上传颜色 RGB 和 CMYK 格式
+本插件旨在优化 Figma 设计工具，支持管理颜色 Token
+生成的图片可通过此链接查看 [图片1.png](#)
+- 2.1.1 功能描述：用户可以上传颜色值
+- 2.1.2 用户交互：提供输入框或文件上传功能
+- 2.1.3 数据处理：解析上传的颜色值
+
+### 2.2 支持上传颜色 RGB 和 CMYK 格式
+本插件旨在优化 Figma 设计工具，支持管理颜色 Token
+- 2.2.1 功能描述：用户可以上传颜色值
+- 2.2.2 用户交互：提供输入框或文件上传功能
+- 2.2.3 数据处理：解析上传的颜色值</textarea>
+    </div>
+    <div class="proto-mem-dialog__foot">
+      <button class="mf-btn mf-btn--secondary mf-btn--lg js-mem-cancel">取消</button>
+      <button class="mf-btn mf-btn--primary mf-btn--lg js-mem-save">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     删除二次确认弹窗
+══════════════════════════════════ -->
+<!-- ══════════════════════════════════
+     对话页（chat-main iframe）
+══════════════════════════════════ -->
+<div id="chatPage" style="display:none;position:fixed;inset:0;z-index:20;">
+  <iframe
+    id="chatFrame"
+    src="chatting.html"
+    style="width:100%;height:100%;border:none;display:block;"
+  ></iframe>
+</div>
+
+<div class="proto-mem-mask" id="delMask">
+  <div class="mf-dialog" style="max-width:420px;">
+    <div class="mf-dialog__head">
+      <span class="mf-dialog__title" style="display:inline-flex;align-items:center;gap:var(--spacer-8);">
+        <span class="icon" style="width:20px;height:20px;flex:0 0 auto;color:var(--status-error-default);" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M960 512A448 448 0 1 1 64 512 448 448 0 0 1 960 512Z"></path><path style="fill:white" d="M448 320A64 64 0 0 1 576 320V512A64 64 0 0 1 448 512V320zM448 704A64 64 0 1 1 576 704 64 64 0 0 1 448 704z"></path></svg></span>
+        删除记忆
+      </span>
+      <button class="mf-dialog__close js-del-close" aria-label="Close"><span class="icon" style="width:16px;height:16px;" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M820.352 149.312A38.421 38.421 0 0 1 874.688 203.648L566.336 512 874.688 820.352A38.421 38.421 0 0 1 820.352 874.688L512 566.336 203.648 874.688A38.421 38.421 0 0 1 149.312 820.352L457.664 512 149.312 203.648A38.421 38.421 0 0 1 203.648 149.312L512 457.664 820.352 149.312Z"></path></svg></span></button>
+    </div>
+    <div class="mf-dialog__body">
+      此操作不可撤销。记忆 <span style="color:var(--text-default);" id="delMemName">这里是文件名称</span> 将被永久删除。
+    </div>
+    <div class="mf-dialog__foot">
+      <button class="mf-btn mf-btn--secondary mf-btn--lg js-del-cancel">取消</button>
+      <button class="mf-btn mf-btn--danger mf-btn--lg js-del-confirm">删除</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ── Portal Tooltip（脱离 overflow 约束）── */
+  var tipEl = document.createElement('div');
+  tipEl.className = 'proto-tooltip-float';
+  document.body.appendChild(tipEl);
+  var tipTimer = null;
+
+  document.querySelectorAll('[data-tip]').forEach(function(btn) {
+    btn.addEventListener('mouseenter', function() {
+      clearTimeout(tipTimer);
+      var rect = btn.getBoundingClientRect();
+      tipEl.textContent = btn.getAttribute('data-tip');
+      tipEl.style.left = (rect.left + rect.width / 2) + 'px';
+      tipEl.style.top = (rect.top - 8) + 'px';
+      tipEl.style.transform = 'translateX(-50%) translateY(-100%)';
+      tipEl.classList.add('is-visible');
+    });
+    btn.addEventListener('mouseleave', function() {
+      tipTimer = setTimeout(function() { tipEl.classList.remove('is-visible'); }, 80);
+    });
+  });
+
+  document.getElementById('gotoProtoBtn').addEventListener('click', function() {
+    document.getElementById('coverPage').style.display = 'none';
+    document.getElementById('protoPage').style.display = 'block';
+  });
+
+  /* 返回应用：设置页 → 对话页 */
+  document.querySelector('.setting-nav__back').addEventListener('click', function() {
+    document.getElementById('protoPage').style.display = 'none';
+    document.getElementById('chatPage').style.display = 'block';
+  });
+
+  /* 接收 chat-main 发来的「打开设置」消息 */
+  window.addEventListener('message', function(e) {
+    if (e.data === 'open-setting') {
+      document.getElementById('chatPage').style.display = 'none';
+      document.getElementById('protoPage').style.display = 'block';
+    }
+  });
+
+  /* iframe 加载完成后，给 chat-main 的「设置」按钮注入跳转逻辑 */
+  document.getElementById('chatFrame').addEventListener('load', function() {
+    try {
+      var iDoc = this.contentDocument || this.contentWindow.document;
+      var settingBtn = iDoc.querySelector('.mf-aside__footer-setting');
+      if (settingBtn) {
+        settingBtn.addEventListener('click', function() {
+          window.parent.postMessage('open-setting', '*');
+        });
+      }
+    } catch(err) {}
+  });
+
+  /* 提取频次子行随 Toggle 显隐 */
+  document.querySelectorAll('.js-sub-toggle input').forEach(function(input) {
+    var wrap = input.closest('.setting-row--parent').nextElementSibling;
+    if (wrap && wrap.classList.contains('js-sub-content')) {
+      wrap.style.display = input.checked ? '' : 'none';
+      input.addEventListener('change', function() {
+        wrap.style.display = this.checked ? '' : 'none';
+      });
+    }
+  });
+
+  /* 记忆列表 Tab 切换 */
+  document.querySelectorAll('.proto-mem-list-card .mf-tab--pill').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.proto-mem-list-card .mf-tab--pill').forEach(function(t) { t.classList.remove('is-active'); });
+      this.classList.add('is-active');
+      var key = this.getAttribute('data-tab');
+      document.querySelectorAll('.proto-mem-list-card .proto-mem-list').forEach(function(p) {
+        p.style.display = p.getAttribute('data-panel') === key ? '' : 'none';
+      });
+    });
+  });
+
+  /* 左侧导航切换 */
+  document.querySelectorAll('.setting-nav__item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      document.querySelectorAll('.setting-nav__item').forEach(function(i) { i.classList.remove('is-active'); });
+      this.classList.add('is-active');
+    });
+  });
+
+  /* ── 记忆详情弹窗 ── */
+  var memMask = document.getElementById('memMask');
+  var memDialog = document.getElementById('memDialog');
+  var memBody = memDialog.querySelector('.proto-mem-dialog__body');
+
+  function openMemDialog(item, editing) {
+    var title = item.querySelector('.proto-mem-list-item__title').textContent;
+    var desc = item.querySelector('.proto-mem-list-item__desc').textContent;
+    memDialog.querySelector('.proto-mem-dialog__title').textContent = title;
+    var summaryEl = memDialog.querySelector('.proto-mem-dialog__summary');
+    summaryEl.textContent = desc;
+    summaryEl.setAttribute('title', desc);
+    memDialog.classList.toggle('is-editing', !!editing);
+    memMask.classList.add('is-open');
+    memBody.scrollTop = 0;
+  }
+  function closeMemDialog() {
+    memMask.classList.remove('is-open');
+    memDialog.classList.remove('is-editing');
+  }
+
+  document.querySelectorAll('.proto-mem-list-item').forEach(function(item) {
+    /* 点击整行 → 查看态 */
+    item.addEventListener('click', function() { openMemDialog(item, false); });
+    /* 外侧「编辑」图标 → 直接进入编辑态 */
+    var editBtn = item.querySelector('.js-mem-edit-btn');
+    if (editBtn) editBtn.addEventListener('click', function(e) { e.stopPropagation(); openMemDialog(item, true); });
+    /* 外侧「删除」图标 → 二次确认 */
+    var delBtn = item.querySelector('.js-mem-del-btn');
+    if (delBtn) delBtn.addEventListener('click', function(e) { e.stopPropagation(); openDelDialog(item); });
+  });
+
+  /* 删除二次确认 */
+  var delMask = document.getElementById('delMask');
+  var delMemName = document.getElementById('delMemName');
+  function openDelDialog(item) {
+    delMemName.textContent = item.querySelector('.proto-mem-list-item__title').textContent;
+    delMask.classList.add('is-open');
+  }
+  function closeDelDialog() { delMask.classList.remove('is-open'); }
+  delMask.querySelector('.js-del-close').addEventListener('click', closeDelDialog);
+  delMask.querySelector('.js-del-cancel').addEventListener('click', closeDelDialog);
+  delMask.querySelector('.js-del-confirm').addEventListener('click', closeDelDialog);
+  delMask.addEventListener('click', function(e) { if (e.target === delMask) closeDelDialog(); });
+
+  /* 弹窗右上角「编辑」→ 切换到编辑态 */
+  memDialog.querySelector('.js-mem-edit').addEventListener('click', function() {
+    memDialog.classList.add('is-editing');
+    memBody.scrollTop = 0;
+  });
+  /* 关闭 / 取消 */
+  memDialog.querySelector('.js-mem-close').addEventListener('click', closeMemDialog);
+  memDialog.querySelector('.js-mem-cancel').addEventListener('click', function() {
+    memDialog.classList.remove('is-editing');
+  });
+  memDialog.querySelector('.js-mem-save').addEventListener('click', function() {
+    memDialog.classList.remove('is-editing');
+  });
+  /* 点击遮罩关闭 */
+  memMask.addEventListener('click', function(e) {
+    if (e.target === memMask) closeMemDialog();
+  });
+</script>
+
+</body>
+</html>

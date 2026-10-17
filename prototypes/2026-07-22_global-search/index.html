@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>全局搜索 — 原型</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../../colors_and_type.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: var(--bg-base-secondary);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      letter-spacing: var(--body-sm-letter-spacing);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Global Search Dialog ── */
+    .gs-dialog {
+      width: 640px;
+      background: var(--bg-base-default);
+      border-radius: var(--radius-12);
+      box-shadow: 0 8px 40px 0 rgba(0,0,0,.12), 0 2px 8px 0 rgba(0,0,0,.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .gs-dialog__head {
+      display: flex;
+      align-items: center;
+      height: 48px;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--border-neutral-l1);
+      flex-shrink: 0;
+      gap: 12px;
+    }
+
+    .gs-dialog__input {
+      flex: 1 1 auto;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      color: var(--text-default);
+      caret-color: var(--color-info);
+      min-width: 0;
+    }
+    .gs-dialog__input::placeholder { color: var(--text-tertiary); }
+
+    .gs-dialog__clear {
+      flex-shrink: 0;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      color: var(--text-secondary);
+      padding: 0;
+      transition: color 0.15s;
+    }
+    .gs-dialog__clear:hover { color: var(--text-default); }
+
+    .gs-dialog__head-divider {
+      width: 1px;
+      height: 16px;
+      background: var(--border-neutral-l1);
+      flex-shrink: 0;
+    }
+
+    .gs-dialog__close {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      flex-shrink: 0;
+      padding: 0;
+    }
+    .gs-dialog__close:hover { background: transparent; }
+    .gs-dialog__close .ac-icon {
+      width: 16px; height: 16px; flex-shrink: 0;
+      -webkit-mask-size: contain; mask-size: contain;
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      -webkit-mask-position: center; mask-position: center;
+    }
+    .gs-dialog__close .ac-i-close {
+      -webkit-mask-image: url(../../assets/icons/kid/close.svg);
+      mask-image: url(../../assets/icons/kid/close.svg);
+      background-color: var(--icon-secondary);
+    }
+    .gs-dialog__close:hover .ac-i-close { background-color: var(--icon-tertiary); }
+
+    .gs-dialog__body {
+      padding: 8px 12px 12px;
+      max-height: 440px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .gs-section__label {
+      padding: 8px 4px 4px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--text-tertiary);
+    }
+
+    .gs-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      border-radius: var(--radius-8);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .gs-item:hover { background: var(--bg-overlay-l1); }
+
+    .gs-item__icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      -webkit-mask-image: url(../../assets/icons/kid/newconversation.svg);
+      mask-image: url(../../assets/icons/kid/newconversation.svg);
+      -webkit-mask-size: contain; mask-size: contain;
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      -webkit-mask-position: center; mask-position: center;
+      background-color: var(--icon-secondary);
+    }
+
+    .gs-item__content {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .gs-item__row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .gs-item__title {
+      flex: 1 1 auto;
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      color: var(--text-default);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .gs-item__date {
+      flex-shrink: 0;
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      color: var(--text-tertiary);
+    }
+
+    .gs-item__desc {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .gs-mark {
+      background: var(--bg-overlay-l2);
+      color: var(--text-default);
+      font-weight: 600;
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="gs-dialog">
+    <div class="gs-dialog__head">
+      <input class="gs-dialog__input" type="text" value="Code Review" placeholder="搜索会话" />
+      <button class="gs-dialog__clear" type="button">清除</button>
+      <span class="gs-dialog__head-divider"></span>
+      <button class="gs-dialog__close" aria-label="关闭">
+        <span class="ac-icon ac-i-close" aria-hidden="true"></span>
+      </button>
+    </div>
+    <div class="gs-dialog__body">
+
+      <div class="gs-section__label">最近 7 天</div>
+      <div class="gs-item">
+        <span class="gs-item__icon" aria-hidden="true"></span>
+        <div class="gs-item__content">
+          <div class="gs-item__row">
+            <span class="gs-item__title">公司 <mark class="gs-mark">Code Review</mark> 规范</span>
+            <span class="gs-item__date">2026/05/16</span>
+          </div>
+          <span class="gs-item__desc">这里是描述字段这里是描述字段这里是描述字段这里是描述字段</span>
+        </div>
+      </div>
+
+      <div class="gs-section__label">过去 30 天</div>
+      <div class="gs-item">
+        <span class="gs-item__icon" aria-hidden="true"></span>
+        <div class="gs-item__content">
+          <div class="gs-item__row">
+            <span class="gs-item__title">公司 <mark class="gs-mark">Code Review</mark> 规范123</span>
+            <span class="gs-item__date">2026/05/04</span>
+          </div>
+          <span class="gs-item__desc">这里是描述字段这里是描述字段这里是描述字段这里是描述字段</span>
+        </div>
+      </div>
+      <div class="gs-item">
+        <span class="gs-item__icon" aria-hidden="true"></span>
+        <div class="gs-item__content">
+          <div class="gs-item__row">
+            <span class="gs-item__title">公司 <mark class="gs-mark">Code Review</mark> 规范</span>
+            <span class="gs-item__date">2026/05/04</span>
+          </div>
+          <span class="gs-item__desc">这里是描述字段这里是描述字段这里是描述字段这里是描述字段</span>
+        </div>
+      </div>
+      <div class="gs-item">
+        <span class="gs-item__icon" aria-hidden="true"></span>
+        <div class="gs-item__content">
+          <div class="gs-item__row">
+            <span class="gs-item__title">代码开发规范</span>
+            <span class="gs-item__date">2026/04/25</span>
+          </div>
+          <span class="gs-item__desc">这里是描述字段这里是描述字段 <mark class="gs-mark">Code Review</mark> 这里是描述字段这里是描述字段</span>
+        </div>
+      </div>
+
+      <div class="gs-section__label">更早的</div>
+      <div class="gs-item">
+        <span class="gs-item__icon" aria-hidden="true"></span>
+        <div class="gs-item__content">
+          <div class="gs-item__row">
+            <span class="gs-item__title">代码开发规范</span>
+            <span class="gs-item__date">2026/03/12</span>
+          </div>
+          <span class="gs-item__desc">这里是描述字段这里是描述字段 <mark class="gs-mark">Code Review</mark> 这里是描述字段这里是描述字段</span>
+        </div>
+      </div>
+      <div class="gs-item">
+        <span class="gs-item__icon" aria-hidden="true"></span>
+        <div class="gs-item__content">
+          <div class="gs-item__row">
+            <span class="gs-item__title">公司 <mark class="gs-mark">Code Review</mark> 规范</span>
+            <span class="gs-item__date">2026/05/04</span>
+          </div>
+          <span class="gs-item__desc">这里是描述字段这里是描述字段这里是描述字段这里是描述字段</span>
+        </div>
+      </div>
+      <div class="gs-item">
+        <span class="gs-item__icon" aria-hidden="true"></span>
+        <div class="gs-item__content">
+          <div class="gs-item__row">
+            <span class="gs-item__title">公司 <mark class="gs-mark">Code Review</mark> 规范</span>
+            <span class="gs-item__date">2026/05/04</span>
+          </div>
+          <span class="gs-item__desc">这里是描述字段这里是描述字段这里是描述字段这里是描述字段</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Auto 积分档位 — Prototype</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../../colors_and_type.css" />
+  <link rel="stylesheet" href="../../components.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      letter-spacing: var(--body-sm-letter-spacing);
+      min-height: 100%;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body { padding: var(--spacer-32); max-width: 960px; margin: 0 auto; }
+
+    .pv-header { margin-bottom: var(--spacer-32); padding-bottom: var(--spacer-16); border-bottom: 1px solid var(--border-neutral-l1); }
+    .pv-header h1 { font-size: var(--heading-lg-font-size); line-height: var(--heading-lg-line-height); font-weight: var(--heading-lg-font-weight); margin-bottom: var(--spacer-4); }
+    .pv-header p  { color: var(--text-secondary); font-size: var(--body-sm-font-size); }
+
+    .pv-section { padding: var(--spacer-32) 0; border-top: 1px solid var(--border-neutral-l1); }
+    .pv-header + .pv-section { border-top: 0; padding-top: 0; }
+    .pv-section__title { font-size: var(--heading-sm-font-size); line-height: var(--heading-sm-line-height); font-weight: var(--heading-sm-font-weight); margin-bottom: var(--spacer-8); }
+    .pv-section__sub   { font-size: var(--body-sm-font-size); color: var(--text-tertiary); margin-bottom: var(--spacer-20); }
+
+    .canvas { background: var(--bg-base-secondary); border-radius: var(--radius-12); padding: var(--spacer-40); display: flex; justify-content: center; gap: var(--spacer-32); flex-wrap: wrap; }
+    .canvas--right { justify-content: flex-end; }
+
+    /* ─── 原型专有：积分档位 Tab ─── */
+
+    /* 详情面板内 — 分割线 */
+    .proto-detail-divider {
+      height: 1px;
+      background: var(--border-neutral-l1);
+      margin: var(--spacer-12) 0;
+    }
+
+    /* 积分档位 行 */
+    .proto-tier-row {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-8);
+    }
+
+    .proto-tier-label {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    /* 覆盖 components.css 中 toggle-label 的字重和字色 */
+    .mf-model-detail .mf-model-detail__toggle-label {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-tertiary);
+    }
+
+    /* Tab 胶囊容器 */
+    .proto-tier-tabs {
+      display: flex;
+      align-items: center;
+      background: var(--bg-base-secondary);
+      border-radius: var(--radius-8);
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .proto-tier-tab {
+      flex: 1;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      text-align: center;
+      line-height: 20px;
+      white-space: nowrap;
+      transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+      user-select: none;
+      border: none;
+      background: transparent;
+      position: relative;
+    }
+
+    .proto-tier-tab:hover {
+      color: var(--text-secondary);
+    }
+
+    .proto-tier-tab.is-active {
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-weight: 600;
+      box-shadow: 0 1px 3px color-mix(in srgb, var(--text-default) 10%, transparent);
+    }
+
+    /* Tab 内的倍率 badge */
+    .proto-tier-tab__rate {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--text-tertiary);
+      margin-left: 3px;
+    }
+
+    .proto-tier-tab.is-active .proto-tier-tab__rate {
+      color: var(--text-secondary);
+    }
+
+    /* Tab hover tooltip */
+    .proto-tier-tab {
+      position: relative;
+    }
+
+    .proto-tier-tab::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 7px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: color-mix(in srgb, var(--text-default) 88%, transparent);
+      color: var(--bg-base-default);
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 1.4;
+      white-space: nowrap;
+      padding: 5px 8px;
+      border-radius: 6px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+      z-index: 20;
+    }
+
+    .proto-tier-tab:hover::after {
+      opacity: 1;
+    }
+
+    /* ─── 一级面板 Auto 行：倍率同步外显 ─── */
+    /* 使用 data-tier attribute 切换显示 */
+    .proto-auto-meta-cost,
+    .proto-auto-meta-balance {
+      display: none;
+    }
+
+    [data-tier="cost"] .proto-auto-meta-cost { display: inline; }
+    [data-tier="balance"] .proto-auto-meta-balance { display: inline; }
+
+    /* 默认态（无 data-tier）显示 cost */
+    .mf-model-picker:not([data-tier]) .proto-auto-meta-cost { display: inline; }
+
+    /* ─── 演示：右列为"选中后"一级面板同步态 ─── */
+    .proto-demo-pair {
+      display: flex;
+      gap: var(--spacer-32);
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .proto-demo-col {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-12);
+    }
+
+    .proto-demo-col__label {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      text-align: center;
+    }
+
+    /* 标注箭头 */
+    .proto-callout {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: var(--spacer-8);
+    }
+
+    .proto-callout-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--bg-brand);
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── 需求概览卡片 ── -->
+  <div class="proto-req-card">
+    <div class="proto-req-card__header">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="proto-req-card__badge">原型</span>
+        <span class="proto-req-card__title">Auto 积分档位选择</span>
+      </div>
+      <span class="proto-req-card__meta">2026-07-24 · Model Picker</span>
+    </div>
+    <div class="proto-req-card__cols">
+      <div class="proto-req-card__col">
+        <div class="proto-req-card__col-title">需求背景</div>
+        <div class="proto-req-card__col-body">Auto 模式支持两个优化方向 — 经济（最省积分）和均衡（兼顾效果），用户只做一次低认知成本的"方向选择"即可，无需手动挑选具体模型。</div>
+      </div>
+      <div class="proto-req-card__col">
+        <div class="proto-req-card__col-title">痛点</div>
+        <div class="proto-req-card__col-body">Auto 档位单一（仅 1x）— 用户只能在「省积分」一个方向上使用 Auto，无法在省积分和兼顾效果之间做取舍。</div>
+      </div>
+      <div class="proto-req-card__col">
+        <div class="proto-req-card__col-title">解决方案</div>
+        <div class="proto-req-card__col-body">在 Auto 二级详情面板「仅私有部署模型」下方新增分割线 + 积分档位 Tab（经济 / 均衡），切换后对应倍率同步外显到一级面板 Auto 行右侧。</div>
+      </div>
+    </div>
+    <div class="proto-req-card__changes">
+      <div class="proto-req-card__changes-title">本次改动</div>
+      <ul class="proto-req-card__changes-list">
+        <li>在 <code>.mf-model-detail</code>（Auto 行）内，<code>.mf-model-detail__toggle-row</code> 之后新增 <code>.proto-detail-divider</code> 分割线</li>
+        <li>新增积分档位行，含「积分档位」标签 + 胶囊双 Tab（经济 / 均衡），默认选中经济档</li>
+        <li>Tab hover 时以 <code>::after</code> tooltip 展示档位说明，不占用常驻空间</li>
+        <li>切换 Tab 后，一级面板 Auto 行右侧 <code>.mf-model-picker__meta</code> 倍率实时同步（经济 1x / 均衡 2x）</li>
+      </ul>
+    </div>
+  </div>
+
+  <style>
+    /* ── 需求概览卡片（原型专有）── */
+    .proto-req-card {
+      border: 1.5px solid var(--border-neutral-l1);
+      border-radius: var(--radius-12);
+      padding: var(--spacer-24);
+      margin-bottom: var(--spacer-32);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-20);
+    }
+    .proto-req-card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .proto-req-card__badge {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-default);
+      background: var(--bg-base-secondary);
+      border-radius: 4px;
+      padding: 1px 6px;
+      line-height: 18px;
+    }
+    .proto-req-card__title {
+      font-size: var(--heading-sm-font-size);
+      font-weight: var(--heading-sm-font-weight);
+      color: var(--text-default);
+    }
+    .proto-req-card__meta {
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+    .proto-req-card__cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--spacer-12);
+    }
+    .proto-req-card__col {
+      background: var(--bg-base-secondary);
+      border-radius: var(--radius-8);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-8);
+    }
+    .proto-req-card__col-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-default);
+    }
+    .proto-req-card__col-body {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .proto-req-card__changes {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-8);
+    }
+    .proto-req-card__changes-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-default);
+    }
+    .proto-req-card__changes-list {
+      padding-left: var(--spacer-16);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacer-4);
+    }
+    .proto-req-card__changes-list li {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .proto-req-card__changes-list code {
+      font-size: 11px;
+      background: var(--bg-base-secondary);
+      border-radius: 3px;
+      padding: 0 4px;
+      color: var(--text-secondary);
+    }
+  </style>
+
+  <div class="pv-header">
+    <h1>Auto 积分档位 — 变体原型</h1>
+    <p>在 Auto 详情面板「仅私有部署模型」下方新增分割线 + 积分档位 Tab 选择器（经济 / 均衡），切换后倍率同步外显至一级面板 Auto 行右侧。</p>
+  </div>
+
+  <!-- ── Section 1: 详情面板变体（静态展示两种状态） ── -->
+  <div class="pv-section">
+    <div class="pv-section__title">Detail Panel 变体 — 经济 vs 均衡</div>
+    <div class="pv-section__sub">左为经济档（1x，默认），右为均衡档（2x）。分割线在「仅私有部署模型」行之后，积分档位行在其下方。</div>
+    <div class="canvas" style="gap: var(--spacer-48); align-items: flex-start;">
+
+      <!-- Cost 档（选中态） -->
+      <div class="proto-demo-col">
+        <div class="proto-demo-col__label">经济档（默认）</div>
+        <div style="width: 240px;">
+          <div class="mf-model-detail" style="opacity:1; position:static; transform:none; pointer-events:auto;">
+            <div class="mf-model-detail__head">
+              <span class="mf-model-detail__title">Auto</span>
+            </div>
+            <div class="mf-model-detail__section">根据任务类型智能选择模型，适用于大部分场景</div>
+            <div class="mf-model-detail__toggle-row">
+              <span class="mf-model-detail__toggle-label">仅私有部署模型</span>
+              <label class="mf-switch">
+                <input type="checkbox">
+                <span class="mf-switch__thumb"></span>
+              </label>
+            </div>
+            <!-- 新增：分割线 + 积分档位 -->
+            <div class="proto-detail-divider"></div>
+            <div class="proto-tier-row">
+              <span class="proto-tier-label">积分档位</span>
+              <div class="proto-tier-tabs">
+                <button class="proto-tier-tab is-active" data-rate="1x" data-tooltip="最省积分，优先调用轻量模型">
+                  经济 <span class="proto-tier-tab__rate">1x</span>
+                </button>
+                <button class="proto-tier-tab" data-rate="2x" data-tooltip="兼顾效果与成本，适合日常任务">
+                  均衡 <span class="proto-tier-tab__rate">2x</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 均衡档（选中态） -->
+      <div class="proto-demo-col">
+        <div class="proto-demo-col__label">均衡档</div>
+        <div style="width: 240px;">
+          <div class="mf-model-detail" style="opacity:1; position:static; transform:none; pointer-events:auto;">
+            <div class="mf-model-detail__head">
+              <span class="mf-model-detail__title">Auto</span>
+            </div>
+            <div class="mf-model-detail__section">根据任务类型智能选择模型，适用于大部分场景</div>
+            <div class="mf-model-detail__toggle-row">
+              <span class="mf-model-detail__toggle-label">仅私有部署模型</span>
+              <label class="mf-switch">
+                <input type="checkbox">
+                <span class="mf-switch__thumb"></span>
+              </label>
+            </div>
+            <div class="proto-detail-divider"></div>
+            <div class="proto-tier-row">
+              <span class="proto-tier-label">积分档位</span>
+              <div class="proto-tier-tabs">
+                <button class="proto-tier-tab" data-rate="1x" data-tooltip="最省积分，优先调用轻量模型">
+                  经济 <span class="proto-tier-tab__rate">1x</span>
+                </button>
+                <button class="proto-tier-tab is-active" data-rate="2x" data-tooltip="兼顾效果与成本，适合日常任务">
+                  均衡 <span class="proto-tier-tab__rate">2x</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Section 2: 一级面板倍率同步外显 ── -->
+  <div class="pv-section">
+    <div class="pv-section__title">一级面板 — 倍率同步外显</div>
+    <div class="pv-section__sub">选中不同档位后，Auto 行右侧 meta 区域同步展示对应倍率。左为 Cost 1x，右为 Balance 2x。</div>
+    <div class="canvas" style="gap: var(--spacer-48); align-items: flex-start;">
+
+      <!-- Cost 1x -->
+      <div class="proto-demo-col">
+        <div class="proto-demo-col__label">经济档 → Auto 1x · 经济</div>
+        <div style="width: 280px;">
+          <div class="mf-model-picker">
+            <li class="mf-model-picker__item">
+              <span class="mf-model-picker__name">Auto</span>
+              <span class="mf-model-picker__meta">1x · 经济</span>
+            </li>
+            <div class="mf-model-picker__divider"></div>
+            <ul class="mf-model-picker__list">
+              <li class="mf-model-picker__item">
+                <span class="mf-model-picker__icon"><span class="icon icon--mask i-claude" style="width:16px;height:16px;"></span></span>
+                <span class="mf-model-picker__name">Claude Sonnet 4.6</span>
+                <span class="mf-model-picker__meta">5.5x</span>
+                <span class="mf-tag" style="background:var(--bg-info);border-radius:4px;padding:0 4px;">推荐</span>
+              </li>
+              <li class="mf-model-picker__item is-selected">
+                <span class="mf-model-picker__icon"><span class="icon icon--mask i-chatgpt" style="width:16px;height:16px;"></span></span>
+                <span class="mf-model-picker__name">GPT-5.5</span>
+                <span class="mf-model-picker__meta">8.5x</span>
+                <span class="mf-model-picker__spacer"></span>
+                <span class="mf-model-picker__check">
+                  <svg viewBox="0 0 1024 1024" width="16" height="16"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"/></svg>
+                </span>
+              </li>
+              <li class="mf-model-picker__item">
+                <span class="mf-model-picker__icon"><span class="icon icon--mask i-qwen" style="width:16px;height:16px;"></span></span>
+                <span class="mf-model-picker__name">GLM-5.1</span>
+                <span class="mf-model-picker__meta">1x · 私有</span>
+                <span class="mf-tag" style="background:var(--bg-info);border-radius:4px;padding:0 4px;">推荐</span>
+              </li>
+              <li class="mf-model-picker__item">
+                <span class="mf-model-picker__icon"><span class="icon icon--mask i-gemini" style="width:16px;height:16px;"></span></span>
+                <span class="mf-model-picker__name">Gemini 3.1 Pro</span>
+                <span class="mf-model-picker__meta">3.5x</span>
+                <span class="mf-model-picker__spacer"></span>
+                <span class="mf-model-picker__signal"><img src="../../assets/icons/brand/signal-orange.svg" width="16" height="16" alt=""></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Balance 2x -->
+      <div class="proto-demo-col">
+        <div class="proto-demo-col__label">均衡档 → Auto 2x · 均衡</div>
+        <div style="width: 280px;">
+          <div class="mf-model-picker">
+            <li class="mf-model-picker__item">
+              <span class="mf-model-picker__name">Auto</span>
+              <span class="mf-model-picker__meta">2x · 均衡</span>
+            </li>
+            <div class="mf-model-picker__divider"></div>
+            <ul class="mf-model-picker__list">
+              <li class="mf-model-picker__item">
+                <span class="mf-model-picker__icon"><span class="icon icon--mask i-claude" style="width:16px;height:16px;"></span></span>
+                <span class="mf-model-picker__name">Claude Sonnet 4.6</span>
+                <span class="mf-model-picker__meta">5.5x</span>
+                <span class="mf-tag" style="background:var(--bg-info);border-radius:4px;padding:0 4px;">推荐</span>
+              </li>
+              <li class="mf-model-picker__item is-selected">
+                <span class="mf-model-picker__icon"><span class="icon icon--mask i-chatgpt" style="width:16px;height:16px;"></span></span>
+                <span class="mf-model-picker__name">GPT-5.5</span>
+                <span class="mf-model-picker__meta">8.5x</span>
+                <span class="mf-model-picker__spacer"></span>
+                <span class="mf-model-picker__check">
+                  <svg viewBox="0 0 1024 1024" width="16" height="16"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"/></svg>
+                </span>
+              </li>
+              <li class="mf-model-picker__item">
+                <span class="mf-model-picker__icon"><span class="icon icon--mask i-qwen" style="width:16px;height:16px;"></span></span>
+                <span class="mf-model-picker__name">GLM-5.1</span>
+                <span class="mf-model-picker__meta">1x · 私有</span>
+                <span class="mf-tag" style="background:var(--bg-info);border-radius:4px;padding:0 4px;">推荐</span>
+              </li>
+              <li class="mf-model-picker__item">
+                <span class="mf-model-picker__icon"><span class="icon icon--mask i-gemini" style="width:16px;height:16px;"></span></span>
+                <span class="mf-model-picker__name">Gemini 3.1 Pro</span>
+                <span class="mf-model-picker__meta">3.5x</span>
+                <span class="mf-model-picker__spacer"></span>
+                <span class="mf-model-picker__signal"><img src="../../assets/icons/brand/signal-orange.svg" width="16" height="16" alt=""></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Section 3: 完整交互演示 ── -->
+  <div class="pv-section">
+    <div class="pv-section__title">完整交互演示（可操作）</div>
+    <div class="pv-section__sub">hover 模型行时左侧弹出二级详情面板；在 Auto 行的二级面板中切换积分档位 Tab，Auto 行右侧倍率实时同步。</div>
+    <div class="canvas canvas--right" style="padding-right: var(--spacer-48);">
+
+      <div style="position: relative;">
+        <div class="mf-model-picker" id="demo-picker">
+
+          <!-- Auto — 含积分档位二级面板 -->
+          <li class="mf-model-picker__item" style="position:relative;">
+            <span class="mf-model-picker__name">Auto</span>
+            <span class="mf-model-picker__meta" id="demo-auto-meta">1x · 经济</span>
+            <div class="mf-model-detail">
+              <div class="mf-model-detail__head">
+                <span class="mf-model-detail__title">Auto</span>
+              </div>
+              <div class="mf-model-detail__section">根据任务类型智能选择模型，适用于大部分场景</div>
+              <div class="mf-model-detail__toggle-row">
+                <span class="mf-model-detail__toggle-label">仅私有部署模型</span>
+                <label class="mf-switch">
+                  <input type="checkbox">
+                  <span class="mf-switch__thumb"></span>
+                </label>
+              </div>
+              <div class="proto-detail-divider"></div>
+              <div class="proto-tier-row">
+                <span class="proto-tier-label">积分档位</span>
+                <div class="proto-tier-tabs" id="demo-tabs">
+                  <button class="proto-tier-tab is-active" data-rate="1x" data-tooltip="最省积分，优先调用轻量模型">
+                    经济 <span class="proto-tier-tab__rate">1x</span>
+                  </button>
+                  <button class="proto-tier-tab" data-rate="2x" data-tooltip="兼顾效果与成本，适合日常任务">
+                    均衡 <span class="proto-tier-tab__rate">2x</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <div class="mf-model-picker__divider"></div>
+
+          <ul class="mf-model-picker__list">
+
+            <!-- Claude -->
+            <li class="mf-model-picker__item" style="position:relative;">
+              <span class="mf-model-picker__icon"><span class="icon icon--mask i-claude" style="width:16px;height:16px;"></span></span>
+              <span class="mf-model-picker__name">Claude Sonnet 4.6</span>
+              <span class="mf-model-picker__meta">5.5x</span>
+              <span class="mf-tag" style="background:var(--bg-info);border-radius:4px;padding:0 4px;">推荐</span>
+              <div class="mf-model-detail">
+                <div class="mf-model-detail__head">
+                  <span class="mf-model-detail__title">Claude Sonnet 4.6</span>
+                  <div class="mf-model-detail__status mf-model-detail__status--ok">
+                    <img src="../../assets/icons/brand/signal-green.svg" width="16" height="16" alt="">
+                    <span class="mf-model-detail__status-label">正常</span>
+                  </div>
+                </div>
+                <div class="mf-model-detail__section">可用能力</div>
+                <div class="mf-model-detail__caps">
+                  <div class="mf-model-detail__cap">
+                    <span class="mf-model-detail__cap-icon"><svg viewBox="0 0 1024 1024" width="14" height="14"><path fill="currentColor" fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64ZM707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/><path fill="var(--bg-menu)" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg></span>
+                    <span class="mf-model-detail__cap-label">图片理解</span>
+                  </div>
+                  <div class="mf-model-detail__cap">
+                    <span class="mf-model-detail__cap-icon"><svg viewBox="0 0 1024 1024" width="14" height="14"><path fill="currentColor" fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64ZM707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/><path fill="var(--bg-menu)" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg></span>
+                    <span class="mf-model-detail__cap-label">推理</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <!-- GPT-5.5 选中 -->
+            <li class="mf-model-picker__item is-selected" style="position:relative;">
+              <span class="mf-model-picker__icon"><span class="icon icon--mask i-chatgpt" style="width:16px;height:16px;"></span></span>
+              <span class="mf-model-picker__name">GPT-5.5</span>
+              <span class="mf-model-picker__meta">8.5x</span>
+              <span class="mf-model-picker__spacer"></span>
+              <span class="mf-model-picker__check">
+                <svg viewBox="0 0 1024 1024" width="16" height="16"><path fill="currentColor" fill-rule="evenodd" d="M806.72 316.672A38.418 38.418 0 0 1 857.28 374.528L417.28 758.528A38.4 38.4 0 0 1 366.72 758.528L205.44 569.856A38.418 38.418 0 0 1 256 512L392 678.592 806.72 316.672Z"/></svg>
+              </span>
+              <div class="mf-model-detail">
+                <div class="mf-model-detail__head">
+                  <span class="mf-model-detail__title">GPT-5.5</span>
+                  <div class="mf-model-detail__status mf-model-detail__status--ok">
+                    <img src="../../assets/icons/brand/signal-green.svg" width="16" height="16" alt="">
+                    <span class="mf-model-detail__status-label">正常</span>
+                  </div>
+                </div>
+                <div class="mf-model-detail__section">可用能力</div>
+                <div class="mf-model-detail__caps">
+                  <div class="mf-model-detail__cap">
+                    <span class="mf-model-detail__cap-icon"><svg viewBox="0 0 1024 1024" width="14" height="14"><path fill="currentColor" fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64ZM707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/><path fill="var(--bg-menu)" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg></span>
+                    <span class="mf-model-detail__cap-label">图片理解</span>
+                  </div>
+                  <div class="mf-model-detail__cap">
+                    <span class="mf-model-detail__cap-icon"><svg viewBox="0 0 1024 1024" width="14" height="14"><path fill="currentColor" fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64ZM707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/><path fill="var(--bg-menu)" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg></span>
+                    <span class="mf-model-detail__cap-label">推理</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <!-- GLM-5.1 私有 -->
+            <li class="mf-model-picker__item" style="position:relative;">
+              <span class="mf-model-picker__icon"><span class="icon icon--mask i-qwen" style="width:16px;height:16px;"></span></span>
+              <span class="mf-model-picker__name">GLM-5.1</span>
+              <span class="mf-model-picker__meta">1x · 私有</span>
+              <span class="mf-tag" style="background:var(--bg-info);border-radius:4px;padding:0 4px;">推荐</span>
+              <div class="mf-model-detail">
+                <div class="mf-model-detail__head">
+                  <span class="mf-model-detail__title">GLM-5.1</span>
+                  <div class="mf-model-detail__status mf-model-detail__status--ok">
+                    <img src="../../assets/icons/brand/signal-green.svg" width="16" height="16" alt="">
+                    <span class="mf-model-detail__status-label">正常</span>
+                  </div>
+                </div>
+                <div class="mf-model-detail__section">可用能力</div>
+                <div class="mf-model-detail__caps">
+                  <div class="mf-model-detail__cap">
+                    <span class="mf-model-detail__cap-icon"><svg viewBox="0 0 1024 1024" width="14" height="14"><path fill="currentColor" fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64ZM707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/><path fill="var(--bg-menu)" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg></span>
+                    <span class="mf-model-detail__cap-label">图片理解</span>
+                  </div>
+                  <div class="mf-model-detail__cap">
+                    <span class="mf-model-detail__cap-icon"><svg viewBox="0 0 1024 1024" width="14" height="14"><path fill="currentColor" fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64ZM707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/><path fill="var(--bg-menu)" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg></span>
+                    <span class="mf-model-detail__cap-label">推理</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <!-- Gemini 繁忙 -->
+            <li class="mf-model-picker__item" style="position:relative;">
+              <span class="mf-model-picker__icon"><span class="icon icon--mask i-gemini" style="width:16px;height:16px;"></span></span>
+              <span class="mf-model-picker__name">Gemini 3.1 Pro</span>
+              <span class="mf-model-picker__meta">3.5x</span>
+              <span class="mf-model-picker__spacer"></span>
+              <span class="mf-model-picker__signal"><img src="../../assets/icons/brand/signal-orange.svg" width="16" height="16" alt=""></span>
+              <div class="mf-model-detail">
+                <div class="mf-model-detail__head">
+                  <span class="mf-model-detail__title">Gemini 3.1 Pro</span>
+                  <div class="mf-model-detail__status mf-model-detail__status--warn">
+                    <img src="../../assets/icons/brand/signal-orange.svg" width="16" height="16" alt="">
+                    <span class="mf-model-detail__status-label">性能波动</span>
+                  </div>
+                </div>
+                <div class="mf-model-detail__section">可用能力</div>
+                <div class="mf-model-detail__caps">
+                  <div class="mf-model-detail__cap">
+                    <span class="mf-model-detail__cap-icon"><svg viewBox="0 0 1024 1024" width="14" height="14"><path fill="currentColor" fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64ZM707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/><path fill="var(--bg-menu)" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg></span>
+                    <span class="mf-model-detail__cap-label">图片理解</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <!-- DeepSeek 不稳定 -->
+            <li class="mf-model-picker__item" style="position:relative;">
+              <span class="mf-model-picker__icon"><span class="icon icon--mask i-deepseek" style="width:16px;height:16px;"></span></span>
+              <span class="mf-model-picker__name">DeepSeek-V4-Pro</span>
+              <span class="mf-model-picker__meta">1.75x · 私有</span>
+              <span class="mf-model-picker__spacer"></span>
+              <span class="mf-model-picker__signal"><img src="../../assets/icons/brand/signal-red.svg" width="16" height="16" alt=""></span>
+              <div class="mf-model-detail">
+                <div class="mf-model-detail__head">
+                  <span class="mf-model-detail__title">DeepSeek-V4-Pro</span>
+                  <div class="mf-model-detail__status mf-model-detail__status--error">
+                    <img src="../../assets/icons/brand/signal-red.svg" width="16" height="16" alt="">
+                    <span class="mf-model-detail__status-label">明显波动</span>
+                  </div>
+                </div>
+                <div class="mf-model-detail__section">可用能力</div>
+                <div class="mf-model-detail__caps">
+                  <div class="mf-model-detail__cap">
+                    <span class="mf-model-detail__cap-icon"><svg viewBox="0 0 1024 1024" width="14" height="14"><path fill="currentColor" fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64ZM707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/><path fill="var(--bg-menu)" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 305.344 476.608L301.12 480.32A44.8 44.8 0 0 0 301.12 543.68L427.84 670.4 428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L549.12 612.48 707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg></span>
+                    <span class="mf-model-detail__cap-label">推理</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+
+          <div class="mf-model-picker__divider"></div>
+          <button class="mf-model-picker__add">
+            <span>添加模型</span>
+            <span class="mf-model-picker__add-arrow">
+              <svg viewBox="0 0 1024 1024" width="16" height="16"><path fill="currentColor" d="M409.664 793.344A38.4 38.4 0 0 1 358.08 736.512L571.392 543.232C584.96 530.752 593.152 521.984 597.76 515.392 602.176 509.184 601.472 507.52 601.472 508.928 601.472 510.272 602.112 508.672 597.76 502.4 593.152 495.808 584.96 487.04 571.392 474.688L358.08 281.408A38.425 38.425 0 0 1 409.6 224.384L622.912 417.856C637.76 431.232 651.072 444.672 660.672 458.304 670.4 472.32 678.208 489.152 678.208 508.928 678.272 528.704 670.464 545.536 660.608 559.552 651.008 573.248 637.76 586.624 622.912 600.064L409.664 793.344Z"/></svg>
+            </span>
+          </button>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <style>
+    /* JS 控制二级面板显隐，覆盖 components.css 的纯 CSS hover */
+    #demo-picker .mf-model-picker__item .mf-model-detail {
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .15s;
+    }
+    #demo-picker .mf-model-picker__item.is-detail-open .mf-model-detail {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
+  <script>
+    /* Tab 切换 */
+    const tabs = document.querySelectorAll('#demo-tabs .proto-tier-tab');
+    const autoMeta = document.getElementById('demo-auto-meta');
+    const tierConfig = {
+      '1x': '1x · 经济',
+      '2x': '2x · 均衡',
+    };
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('is-active'));
+        tab.classList.add('is-active');
+        autoMeta.textContent = tierConfig[tab.dataset.rate];
+      });
+    });
+
+    /* 二级面板 hover 桥接：item + detail 任意一个在 hover 中就保持显示 */
+    let hideTimer = null;
+
+    document.querySelectorAll('#demo-picker .mf-model-picker__item').forEach(item => {
+      const detail = item.querySelector('.mf-model-detail');
+      if (!detail) return;
+
+      const show = () => {
+        clearTimeout(hideTimer);
+        // 先关掉其他行
+        document.querySelectorAll('#demo-picker .mf-model-picker__item').forEach(i => {
+          if (i !== item) i.classList.remove('is-detail-open');
+        });
+        item.classList.add('is-detail-open');
+      };
+
+      const scheduleHide = () => {
+        hideTimer = setTimeout(() => item.classList.remove('is-detail-open'), 80);
+      };
+
+      item.addEventListener('mouseenter', show);
+      item.addEventListener('mouseleave', scheduleHide);
+      detail.addEventListener('mouseenter', () => { clearTimeout(hideTimer); });
+      detail.addEventListener('mouseleave', scheduleHide);
+    });
+  </script>
+
+</body>
+</html>

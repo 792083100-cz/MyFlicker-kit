@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>上下文成分占用拆分展示 — Prototype</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../../colors_and_type.css" />
+  <link rel="stylesheet" href="../../components.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ══════════════════════════════
+       封面页
+    ══════════════════════════════ */
+    #coverPage {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 48px 24px;
+    }
+    .proto-req-card {
+      border: 1.5px solid var(--border-neutral-l1);
+      border-radius: var(--radius-12);
+      padding: var(--spacer-24);
+      max-width: 880px; width: 100%;
+      display: flex; flex-direction: column; gap: var(--spacer-20);
+    }
+    .proto-req-card__header { display: flex; align-items: center; justify-content: space-between; }
+    .proto-req-card__badge { font-size: 11px; font-weight: 500; color: var(--text-default); background: var(--bg-base-secondary); border-radius: 4px; padding: 1px 6px; line-height: 18px; }
+    .proto-req-card__title { font-size: var(--heading-sm-font-size); font-weight: var(--heading-sm-font-weight); color: var(--text-default); }
+    .proto-req-card__meta { font-size: 12px; color: var(--text-tertiary); }
+    .proto-req-card__cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--spacer-12); }
+    .proto-req-card__col { background: var(--bg-base-secondary); border-radius: var(--radius-8); padding: 14px 16px; display: flex; flex-direction: column; gap: var(--spacer-8); }
+    .proto-req-card__col-title { font-size: 13px; font-weight: 600; color: var(--text-default); }
+    .proto-req-card__col-body { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+    .proto-req-card__changes { display: flex; flex-direction: column; gap: var(--spacer-8); }
+    .proto-req-card__changes-title { font-size: 13px; font-weight: 600; color: var(--text-default); }
+    .proto-req-card__changes-list { padding-left: var(--spacer-16); display: flex; flex-direction: column; gap: var(--spacer-4); }
+    .proto-req-card__changes-list li { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+    .proto-req-card__changes-list code { font-size: 11px; background: var(--bg-base-secondary); border-radius: 3px; padding: 0 4px; color: var(--text-secondary); }
+
+    /* ══════════════════════════════
+       原型页
+    ══════════════════════════════ */
+    #protoPage { display: none; height: 100vh; overflow: hidden; }
+
+    /* icon 系统 */
+    .icon {
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      width: 16px; height: 16px;
+      -webkit-mask-size: contain; mask-size: contain;
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      -webkit-mask-position: center; mask-position: center;
+      background-color: currentColor;
+    }
+    .icon--20 { width: 20px; height: 20px; }
+    .icon--14 { width: 14px; height: 14px; }
+    .icon--12 { width: 12px; height: 12px; }
+    .icon--mask { -webkit-mask-size: contain; mask-size: contain; }
+
+    .i-newchat        { -webkit-mask-image: url(../../assets/icons/kid/edit.svg);              mask-image: url(../../assets/icons/kid/edit.svg); }
+    .i-search         { -webkit-mask-image: url(../../assets/icons/kid/search.svg);            mask-image: url(../../assets/icons/kid/search.svg); }
+    .i-schedule       { -webkit-mask-image: url(../../assets/icons/kid/scheduledtasks.svg);    mask-image: url(../../assets/icons/kid/scheduledtasks.svg); }
+    .i-skill          { -webkit-mask-image: url(../../assets/icons/kid/skill.svg);             mask-image: url(../../assets/icons/kid/skill.svg); }
+    .i-knowledge      { -webkit-mask-image: url(../../assets/icons/kid/knowledge.svg);         mask-image: url(../../assets/icons/kid/knowledge.svg); }
+    .i-closefolder    { -webkit-mask-image: url(../../assets/icons/kid/closefolder.svg);       mask-image: url(../../assets/icons/kid/closefolder.svg); }
+    .i-openfolder     { -webkit-mask-image: url(../../assets/icons/kid/openfolder.svg);        mask-image: url(../../assets/icons/kid/openfolder.svg); }
+    .i-leftsidebar    { -webkit-mask-image: url(../../assets/icons/kid/leftsidebar.svg);       mask-image: url(../../assets/icons/kid/leftsidebar.svg); }
+    .i-unfold         { -webkit-mask-image: url(../../assets/icons/kid/myflicker_system_unfold.svg); mask-image: url(../../assets/icons/kid/myflicker_system_unfold.svg); }
+    .i-arrowdown      { -webkit-mask-image: url(../../assets/icons/kid/arrowdown.svg);         mask-image: url(../../assets/icons/kid/arrowdown.svg); }
+    .i-add            { -webkit-mask-image: url(../../assets/icons/kid/add.svg);               mask-image: url(../../assets/icons/kid/add.svg); }
+    .i-addgroup       { -webkit-mask-image: url(../../assets/icons/kid/addgroup.svg);          mask-image: url(../../assets/icons/kid/addgroup.svg); }
+    .i-more           { -webkit-mask-image: url(../../assets/icons/kid/more.svg);              mask-image: url(../../assets/icons/kid/more.svg); }
+    .i-setting        { -webkit-mask-image: url(../../assets/icons/kid/setting.svg);           mask-image: url(../../assets/icons/kid/setting.svg); }
+    .i-points         { -webkit-mask-image: url(../../assets/icons/kid/points.svg);            mask-image: url(../../assets/icons/kid/points.svg); }
+    .i-generating     { -webkit-mask-image: url(../../assets/icons/kid/generating.svg);        mask-image: url(../../assets/icons/kid/generating.svg); }
+    .i-draft          { -webkit-mask-image: url(../../assets/icons/kid/draft.svg);             mask-image: url(../../assets/icons/kid/draft.svg); }
+    .i-pintotop       { -webkit-mask-image: url(../../assets/icons/kid/pintotop.svg);          mask-image: url(../../assets/icons/kid/pintotop.svg); }
+    .i-gencomp        { -webkit-mask-image: url(../../assets/icons/kid/generationcompleted.svg); mask-image: url(../../assets/icons/kid/generationcompleted.svg); }
+    .i-share          { -webkit-mask-image: url(../../assets/icons/kid/share.svg);             mask-image: url(../../assets/icons/kid/share.svg); }
+    .i-copy           { -webkit-mask-image: url(../../assets/icons/kid/copy.svg);              mask-image: url(../../assets/icons/kid/copy.svg); }
+    .i-send           { -webkit-mask-image: url(../../assets/icons/kid/send.svg);              mask-image: url(../../assets/icons/kid/send.svg); }
+    .i-context        { -webkit-mask-image: url(../../assets/icons/kid/context.svg);           mask-image: url(../../assets/icons/kid/context.svg); }
+    .i-earth          { -webkit-mask-image: url(../../assets/icons/kid/earth.svg);             mask-image: url(../../assets/icons/kid/earth.svg); }
+    .i-refresh        { -webkit-mask-image: url(../../assets/icons/kid/refresh.svg);           mask-image: url(../../assets/icons/kid/refresh.svg); }
+    .i-safe           { -webkit-mask-image: url(../../assets/icons/kid/safe.svg);              mask-image: url(../../assets/icons/kid/safe.svg); }
+    .i-computer       { -webkit-mask-image: url(../../assets/icons/kid/computer.svg);          mask-image: url(../../assets/icons/kid/computer.svg); }
+    .i-assets         { -webkit-mask-image: url(../../assets/icons/kid/assets.svg);            mask-image: url(../../assets/icons/kid/assets.svg); }
+    .i-flash          { -webkit-mask-image: url(../../assets/icons/kid/flash.svg);             mask-image: url(../../assets/icons/kid/flash.svg); }
+    .i-claude         { -webkit-mask-image: url(../../assets/icons/brand/claude.svg);          mask-image: url(../../assets/icons/brand/claude.svg); }
+
+    /* App Shell */
+    .app-shell {
+      display: flex;
+      height: 100vh; width: 100%;
+      background: var(--bg-brand-subtle);
+      gap: 4px;
+    }
+
+    /* icon-btn */
+    .icon-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px;
+      border-radius: var(--radius-4); border: none; background: transparent;
+      cursor: pointer; color: var(--text-tertiary);
+      transition: background 120ms, color 120ms; flex-shrink: 0;
+    }
+    .icon-btn:hover { background: var(--fill-default); color: var(--text-default); }
+    .icon-btn--28 { width: 28px; height: 28px; border-radius: var(--radius-8); }
+
+    /* ── Main chat area ── */
+    .chat-main {
+      flex: 1; display: flex; flex-direction: column;
+      min-width: 0;
+      background: var(--bg-base-default);
+      border-radius: 8px; overflow: hidden;
+      margin: 8px 8px 8px 0;
+      height: calc(100vh - 16px);
+    }
+
+    /* ── macOS-style window chrome ── */
+    .win-chrome {
+      height: 40px; flex-shrink: 0;
+      display: flex; align-items: center;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--border-neutral-l1);
+      position: relative;
+    }
+    .win-chrome__dots { display: flex; align-items: center; gap: 6px; }
+    .win-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      display: block; flex-shrink: 0;
+    }
+    .win-dot--red    { background: #FF5F57; }
+    .win-dot--yellow { background: #FEBC2E; }
+    .win-dot--green  { background: #28C840; }
+    .win-chrome__tabs {
+      position: absolute;
+      left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center;
+      gap: 0;
+    }
+    .win-tab {
+      height: 24px; padding: 0 14px;
+      font-size: 12px; font-weight: 500;
+      border: none; background: transparent; cursor: pointer;
+      color: var(--text-tertiary);
+      border-radius: var(--radius-4);
+      transition: color 120ms, background 120ms;
+    }
+    .win-tab.is-active { color: var(--text-default); background: var(--fill-default); }
+    .win-chrome__right { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+
+    /* ── Topbar ── */
+    .chat-topbar {
+      height: 40px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 16px; gap: 8px;
+    }
+    .chat-topbar__title {
+      font-size: var(--body-sm-font-size); font-weight: 500;
+      color: var(--text-default);
+      flex: 1; min-width: 0;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .chat-topbar__right { display: flex; align-items: center; gap: 4px; }
+    .topbar-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      height: 28px; padding: 0 6px;
+      border: none; border-radius: var(--radius-4);
+      background: transparent; cursor: pointer;
+      font-size: var(--body-sm-font-size); color: var(--text-secondary);
+      transition: background 120ms, color 120ms;
+    }
+    .topbar-btn:hover { background: var(--fill-default); color: var(--text-default); }
+
+    /* ── Messages ── */
+    .chat-messages {
+      flex: 1; overflow-y: auto; position: relative;
+      display: flex; flex-direction: column;
+      padding: 24px 24px 0; gap: 0;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--border-neutral-l1); border-radius: 2px; }
+    .message-list-body-column { max-width: 800px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; }
+
+    .msg { display: flex; gap: 12px; align-items: flex-start; padding: 16px 0; }
+    .msg--user { flex-direction: row-reverse; }
+    .msg__bubble { display: flex; flex-direction: column; gap: 4px; max-width: 560px; }
+    .msg--user .msg__bubble { align-items: flex-end; }
+    .msg__text {
+      background: var(--bg-base-secondary);
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-12);
+      padding: 12px 16px;
+      font-size: var(--body-sm-font-size); line-height: 1.6;
+      color: var(--text-default);
+    }
+    .msg--user .msg__text {
+      background: var(--bg-brand-subtle); border-color: var(--bg-brand-subtle);
+      border-radius: var(--radius-12) var(--radius-4) var(--radius-12) var(--radius-12);
+    }
+    .msg--ai .msg__text { background: transparent; border: none; padding: 0; }
+    .msg__tool-process {
+      display: flex; align-items: center; gap: 6px;
+      width: 100%; padding: 8px 0; margin-bottom: 4px;
+      background: transparent; border: none;
+      border-bottom: 1px solid var(--border-neutral-l1);
+      font-size: var(--body-xs-font-size); color: var(--text-secondary);
+      cursor: pointer;
+    }
+    .msg__body { font-size: 13px; line-height: 1.5; color: var(--text-default); }
+    .msg__body h2 { font-size: 16px; font-weight: 600; margin-top: 8px; margin-bottom: 6px; }
+    .msg__body h3 { font-size: 14px; font-weight: 600; margin-top: 7px; margin-bottom: 5px; }
+    .msg__body p { font-size: 13px; line-height: 1.5; margin-top: 3px; margin-bottom: 0; }
+    .msg__body p:first-child { margin-top: 0; }
+    .msg__body ul, .msg__body ol { font-size: 13px; line-height: 1.5; margin: 3px 0; padding-left: 20px; }
+    .msg__body li { margin: 2px 0; }
+    .msg__body a { color: var(--text-brand); text-decoration: none; }
+    .msg__body a:hover { text-decoration: underline; }
+
+    /* ── Code input area ── */
+    .chat-input-wrap {
+      flex-shrink: 0;
+      padding: 8px 24px 0;
+      position: relative; /* 成分面板的定位父级 */
+    }
+    .chat-input-inner { max-width: 800px; margin: 0 auto; }
+
+    /* 覆盖 mf-chat-input 尺寸（仅作用于原型页） */
+    #protoPage .mf-chat-input { padding: 12px !important; }
+    #protoPage .mf-chat-input__textarea { max-height: 200px !important; overflow-y: hidden; resize: none; }
+    #protoPage .mf-chat-input__textarea.is-overflow { overflow-y: auto; }
+    #protoPage .mf-chat-input__model-arrow { width: 16px !important; height: 16px !important; flex: 0 0 16px !important; }
+
+    /* ── notice 行 ── */
+    .chat-notice-bar {
+      max-width: 800px; margin: 0 auto;
+      padding: 6px 0 8px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 6px;
+      font-size: var(--body-xs-font-size);
+      line-height: var(--body-xs-line-height);
+      color: var(--text-tertiary);
+    }
+    .proto-ctx-link {
+      color: var(--text-brand);
+      font-size: var(--body-xs-font-size);
+      background: none; border: none; cursor: pointer; padding: 0;
+      transition: opacity 120ms;
+    }
+    .proto-ctx-link:hover { opacity: 0.75; }
+    .chat-notice-bar__sep {
+      width: 1px; height: 10px;
+      background: var(--border-neutral-l1);
+    }
+
+    /* ══════════════════════════════════════════════
+       PROTO-ONLY：上下文成分面板  .proto-ctx-*
+    ══════════════════════════════════════════════ */
+    .proto-ctx-panel {
+      position: absolute;
+      /* 锚定在输入框右侧上方 */
+      bottom: calc(100% - 8px);
+      right: 24px;
+      width: 264px;
+      background: var(--bg-menu);
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-12);
+      box-shadow: 0 8px 28px color-mix(in srgb, var(--text-default) 16%, transparent);
+      z-index: 200;
+      /* 弹出动效 */
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(6px) scale(0.98);
+      transform-origin: bottom right;
+      transition: opacity .12s ease, transform .16s cubic-bezier(.22,1,.36,1);
+    }
+    .proto-ctx-panel.is-open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    .proto-ctx-panel__header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 12px 8px;
+    }
+    .proto-ctx-panel__title {
+      font-size: 13px; font-weight: 600; color: var(--text-default);
+    }
+    .proto-ctx-panel__close {
+      width: 20px; height: 20px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: none; border: none; cursor: pointer;
+      color: var(--text-secondary);
+      border-radius: var(--radius-4);
+      transition: background 120ms, color 120ms;
+    }
+    .proto-ctx-panel__close:hover { background: var(--fill-default); color: var(--text-default); }
+
+    .proto-ctx-panel__summary {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 12px 10px;
+    }
+    .proto-ctx-panel__pct { font-size: 13px; font-weight: 500; color: var(--text-default); }
+    .proto-ctx-panel__total { font-size: 11px; color: var(--text-tertiary); }
+
+    /* 彩色分段进度条 */
+    .proto-ctx-progress {
+      height: 6px; margin: 0 12px 12px;
+      border-radius: 3px; overflow: hidden;
+      display: flex; background: var(--bg-base-secondary);
+    }
+    .proto-ctx-seg { height: 100%; }
+
+    .proto-ctx-divider { height: 1px; background: var(--border-neutral-l1); margin: 0 12px 6px; }
+
+    /* 成分列表 */
+    .proto-ctx-list { padding: 0 6px 8px; display: flex; flex-direction: column; gap: 0; }
+    .proto-ctx-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 5px 6px; border-radius: var(--radius-4);
+      cursor: default; transition: background 100ms;
+    }
+    .proto-ctx-row:hover { background: var(--fill-default); }
+    .proto-ctx-dot {
+      width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+    }
+    .proto-ctx-row__name { flex: 1; font-size: 12px; color: var(--text-secondary); }
+    .proto-ctx-row__val { font-size: 12px; color: var(--text-tertiary); font-variant-numeric: tabular-nums; }
+
+    :root {
+      --spacer-6: 6px; --spacer-10: 10px;
+      --spacer-16: 16px; --spacer-20: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ 封面页 ══════════════ -->
+<div id="coverPage">
+  <div class="proto-req-card">
+    <div class="proto-req-card__header">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="proto-req-card__badge">原型</span>
+        <span class="proto-req-card__title">上下文成分占用拆分展示</span>
+      </div>
+      <span class="proto-req-card__meta">2026-07-29 · Context Breakdown · v1.0.0</span>
+    </div>
+    <div class="proto-req-card__cols">
+      <div class="proto-req-card__col">
+        <div class="proto-req-card__col-title">需求背景</div>
+        <div class="proto-req-card__col-body">为提升上下文使用的可解释性，将上下文占用量拆分展示不同上下文成分的占用情况，帮助用户理解当前会话的上下文结构，建立对长会话行为的预期。</div>
+      </div>
+      <div class="proto-req-card__col">
+        <div class="proto-req-card__col-title">痛点</div>
+        <div class="proto-req-card__col-body">当前仅展示总使用率（如 44%），用户无法判断消耗来源，缺乏对 System Prompt / Tools / Skills / MCP 等静态配置的感知，不知道哪一项应当管理。</div>
+      </div>
+      <div class="proto-req-card__col">
+        <div class="proto-req-card__col-title">解决方案</div>
+        <div class="proto-req-card__col-body">在 chatting 页 notice 行展示上下文使用摘要 + 「查看详情」/「直接上下文」入口；点击「查看详情」弹出成分面板（彩色进度条 + 7 成分列表）。输入框换用 Code 模式。</div>
+      </div>
+    </div>
+    <div class="proto-req-card__changes">
+      <div class="proto-req-card__changes-title">本次改动</div>
+      <ul class="proto-req-card__changes-list">
+        <li>chatting 页输入框替换为 Code 模式（<code>component-chat-input-code.html</code>）：Claude Code · Claude Sonnet 4.6 · 执行前询问 + 项目区</li>
+        <li>notice 行新增：<code>上下文使用：44%（89K / 200K）</code> + 「查看详情」（打开面板）+ 「直接上下文」（清空当前会话上下文）</li>
+        <li>面板 <code>.proto-ctx-panel</code>：header + 已使用百分比 + 彩色分段进度条 + 7 项成分（System prompt / Tool definitions / Rules / Skills / MCP / Subagent definition / Conversation）</li>
+        <li>面板支持 × 关闭 / 点击外部关闭；所有新增样式在 <code>.proto-ctx-*</code> 命名空间内，不污染 components.css</li>
+      </ul>
+    </div>
+  </div>
+  <div style="display:flex;justify-content:flex-end;max-width:880px;width:100%;margin-top:8px;">
+    <button class="mf-btn mf-btn--primary" id="gotoProtoBtn" style="height:36px;padding:0 20px;font-size:14px;">查看原型</button>
+  </div>
+</div>
+
+<!-- ══════════════ 原型页 ══════════════ -->
+<div id="protoPage">
+<div class="app-shell">
+
+  <!-- ── Sidebar ── -->
+  <aside class="mf-aside">
+    <div class="mf-aside__header">
+      <div class="mf-aside__workspace">
+        <img class="mf-aside__workspace-avatar" src="../../assets/icons/workspace-myflicker.svg" alt="workspace" />
+        <span class="mf-aside__workspace-name">个人空间</span>
+        <span class="icon i-unfold mf-aside__workspace-unfold"></span>
+      </div>
+      <button class="mf-aside__collapse" aria-label="收起侧边栏">
+        <span class="icon i-leftsidebar"></span>
+      </button>
+    </div>
+
+    <nav class="mf-aside__nav">
+      <div class="mf-aside__nav-item is-active">
+        <span class="icon i-newchat"></span>
+        <span class="mf-aside__nav-item__label">新对话</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-search"></span>
+        <span class="mf-aside__nav-item__label">搜索</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-schedule"></span>
+        <span class="mf-aside__nav-item__label">定时任务</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-skill"></span>
+        <span class="mf-aside__nav-item__label">技能</span>
+      </div>
+    </nav>
+
+    <div class="mf-aside__body">
+      <div class="mf-aside__section-label is-always-show">
+        <span>分组</span>
+        <div class="mf-aside__section-label-actions">
+          <button class="mf-aside__icon-btn" aria-label="新建分组"><span class="icon i-addgroup"></span></button>
+          <button class="mf-aside__icon-btn" aria-label="新建对话"><span class="icon i-add"></span></button>
+        </div>
+      </div>
+
+      <div class="mf-aside__group">
+        <div class="mf-aside__group-icon"><span class="icon i-openfolder"></span></div>
+        <span class="mf-aside__group-name">spaces name 1</span>
+        <div class="mf-aside__group-actions">
+          <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+          <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+        </div>
+      </div>
+      <div class="mf-aside__group-sessions">
+        <div class="mf-aside__session"><span class="mf-aside__session-status"></span><span class="mf-aside__session-title">做一个 Logo</span><span class="mf-aside__session-meta"><span class="mf-aside__session-time">今天</span></span></div>
+        <div class="mf-aside__session is-active">
+          <span class="mf-aside__session-status"><span class="icon i-generating" style="color:var(--text-brand);"></span></span>
+          <span class="mf-aside__session-title">构建 MyFlicker 世界</span>
+          <span class="mf-aside__session-meta"><span class="mf-aside__session-time">16:22</span><button class="mf-aside__icon-btn"><span class="icon i-more"></span></button></span>
+        </div>
+        <div class="mf-aside__session"><span class="mf-aside__session-status"></span><span class="mf-aside__session-title">有趣的故事</span><span class="mf-aside__session-meta"><span class="mf-aside__session-time">昨天</span></span></div>
+        <div class="mf-aside__session"><span class="mf-aside__session-status"></span><span class="mf-aside__session-title">做一个 Logo</span><span class="mf-aside__session-meta"><span class="mf-aside__session-time">昨天</span></span></div>
+        <div class="mf-aside__session" style="padding-left:24px;"><span class="mf-aside__session-status"></span><span class="mf-aside__session-title">做一个 Logo</span></div>
+        <div class="mf-aside__session" style="padding-left:24px;"><span class="mf-aside__session-status"></span><span class="mf-aside__session-title">做一个 Logo</span></div>
+      </div>
+
+      <div class="mf-aside__group" style="margin-top:4px;">
+        <div class="mf-aside__group-icon"><span class="icon i-closefolder"></span></div>
+        <span class="mf-aside__group-name">spaces name 2</span>
+        <div class="mf-aside__group-actions">
+          <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+          <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+        </div>
+      </div>
+
+      <div class="mf-aside__section-label">
+        <span>对话</span>
+        <div class="mf-aside__section-label-actions">
+          <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div class="mf-aside__session is-active"><span class="mf-aside__session-status"><span class="icon i-generating" style="color:var(--text-brand);"></span></span><span class="mf-aside__session-title">构建 MyFlicker 世界</span><span class="mf-aside__session-meta"><span class="mf-aside__session-time">16:22</span><button class="mf-aside__icon-btn"><span class="icon i-more"></span></button></span></div>
+        <div class="mf-aside__session"><span class="mf-aside__session-status"></span><span class="mf-aside__session-title">做一个 Logo</span><span class="mf-aside__session-meta"><span class="mf-aside__session-time">今天</span></span></div>
+        <div class="mf-aside__session"><span class="mf-aside__session-status"></span><span class="mf-aside__session-title">派对</span></div>
+        <div class="mf-aside__session"><span class="mf-aside__session-status"></span><span class="mf-aside__session-title">订机票旅行</span></div>
+      </div>
+    </div>
+
+    <div class="mf-aside__footer">
+      <button class="mf-aside__footer-setting">
+        <span class="icon i-setting"></span>
+        <span>设置</span>
+      </button>
+      <div class="mf-aside__footer-credit">
+        <img src="../../assets/icons/points-gradient.svg" width="14" height="14" style="flex-shrink:0;" />
+        <span>积分：剩余 92%</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <main class="chat-main">
+
+    <!-- macOS-style window chrome -->
+    <div class="win-chrome">
+      <div class="win-chrome__dots">
+        <span class="win-dot win-dot--red"></span>
+        <span class="win-dot win-dot--yellow"></span>
+        <span class="win-dot win-dot--green"></span>
+      </div>
+      <div class="win-chrome__tabs">
+        <button class="win-tab" onclick="document.querySelectorAll('.win-tab').forEach(t=>t.classList.remove('is-active'));this.classList.add('is-active')">Work</button>
+        <button class="win-tab is-active" onclick="document.querySelectorAll('.win-tab').forEach(t=>t.classList.remove('is-active'));this.classList.add('is-active')">Code</button>
+      </div>
+      <div class="win-chrome__right">
+        <button class="icon-btn icon-btn--28" aria-label="设置"><span class="icon i-setting"></span></button>
+        <button class="topbar-btn" aria-label="资产"><span class="icon icon--14 i-assets"></span><span>资产</span></button>
+      </div>
+    </div>
+
+    <!-- Topbar -->
+    <div class="chat-topbar">
+      <span class="chat-topbar__title">构建 MyFlicker 世界</span>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-messages">
+      <div class="message-list-body-column">
+
+        <!-- user -->
+        <div class="msg msg--user">
+          <div class="msg__bubble">
+            <div class="msg__text">帮我生成一个这并发布者的用户调研文档，以 pdf 形式发给我</div>
+          </div>
+        </div>
+
+        <!-- ai -->
+        <div class="msg msg--ai">
+          <div class="msg__bubble" style="max-width:660px;width:100%;">
+            <div class="msg__text">
+              <button class="msg__tool-process">
+                <span>已处理</span>
+                <span style="color:var(--text-tertiary);font-size:11px;">25min36s</span>
+                <span class="icon i-arrowdown icon--14" style="color:var(--text-tertiary);"></span>
+              </button>
+              <div class="msg__body">
+                <p>以下是关于优化 Figma 插件的产品需求文档（PRD）</p>
+                <h2>产品需求文档 (PRD)</h2>
+                <h3>1. 概述</h3>
+                <p>本插件旨在优化 Figma 设计工具，支持管理颜色 Token<br>
+                  功能描述：用户可以上传颜色信息<br>
+                  功能描述：用户可以上传颜色信息<br>
+                  用户交互：提供输入框文件文件上传功能
+                </p>
+                <h3>2. 功能需求</h3>
+                <p><strong>2.1 支持上传颜色 RGB 和 CMYK 格式</strong></p>
+                <p>本插件旨在优化 Figma 设计工具，支持管理颜色 Token<br>
+                  生成的图片可以通过链接查看 <a href="#">图片1.png</a>
+                </p>
+                <ul>
+                  <li>2.1.1 功能描述：用户可以上传颜色值</li>
+                  <li>2.1.2 用户交互：提供输入框文件文件上传功能</li>
+                  <li>2.1.3 数据处理：解析上传的颜色值</li>
+                </ul>
+                <p><strong>2.2 支持上传颜色 RGB CMYK 格式</strong></p>
+                <p>本插件旨在优化 Figma 设计工具，支持管理颜色 Token</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /chat-messages -->
+
+    <!-- ── 输入区 (Code 模式) ── -->
+    <div class="chat-input-wrap" id="inputWrap">
+      <div class="chat-input-inner">
+
+        <!-- 上下文成分面板（prototype-only，锚在 input-wrap 内） -->
+        <div class="proto-ctx-panel" id="ctxPanel">
+          <div class="proto-ctx-panel__header">
+            <span class="proto-ctx-panel__title">上下文使用</span>
+            <button class="proto-ctx-panel__close" id="ctxCloseBtn" aria-label="关闭">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+          <div class="proto-ctx-panel__summary">
+            <span class="proto-ctx-panel__pct">已使用：<strong>64%</strong></span>
+            <span class="proto-ctx-panel__total">~84.2K / 200K Tokens</span>
+          </div>
+          <div class="proto-ctx-progress" role="progressbar" aria-valuenow="64">
+            <div class="proto-ctx-seg" style="flex:20;background:#5B8EF4;"></div>
+            <div class="proto-ctx-seg" style="flex:15;background:#A668D8;"></div>
+            <div class="proto-ctx-seg" style="flex:10;background:#F5A623;"></div>
+            <div class="proto-ctx-seg" style="flex:8; background:#52C07A;"></div>
+            <div class="proto-ctx-seg" style="flex:5; background:#24BAC4;"></div>
+            <div class="proto-ctx-seg" style="flex:4; background:#E04B8A;"></div>
+            <div class="proto-ctx-seg" style="flex:2; background:#A0A8B5;"></div>
+            <div class="proto-ctx-seg" style="flex:36;background:var(--bg-base-secondary);"></div>
+          </div>
+          <div class="proto-ctx-divider"></div>
+          <div class="proto-ctx-list">
+            <div class="proto-ctx-row"><span class="proto-ctx-dot" style="background:#5B8EF4;"></span><span class="proto-ctx-row__name">System prompt</span><span class="proto-ctx-row__val">9.9K</span></div>
+            <div class="proto-ctx-row"><span class="proto-ctx-dot" style="background:#A668D8;"></span><span class="proto-ctx-row__name">Tool definitions</span><span class="proto-ctx-row__val">1.9K</span></div>
+            <div class="proto-ctx-row"><span class="proto-ctx-dot" style="background:#F5A623;"></span><span class="proto-ctx-row__name">Rules</span><span class="proto-ctx-row__val">1.9K</span></div>
+            <div class="proto-ctx-row"><span class="proto-ctx-dot" style="background:#52C07A;"></span><span class="proto-ctx-row__name">Skills</span><span class="proto-ctx-row__val">1.9K</span></div>
+            <div class="proto-ctx-row"><span class="proto-ctx-dot" style="background:#24BAC4;"></span><span class="proto-ctx-row__name">MCP</span><span class="proto-ctx-row__val">0.9K</span></div>
+            <div class="proto-ctx-row"><span class="proto-ctx-dot" style="background:#E04B8A;"></span><span class="proto-ctx-row__name">Subagent definition</span><span class="proto-ctx-row__val">0.9K</span></div>
+            <div class="proto-ctx-row"><span class="proto-ctx-dot" style="background:#A0A8B5;"></span><span class="proto-ctx-row__name">Conversation</span><span class="proto-ctx-row__val">1.9K</span></div>
+          </div>
+        </div>
+
+        <!-- Code 模式输入框 -->
+        <div class="mf-chat-input-wrap">
+          <div class="mf-chat-input">
+            <textarea class="mf-chat-input__textarea" rows="1" placeholder="和一起做什么，关联对象，# 添加上下文，/ 调用指令"></textarea>
+            <div class="mf-chat-input__toolbar">
+              <div class="mf-chat-input__toolbar-left">
+                <button class="mf-chat-input__btn" style="color:var(--text-default);">
+                  <span class="icon icon--mask i-add" style="width:16px;height:16px;"></span>
+                </button>
+                <button class="mf-chat-input__model">
+                  <span class="icon icon--mask i-claude" style="width:16px;height:16px;flex:0 0 16px;color:var(--text-default);"></span>
+                  <span style="color:var(--text-default);">Claude Code</span>
+                  <span class="icon icon--mask i-arrowdown mf-chat-input__model-arrow" style="color:var(--text-tertiary);"></span>
+                </button>
+                <button class="mf-chat-input__model">
+                  <span style="color:var(--text-default);">Claude Sonnet 4.6</span>
+                  <span class="icon icon--mask i-arrowdown mf-chat-input__model-arrow" style="color:var(--text-tertiary);"></span>
+                </button>
+                <button class="mf-chat-input__model">
+                  <span class="icon icon--mask i-safe" style="width:16px;height:16px;flex:0 0 16px;color:var(--text-default);"></span>
+                  <span style="color:var(--text-default);">执行前询问</span>
+                  <span class="icon icon--mask i-arrowdown mf-chat-input__model-arrow" style="color:var(--text-tertiary);"></span>
+                </button>
+              </div>
+              <div class="mf-chat-input__toolbar-right">
+                <button class="mf-chat-input__btn" title="刷新"><span class="icon icon--mask i-refresh"></span></button>
+                <button class="mf-chat-input__btn" title="联网"><span class="icon icon--mask i-earth"></span></button>
+                <button class="mf-chat-input__send" title="发送"><span class="icon icon--mask i-flash"></span></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 项目区 -->
+          <div class="mf-chat-input__project-area">
+            <button class="mf-chat-input__project-bar">
+              <span class="icon icon--mask i-computer" style="width:16px;height:16px;flex:0 0 16px;"></span>
+              <span>本机</span>
+              <span class="icon icon--mask i-arrowdown mf-chat-input__model-arrow" style="width:16px;height:16px;flex:0 0 16px;"></span>
+            </button>
+            <button class="mf-chat-input__project-bar">
+              <span class="icon icon--mask i-closefolder" style="width:16px;height:16px;flex:0 0 16px;"></span>
+              <span>MyFlicker Kit</span>
+              <span class="icon icon--mask i-arrowdown mf-chat-input__model-arrow" style="width:16px;height:16px;flex:0 0 16px;"></span>
+            </button>
+          </div>
+        </div><!-- /mf-chat-input-wrap -->
+
+        <!-- notice bar：上下文使用率 -->
+        <div class="chat-notice-bar">
+          <span>上下文使用：44%（89K / 200K）</span>
+          <button class="proto-ctx-link" id="ctxDetailBtn" aria-expanded="false">查看详情</button>
+          <span class="chat-notice-bar__sep"></span>
+          <button class="proto-ctx-link">直接上下文</button>
+        </div>
+
+      </div><!-- /chat-input-inner -->
+    </div><!-- /chat-input-wrap -->
+
+  </main>
+
+</div><!-- /app-shell -->
+</div><!-- /protoPage -->
+
+<script>
+  /* 封面 → 原型页 */
+  document.getElementById('gotoProtoBtn').addEventListener('click', function() {
+    document.getElementById('coverPage').style.display = 'none';
+    document.getElementById('protoPage').style.display = 'block';
+  });
+
+  /* textarea auto-resize */
+  document.querySelectorAll('.mf-chat-input__textarea').forEach(function(ta) {
+    function resize() {
+      ta.style.height = 'auto';
+      var next = Math.min(ta.scrollHeight, 200);
+      ta.style.height = next + 'px';
+      ta.classList.toggle('is-overflow', ta.scrollHeight > 200);
+    }
+    ta.addEventListener('input', resize);
+    resize();
+  });
+
+  /* 上下文成分面板 */
+  var panel = document.getElementById('ctxPanel');
+  var detailBtn = document.getElementById('ctxDetailBtn');
+  var closeBtn = document.getElementById('ctxCloseBtn');
+
+  function openCtx() {
+    panel.classList.add('is-open');
+    detailBtn.setAttribute('aria-expanded', 'true');
+  }
+  function closeCtx() {
+    panel.classList.remove('is-open');
+    detailBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  detailBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    panel.classList.contains('is-open') ? closeCtx() : openCtx();
+  });
+  closeBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    closeCtx();
+  });
+  document.addEventListener('click', function(e) {
+    if (!panel.contains(e.target) && !detailBtn.contains(e.target)) closeCtx();
+  });
+  panel.addEventListener('click', function(e) { e.stopPropagation(); });
+</script>
+
+</body>
+</html>

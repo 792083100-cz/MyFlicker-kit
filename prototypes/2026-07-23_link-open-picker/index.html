@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>原型 · URL 打开方式选择器</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../../colors_and_type.css" />
+  <link rel="stylesheet" href="../../components.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── icon ── */
+    .icon {
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      width: 16px; height: 16px;
+      -webkit-mask-size: contain; mask-size: contain;
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      -webkit-mask-position: center; mask-position: center;
+      background-color: currentColor;
+    }
+    .icon--20 { width: 20px; height: 20px; }
+    .icon--14 { width: 14px; height: 14px; }
+    .icon--12 { width: 12px; height: 12px; }
+
+    .i-newchat         { -webkit-mask-image: url(../../assets/icons/kid/edit.svg);              mask-image: url(../../assets/icons/kid/edit.svg); }
+    .i-search          { -webkit-mask-image: url(../../assets/icons/kid/search.svg);             mask-image: url(../../assets/icons/kid/search.svg); }
+    .i-schedule        { -webkit-mask-image: url(../../assets/icons/kid/scheduledtasks.svg);     mask-image: url(../../assets/icons/kid/scheduledtasks.svg); }
+    .i-skill           { -webkit-mask-image: url(../../assets/icons/kid/skill.svg);              mask-image: url(../../assets/icons/kid/skill.svg); }
+    .i-knowledge       { -webkit-mask-image: url(../../assets/icons/kid/knowledge.svg);          mask-image: url(../../assets/icons/kid/knowledge.svg); }
+    .i-closefolder     { -webkit-mask-image: url(../../assets/icons/kid/closefolder.svg);        mask-image: url(../../assets/icons/kid/closefolder.svg); }
+    .i-openfolder      { -webkit-mask-image: url(../../assets/icons/kid/openfolder.svg);         mask-image: url(../../assets/icons/kid/openfolder.svg); }
+    .i-leftsidebar     { -webkit-mask-image: url(../../assets/icons/kid/leftsidebar.svg);        mask-image: url(../../assets/icons/kid/leftsidebar.svg); }
+    .i-unfold          { -webkit-mask-image: url(../../assets/icons/kid/myflicker_system_unfold.svg); mask-image: url(../../assets/icons/kid/myflicker_system_unfold.svg); }
+    .i-arrowdown       { -webkit-mask-image: url(../../assets/icons/kid/arrowdown.svg);          mask-image: url(../../assets/icons/kid/arrowdown.svg); }
+    .i-add             { -webkit-mask-image: url(../../assets/icons/kid/add.svg);                mask-image: url(../../assets/icons/kid/add.svg); }
+    .i-addgroup        { -webkit-mask-image: url(../../assets/icons/kid/addgroup.svg);           mask-image: url(../../assets/icons/kid/addgroup.svg); }
+    .i-more            { -webkit-mask-image: url(../../assets/icons/kid/more.svg);               mask-image: url(../../assets/icons/kid/more.svg); }
+    .i-setting         { -webkit-mask-image: url(../../assets/icons/kid/setting.svg);            mask-image: url(../../assets/icons/kid/setting.svg); }
+    .i-generating      { -webkit-mask-image: url(../../assets/icons/kid/generating.svg);         mask-image: url(../../assets/icons/kid/generating.svg); }
+    .i-draft           { -webkit-mask-image: url(../../assets/icons/kid/draft.svg);              mask-image: url(../../assets/icons/kid/draft.svg); }
+    .i-pintotop        { -webkit-mask-image: url(../../assets/icons/kid/pintotop.svg);           mask-image: url(../../assets/icons/kid/pintotop.svg); }
+    .i-generationcompleted { -webkit-mask-image: url(../../assets/icons/kid/generationcompleted.svg); mask-image: url(../../assets/icons/kid/generationcompleted.svg); }
+    .i-share           { -webkit-mask-image: url(../../assets/icons/kid/share02.svg);            mask-image: url(../../assets/icons/kid/share02.svg); }
+    .i-copy            { -webkit-mask-image: url(../../assets/icons/kid/copy.svg);               mask-image: url(../../assets/icons/kid/copy.svg); }
+    .i-send            { -webkit-mask-image: url(../../assets/icons/kid/send.svg);               mask-image: url(../../assets/icons/kid/send.svg); }
+    .i-assets          { -webkit-mask-image: url(../../assets/icons/kid/assets.svg);             mask-image: url(../../assets/icons/kid/assets.svg); }
+    .i-arrowright      { -webkit-mask-image: url(../../assets/icons/kid/arrowright.svg);         mask-image: url(../../assets/icons/kid/arrowright.svg); }
+    .i-inspiration     { -webkit-mask-image: url(../../assets/icons/kid/inspiration.svg);        mask-image: url(../../assets/icons/kid/inspiration.svg); }
+
+    /* ── App Shell ── */
+    .app-shell { display: flex; height: 100vh; width: 100%; background: var(--bg-brand-subtle); gap: 4px; }
+
+    /* ── icon-btn ── */
+    .icon-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px;
+      border-radius: var(--radius-4); border: none; background: transparent;
+      cursor: pointer; color: var(--text-tertiary);
+      transition: background 120ms, color 120ms; flex-shrink: 0;
+    }
+    .icon-btn:hover { background: var(--fill-default); color: var(--text-default); }
+    .icon-btn--28 { width: 28px; height: 28px; border-radius: var(--radius-8); }
+
+    /* ── Chat Main ── */
+    .chat-main {
+      flex: 1; display: flex; flex-direction: column; min-width: 0;
+      background: var(--bg-base-default);
+      border-radius: 8px; overflow: hidden;
+      margin: 8px 8px 8px 0;
+      height: calc(100vh - 16px);
+    }
+
+    /* ── Topbar ── */
+    .chat-topbar {
+      height: 40px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 16px; gap: 8px;
+    }
+    .chat-topbar__title {
+      font-size: var(--body-sm-font-size); font-weight: 500; color: var(--text-default);
+      flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .chat-topbar__right { display: flex; align-items: center; gap: 4px; }
+    .topbar-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      height: 28px; padding: 0 6px;
+      border: none; border-radius: var(--radius-4);
+      background: transparent; cursor: pointer;
+      font-size: var(--body-sm-font-size); color: var(--text-secondary);
+      transition: background 120ms, color 120ms;
+    }
+    .topbar-btn:hover { background: var(--fill-default); color: var(--text-default); }
+
+    /* ── Message Area ── */
+    .chat-messages {
+      flex: 1; overflow-y: auto; position: relative;
+      display: flex; flex-direction: column;
+      padding: 24px 24px 0; gap: 0;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--border-neutral-l1); border-radius: 2px; }
+
+    /* ── Anchor Rail ── */
+    .anchor-rail {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 4px; padding: 4px 0; z-index: 10;
+    }
+    .anchor-dot {
+      display: block; width: 26px; height: 2px; border-radius: 1px;
+      background: var(--text-tertiary); opacity: 0.4;
+      transform: scaleX(0.2308); transform-origin: left;
+      transition: transform 150ms ease-out, background-color 150ms, opacity 150ms;
+      cursor: pointer; border: none;
+    }
+    .anchor-dot.is-active { background: var(--text-default); opacity: 0.6; transform: scaleX(1); }
+    .anchor-dot:hover { background: var(--text-default); opacity: 1; transform: scaleX(1); }
+
+    /* ── Message body column ── */
+    .message-list-body-column {
+      max-width: 800px; width: 100%; margin: 0 auto;
+      display: flex; flex-direction: column; gap: 0;
+    }
+
+    /* ── Single message ── */
+    .msg { display: flex; gap: 12px; align-items: flex-start; padding: 16px 0; }
+    .msg--user { flex-direction: row-reverse; }
+    .msg__avatar { flex-shrink: 0; margin-top: 2px; }
+    .msg__bubble { display: flex; flex-direction: column; gap: 4px; max-width: 560px; }
+    .msg--user .msg__bubble { align-items: flex-end; }
+    .msg__name { font-size: var(--body-xs-font-size); line-height: var(--body-xs-line-height); color: var(--text-tertiary); font-weight: 500; }
+    .msg__text {
+      background: var(--bg-base-secondary); border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-12); padding: 12px 16px;
+      font-size: var(--body-sm-font-size); line-height: 1.6; color: var(--text-default);
+    }
+    .msg--user .msg__text {
+      background: var(--bg-brand-subtle); border-color: var(--bg-brand-subtle); color: var(--text-default);
+      border-radius: var(--radius-12) var(--radius-4) var(--radius-12) var(--radius-12);
+    }
+    .msg--ai .msg__text { background: transparent; border: none; padding: 0; border-radius: 0; }
+
+    /* ── Tool process block ── */
+    .msg__tool-process {
+      display: flex; align-items: center; gap: 6px; width: 100%;
+      padding: 8px 0; margin-bottom: 4px;
+      background: transparent; border: none;
+      border-bottom: 1px solid var(--border-neutral-l1);
+      font-size: var(--body-xs-font-size); line-height: 1.5; color: var(--text-secondary);
+      cursor: pointer; user-select: none; transition: color 120ms;
+    }
+    .msg__tool-process:hover { color: var(--text-default); }
+    .msg__tool-process .icon { color: var(--text-tertiary); }
+
+    /* ── AI message body markdown ── */
+    .msg__body { font-size: 13px; line-height: 1.5; color: var(--text-default); }
+    .msg__body h2 { font-size: 16px; font-weight: 600; line-height: 1.5; margin-top: 8px; margin-bottom: 6px; }
+    .msg__body h3 { font-size: 14px; font-weight: 600; line-height: 1.5; margin-top: 7px; margin-bottom: 5px; }
+    .msg__body p { font-size: 13px; line-height: 1.5; margin-top: 3px; margin-bottom: 0; }
+    .msg__body p:first-child { margin-top: 0; }
+    .msg__body p + p { margin-top: 4px; }
+    .msg__body ul, .msg__body ol { font-size: 13px; line-height: 1.5; margin: 3px 0; padding-left: 20px; }
+    .msg__body li { margin: 3px 0; }
+    .msg__body strong { font-weight: 600; }
+    .msg__body code {
+      background: var(--bg-overlay-l1); border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-4); padding: 1px 5px;
+      font-family: var(--code-editor-font-family); font-size: 12px; color: var(--text-secondary);
+    }
+
+    /* ── Message footer ── */
+    .msg__footer { display: flex; align-items: center; gap: 0; margin-top: 6px; opacity: 0; transition: opacity 120ms; }
+    .msg:hover .msg__footer { opacity: 1; }
+
+    /* ── Input area ── */
+    .chat-input-wrap { flex-shrink: 0; padding: 12px 24px 8px; }
+    .chat-input-inner { max-width: 800px; margin: 0 auto; }
+    .mf-chat-input { padding: 12px !important; }
+    .mf-chat-input__textarea { max-height: 336px !important; overflow-y: hidden; resize: none; }
+    .mf-chat-input__textarea.is-overflow { overflow-y: auto; }
+    .mf-chat-input__model-arrow { width: 16px !important; height: 16px !important; flex: 0 0 16px !important; }
+
+    :root { --spacer-6: 6px; --spacer-10: 10px; --spacer-16: 16px; --spacer-20: 20px; --radius-16: 16px; }
+
+    /* ══════════════════════════════════════════════
+       PROTO-ONLY: 链接打开方式浮层
+       命名空间 .proto-* — 与 components.css 完全隔离
+    ══════════════════════════════════════════════ */
+
+    /* AI 消息内链接样式 — colorLink = GEEK BLUE B700 #1380ED */
+    a.proto-link,
+    .msg__body a.proto-link,
+    .proto-link-anchor a.proto-link {
+      color: #1380ED !important;
+      text-decoration: none !important;
+      cursor: pointer !important;
+    }
+    a.proto-link:hover,
+    .msg__body a.proto-link:hover {
+      text-decoration: underline !important;
+      text-decoration-color: #1380ED !important;
+    }
+
+    /* 锚点包裹容器：inline-block */
+    .proto-link-anchor {
+      display: inline-block;
+      vertical-align: baseline;
+      max-width: 100%;
+    }
+
+    /* 浮层卡片 — fixed 定位，挂 body，避免被 overflow:hidden/auto 裁切 */
+    .proto-link-picker {
+      position: fixed;
+      background: var(--bg-base-default);
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-12);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.06);
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      white-space: nowrap;
+      z-index: 9000;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 100ms ease-out, transform 100ms ease-out;
+      min-width: 192px;
+    }
+    .proto-link-picker.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* 选项按钮 */
+    .proto-link-picker__btn {
+      display: flex; align-items: center; gap: 8px;
+      height: 32px; padding: 0 8px;
+      border: none; background: transparent;
+      border-radius: var(--radius-8); cursor: pointer;
+      color: var(--text-default);
+      font-size: var(--body-sm-font-size);
+      font-family: var(--body-sm-font-family);
+      font-weight: var(--body-sm-font-weight);
+      transition: background 80ms; text-align: left;
+    }
+    .proto-link-picker__btn:hover { background: var(--fill-default); }
+    .proto-link-picker__btn:active { background: var(--fill-hover); }
+
+    /* 按钮内图标容器 */
+    .proto-link-picker__icon {
+      width: 20px; height: 20px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ════════════════════════ SIDEBAR ════════════════════════ -->
+  <aside class="mf-aside">
+    <div class="mf-aside__header">
+      <div class="mf-aside__workspace">
+        <img class="mf-aside__workspace-avatar" src="../../assets/icons/workspace-myflicker.svg" alt="workspace" />
+        <span class="mf-aside__workspace-name">个人空间</span>
+        <span class="icon i-unfold mf-aside__workspace-unfold"></span>
+      </div>
+      <button class="mf-aside__collapse" aria-label="收起侧边栏">
+        <span class="icon i-leftsidebar"></span>
+      </button>
+    </div>
+
+    <nav class="mf-aside__nav">
+      <div class="mf-aside__nav-item is-active">
+        <span class="icon i-newchat"></span><span class="mf-aside__nav-item__label">新对话</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-search"></span><span class="mf-aside__nav-item__label">搜索</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-schedule"></span><span class="mf-aside__nav-item__label">定时任务</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-skill"></span><span class="mf-aside__nav-item__label">技能</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-knowledge"></span><span class="mf-aside__nav-item__label">知识</span>
+      </div>
+    </nav>
+
+    <div class="mf-aside__body">
+      <div class="mf-aside__section-label is-always-show">
+        <span>分组</span>
+        <div class="mf-aside__section-label-actions">
+          <button class="mf-aside__icon-btn"><span class="icon i-addgroup"></span></button>
+        </div>
+      </div>
+      <div class="mf-aside__group">
+        <div class="mf-aside__group-icon"><span class="icon i-openfolder"></span></div>
+        <span class="mf-aside__group-name">设计系统项目</span>
+        <div class="mf-aside__group-actions">
+          <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+          <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+        </div>
+      </div>
+      <div class="mf-aside__group-sessions">
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status">
+            <span class="icon i-generationcompleted" style="color:var(--text-secondary);"></span>
+          </span>
+          <span class="mf-aside__session-title">组件 Token 绑定机制</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">14:30</span>
+            <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status"></span>
+          <span class="mf-aside__session-title">AI 对话页 UI Kit</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">昨天</span>
+            <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+      </div>
+      <div class="mf-aside__group" style="margin-top:4px;">
+        <div class="mf-aside__group-icon"><span class="icon i-closefolder"></span></div>
+        <span class="mf-aside__group-name">个人任务</span>
+        <div class="mf-aside__group-actions">
+          <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+          <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+        </div>
+      </div>
+      <div class="mf-aside__section-label">
+        <span>对话</span>
+        <div class="mf-aside__section-label-actions">
+          <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div class="mf-aside__session is-active">
+          <span class="mf-aside__session-status">
+            <span class="icon i-generating" style="color:var(--text-brand);"></span>
+          </span>
+          <span class="mf-aside__session-title">帮我上传这个 HTML 文件到 CDN</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">16:40</span>
+            <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status">
+            <span class="icon i-pintotop" style="color:var(--text-tertiary);"></span>
+          </span>
+          <span class="mf-aside__session-title">帮我顶会议</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">今天</span>
+            <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status"></span>
+          <span class="mf-aside__session-title">订机票去杭州</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">昨天</span>
+            <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status">
+            <span class="icon i-draft" style="color:var(--text-tertiary);"></span>
+          </span>
+          <span class="mf-aside__session-title">设计规范草稿</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">2026/7/13</span>
+            <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mf-aside__footer">
+      <button class="mf-aside__footer-setting">
+        <span class="icon i-setting"></span><span>设置</span>
+      </button>
+      <div class="mf-aside__footer-credit">
+        <img src="../../assets/icons/points-gradient.svg" width="14" height="14" style="flex-shrink:0;" />
+        <span>积分：剩余 92%</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ════════════════════════ MAIN ════════════════════════ -->
+  <main class="chat-main">
+
+    <!-- Topbar -->
+    <div class="chat-topbar">
+      <span class="chat-topbar__title">帮我上传这个 HTML 文件到 CDN</span>
+      <div class="chat-topbar__right">
+        <button class="topbar-btn">
+          <span class="icon icon--14 i-share"></span><span>分享</span>
+        </button>
+        <button class="topbar-btn">
+          <span class="icon icon--14 i-assets"></span><span>资产</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-messages">
+      <nav class="anchor-rail">
+        <button class="anchor-dot is-active" title="上传文件"></button>
+        <button class="anchor-dot" title="还有其他操作吗"></button>
+      </nav>
+
+      <div class="message-list-body-column">
+
+        <!-- 用户消息 -->
+        <div class="msg msg--user">
+          <div class="msg__bubble">
+            <div class="msg__text">
+              帮我把桌面上的 report.html 上传到 CDN，把链接给我
+            </div>
+          </div>
+        </div>
+
+        <!-- AI 回复：含链接 -->
+        <div class="msg msg--ai">
+          <div class="msg__bubble" style="max-width:640px;width:100%;">
+            <div class="msg__text">
+              <button class="msg__tool-process">
+                <span>已处理</span>
+                <span style="color:var(--text-tertiary);font-size:11px;">2s</span>
+                <span class="icon i-arrowright icon--14" style="color:var(--text-tertiary);"></span>
+              </button>
+              <div class="msg__body">
+                <p>文件已成功上传到 KCDN，CDN 访问链接如下：</p>
+
+                <p style="margin-top:8px;">
+                  <!-- 链接 1 -->
+                  <span class="proto-link-anchor" id="anchor1">
+                    <a href="#" class="proto-link" data-url="https://cdnfile.corp.kuaishou.com/bs/files/a/myflicker-cdn-default/report.html">
+                      https://cdnfile.corp.kuaishou.com/bs/files/a/myflicker-cdn-default/report.html
+                    </a>
+                    <div class="proto-link-picker" id="picker1">
+                      <button class="proto-link-picker__btn" data-mode="internal">
+                        <span class="proto-link-picker__icon">
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.0667 9.99963C14.0665 9.59477 13.7382 9.26624 13.3333 9.26624H9.33325C8.92835 9.26624 8.60003 9.59477 8.59985 9.99963V11.9996C8.59985 12.4046 8.92824 12.733 9.33325 12.733H13.3333C13.7383 12.733 14.0667 12.4046 14.0667 11.9996V9.99963ZM13.3997 5.99963V3.99963C13.3996 3.80526 13.3223 3.61853 13.1848 3.48108C13.0473 3.34376 12.8606 3.26624 12.6663 3.26624H2.66626C2.47188 3.26632 2.28516 3.34363 2.14771 3.48108C2.01026 3.61853 1.93295 3.80526 1.93286 3.99963V10.6666C1.93286 11.0685 2.26444 11.3998 2.66626 11.4H5.33325C5.66451 11.4 5.93269 11.6684 5.93286 11.9996C5.93286 12.331 5.66462 12.6002 5.33325 12.6002H2.66626C1.6017 12.6 0.733643 11.7312 0.733643 10.6666V3.99963C0.733729 3.487 0.936579 2.99494 1.29907 2.63245C1.66157 2.26995 2.15363 2.0671 2.66626 2.06702H12.6663C13.1789 2.06702 13.6709 2.27008 14.0334 2.63245C14.3959 2.99494 14.5998 3.487 14.5999 3.99963V5.99963C14.5999 6.3309 14.3315 6.60004 14.0002 6.60022C13.6689 6.60022 13.3997 6.331 13.3997 5.99963ZM15.2668 11.9996C15.2668 13.0674 14.401 13.9332 13.3333 13.9332H9.33325C8.2655 13.9332 7.39966 13.0674 7.39966 11.9996V9.99963C7.39983 8.93203 8.26561 8.06702 9.33325 8.06702H13.3333C14.4009 8.06702 15.2667 8.93203 15.2668 9.99963V11.9996Z" fill="#5C6066"/>
+                          </svg>
+                        </span>
+                        在内置浏览器中打开
+                      </button>
+                      <button class="proto-link-picker__btn" data-mode="external">
+                        <span class="proto-link-picker__icon">
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#cc1)"><path d="M0.506836 8.00888C0.506836 9.98562 1.2921 11.8814 2.68987 13.2792C4.08764 14.6769 5.98342 15.4622 7.96017 15.4622C9.93692 15.4622 11.8327 14.6769 13.2305 13.2792C14.6282 11.8814 15.4135 9.98562 15.4135 8.00888C15.4135 6.03213 14.6282 4.13634 13.2305 2.73857C11.8327 1.3408 9.93692 0.555542 7.96017 0.555542C5.98342 0.555542 4.08764 1.3408 2.68987 2.73857C1.2921 4.13634 0.506836 6.03213 0.506836 8.00888Z" fill="white"/><path d="M4.26663 7.0489L2.1333 3.35557C3.4933 1.6489 5.59997 0.542236 7.95997 0.542236C10.6933 0.542236 13.08 2.0089 14.3733 4.19557H8.2933C8.18663 4.18224 8.06663 4.18224 7.95997 4.18224C6.18663 4.19557 4.6933 5.4089 4.26663 7.0489Z" fill="#DD4E41"/><path d="M10.6267 5.27557H14.9067C15.24 6.11557 15.4134 7.03557 15.4134 7.99557C15.4134 12.0889 12.12 15.4089 8.04004 15.4489L11.0934 10.1689C11.52 9.55557 11.7734 8.79557 11.7734 7.99557C11.7734 6.94224 11.3334 5.96891 10.6267 5.27557Z" fill="#FFCD41"/><path d="M5.25342 8.00891C5.25342 6.51558 6.46675 5.30225 7.96008 5.30225C9.45342 5.30225 10.6668 6.51558 10.6668 8.00891C10.6668 9.50225 9.45342 10.7156 7.96008 10.7156C6.46675 10.7156 5.25342 9.50225 5.25342 8.00891Z" fill="#4C8BF5"/><path d="M8.98684 11.6889L6.8535 15.3956C3.26684 14.8622 0.506836 11.7556 0.506836 8.02223C0.506836 6.6889 0.853503 5.4489 1.46684 4.3689L4.50684 9.62223C5.12017 10.9156 6.44017 11.8222 7.96017 11.8222C8.30684 11.8222 8.6535 11.7689 8.98684 11.6889Z" fill="#1DA362"/></g><defs><clipPath id="cc1"><rect width="16" height="16" fill="white"/></clipPath></defs></svg>
+                        </span>
+                        在 Chrome 中打开
+                      </button>
+                    </div>
+                  </span>
+                </p>
+
+                <p style="margin-top:8px;">文件大小 <code>42 KB</code>，内网可直接访问，有效期 <strong>永久</strong>。</p>
+
+                <p style="margin-top:12px;">另外，这是上次你提到的参考文档地址，我顺手也一起发给你：</p>
+
+                <p style="margin-top:8px;">
+                  <!-- 链接 2 -->
+                  <span class="proto-link-anchor" id="anchor2">
+                    <a href="#" class="proto-link" data-url="https://myflicker.corp.kuaishou.com/skillhub/skills/kcdn-file-upload">
+                      https://myflicker.corp.kuaishou.com/skillhub/skills/kcdn-file-upload
+                    </a>
+                    <div class="proto-link-picker" id="picker2">
+                      <button class="proto-link-picker__btn" data-mode="internal">
+                        <span class="proto-link-picker__icon">
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.0667 9.99963C14.0665 9.59477 13.7382 9.26624 13.3333 9.26624H9.33325C8.92835 9.26624 8.60003 9.59477 8.59985 9.99963V11.9996C8.59985 12.4046 8.92824 12.733 9.33325 12.733H13.3333C13.7383 12.733 14.0667 12.4046 14.0667 11.9996V9.99963ZM13.3997 5.99963V3.99963C13.3996 3.80526 13.3223 3.61853 13.1848 3.48108C13.0473 3.34376 12.8606 3.26624 12.6663 3.26624H2.66626C2.47188 3.26632 2.28516 3.34363 2.14771 3.48108C2.01026 3.61853 1.93295 3.80526 1.93286 3.99963V10.6666C1.93286 11.0685 2.26444 11.3998 2.66626 11.4H5.33325C5.66451 11.4 5.93269 11.6684 5.93286 11.9996C5.93286 12.331 5.66462 12.6002 5.33325 12.6002H2.66626C1.6017 12.6 0.733643 11.7312 0.733643 10.6666V3.99963C0.733729 3.487 0.936579 2.99494 1.29907 2.63245C1.66157 2.26995 2.15363 2.0671 2.66626 2.06702H12.6663C13.1789 2.06702 13.6709 2.27008 14.0334 2.63245C14.3959 2.99494 14.5998 3.487 14.5999 3.99963V5.99963C14.5999 6.3309 14.3315 6.60004 14.0002 6.60022C13.6689 6.60022 13.3997 6.331 13.3997 5.99963ZM15.2668 11.9996C15.2668 13.0674 14.401 13.9332 13.3333 13.9332H9.33325C8.2655 13.9332 7.39966 13.0674 7.39966 11.9996V9.99963C7.39983 8.93203 8.26561 8.06702 9.33325 8.06702H13.3333C14.4009 8.06702 15.2667 8.93203 15.2668 9.99963V11.9996Z" fill="#5C6066"/>
+                          </svg>
+                        </span>
+                        在内置浏览器中打开
+                      </button>
+                      <button class="proto-link-picker__btn" data-mode="external">
+                        <span class="proto-link-picker__icon">
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#cc2)"><path d="M0.506836 8.00888C0.506836 9.98562 1.2921 11.8814 2.68987 13.2792C4.08764 14.6769 5.98342 15.4622 7.96017 15.4622C9.93692 15.4622 11.8327 14.6769 13.2305 13.2792C14.6282 11.8814 15.4135 9.98562 15.4135 8.00888C15.4135 6.03213 14.6282 4.13634 13.2305 2.73857C11.8327 1.3408 9.93692 0.555542 7.96017 0.555542C5.98342 0.555542 4.08764 1.3408 2.68987 2.73857C1.2921 4.13634 0.506836 6.03213 0.506836 8.00888Z" fill="white"/><path d="M4.26663 7.0489L2.1333 3.35557C3.4933 1.6489 5.59997 0.542236 7.95997 0.542236C10.6933 0.542236 13.08 2.0089 14.3733 4.19557H8.2933C8.18663 4.18224 8.06663 4.18224 7.95997 4.18224C6.18663 4.19557 4.6933 5.4089 4.26663 7.0489Z" fill="#DD4E41"/><path d="M10.6267 5.27557H14.9067C15.24 6.11557 15.4134 7.03557 15.4134 7.99557C15.4134 12.0889 12.12 15.4089 8.04004 15.4489L11.0934 10.1689C11.52 9.55557 11.7734 8.79557 11.7734 7.99557C11.7734 6.94224 11.3334 5.96891 10.6267 5.27557Z" fill="#FFCD41"/><path d="M5.25342 8.00891C5.25342 6.51558 6.46675 5.30225 7.96008 5.30225C9.45342 5.30225 10.6668 6.51558 10.6668 8.00891C10.6668 9.50225 9.45342 10.7156 7.96008 10.7156C6.46675 10.7156 5.25342 9.50225 5.25342 8.00891Z" fill="#4C8BF5"/><path d="M8.98684 11.6889L6.8535 15.3956C3.26684 14.8622 0.506836 11.7556 0.506836 8.02223C0.506836 6.6889 0.853503 5.4489 1.46684 4.3689L4.50684 9.62223C5.12017 10.9156 6.44017 11.8222 7.96017 11.8222C8.30684 11.8222 8.6535 11.7689 8.98684 11.6889Z" fill="#1DA362"/></g><defs><clipPath id="cc2"><rect width="16" height="16" fill="white"/></clipPath></defs></svg>
+                        </span>
+                        在 Chrome 中打开
+                      </button>
+                    </div>
+                  </span>
+                </p>
+              </div>
+            </div>
+            <div class="msg__footer">
+              <button class="icon-btn icon-btn--28" title="复制"><span class="icon i-copy"></span></button>
+              <button class="icon-btn icon-btn--28" title="分享"><span class="icon i-share"></span></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 用户追问 -->
+        <div class="msg msg--user">
+          <div class="msg__bubble">
+            <div class="msg__text">
+              还有其他操作可以做吗？
+            </div>
+          </div>
+        </div>
+
+        <!-- AI 思考中 -->
+        <div class="msg msg--ai">
+          <div class="msg__bubble" style="max-width:640px;width:100%;">
+            <div class="msg__text">
+              <div class="msg__thinking">
+                <img class="thinking-mascot" src="../../assets/Final.webp" alt="thinking" />
+                <span class="thinking-label">内容输出中，请耐心等待…</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /chat-messages -->
+
+    <!-- 输入框 -->
+    <div class="chat-input-wrap">
+      <div class="chat-input-inner">
+        <div class="mf-chat-input-wrap">
+          <div class="mf-chat-input">
+            <textarea class="mf-chat-input__textarea" rows="1" placeholder="和我一起做点什么，@关联对象，/ 调用技能" id="mainTa"></textarea>
+            <div class="mf-chat-input__toolbar">
+              <div class="mf-chat-input__toolbar-left">
+                <button class="mf-chat-input__btn"><span class="icon i-add"></span></button>
+                <button class="mf-chat-input__action"><span class="icon i-skill"></span><span>技能</span></button>
+                <button class="mf-chat-input__action"><span class="icon i-inspiration"></span><span>灵感触发</span></button>
+              </div>
+              <div class="mf-chat-input__toolbar-right">
+                <button class="mf-chat-input__model">
+                  <img src="../../assets/icons/brand/claude.svg" width="14" height="14" alt="Claude" style="flex-shrink:0;">
+                  <span>Claude Sonnet 4.6</span>
+                  <span class="icon i-arrowdown mf-chat-input__model-arrow"></span>
+                </button>
+                <button class="mf-chat-input__send"><span class="icon i-send"></span></button>
+              </div>
+            </div>
+          </div>
+          <p class="mf-chat-input__notice">当前模型为公有云模型，请勿外泄公司内部信息</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<style>
+  /* thinking state */
+  .thinking-mascot { width: 24px; height: 24px; flex-shrink: 0; object-fit: contain; animation: mascot-float 2.4s ease-in-out infinite; }
+  @keyframes mascot-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+  .thinking-label {
+    background: linear-gradient(90deg, var(--text-tertiary) 0%, var(--text-tertiary) 30%, var(--text-default) 50%, var(--text-tertiary) 70%, var(--text-tertiary) 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    animation: shimmer-scan 2s linear infinite;
+  }
+  @keyframes shimmer-scan { 0%{background-position:150% center} 100%{background-position:-50% center} }
+
+  .msg__thinking {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 2px 0;
+    background: transparent; border: none;
+    font-size: var(--body-sm-font-size);
+  }
+</style>
+
+<script>
+  /* textarea auto-resize */
+  const ta = document.getElementById('mainTa');
+  function resize() { ta.style.height='auto'; ta.style.height=Math.min(ta.scrollHeight,336)+'px'; ta.classList.toggle('is-overflow',ta.scrollHeight>336); }
+  ta.addEventListener('input', resize); resize();
+
+  /* ── Link Picker 交互 ──
+     浮层挂在 body 下，用 fixed + getBoundingClientRect 定位，
+     不受 overflow:hidden/auto 祖先裁切影响。
+  ── */
+  const pairs = [
+    { anchor: document.getElementById('anchor1'), picker: document.getElementById('picker1') },
+    { anchor: document.getElementById('anchor2'), picker: document.getElementById('picker2') },
+  ];
+
+  // 把所有浮层移到 body，脱离滚动容器
+  pairs.forEach(({ picker }) => document.body.appendChild(picker));
+
+  function positionPicker(anchor, picker) {
+    const linkEl = anchor.querySelector('.proto-link');
+    const r = linkEl.getBoundingClientRect();
+    const pickerH = 82; // 两行按钮 + padding 估算
+    const topAbove = r.top - pickerH - 6;
+    const finalTop = topAbove < 8 ? r.bottom + 6 : topAbove;
+    picker.style.left = r.left + 'px';
+    picker.style.top  = finalTop + 'px';
+  }
+
+  pairs.forEach(({ anchor, picker }) => {
+    let showT = null, hideT = null;
+
+    const show = () => {
+      clearTimeout(hideT);
+      clearTimeout(showT);
+      showT = setTimeout(() => {
+        positionPicker(anchor, picker);
+        picker.classList.add('is-visible');
+      }, 180);
+    };
+
+    const hide = () => {
+      clearTimeout(showT);
+      hideT = setTimeout(() => picker.classList.remove('is-visible'), 280);
+    };
+
+    anchor.querySelector('.proto-link').addEventListener('mouseenter', show);
+    anchor.querySelector('.proto-link').addEventListener('mouseleave', hide);
+    picker.addEventListener('mouseenter', () => clearTimeout(hideT));
+    picker.addEventListener('mouseleave', hide);
+
+    picker.querySelectorAll('.proto-link-picker__btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        const url = anchor.querySelector('.proto-link').dataset.url;
+        const mode = btn.dataset.mode;
+        console.log('open:' + mode + ':' + url);
+        picker.classList.remove('is-visible');
+        toast(mode === 'internal' ? '已在内置浏览器中打开' : '已在 Chrome 中打开');
+      });
+    });
+  });
+
+  function toast(msg) {
+    document.querySelectorAll('.proto-toast').forEach(el => el.remove());
+    const el = Object.assign(document.createElement('div'), { className: 'proto-toast', textContent: msg });
+    el.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--bg-overlay-l2);color:var(--text-default);padding:8px 16px;border-radius:var(--radius-8);font-size:var(--body-sm-font-size);box-shadow:0 2px 8px color-mix(in srgb,var(--text-default) 14%,transparent);z-index:9999;white-space:nowrap;animation:proto-ti 150ms ease-out;';
+    if (!document.querySelector('#proto-ti-style')) {
+      const s = document.createElement('style');
+      s.id = 'proto-ti-style';
+      s.textContent = '@keyframes proto-ti{from{opacity:0;transform:translateX(-50%) translateY(6px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
+      document.head.appendChild(s);
+    }
+    document.body.appendChild(el);
+    setTimeout(() => { el.style.transition='opacity 200ms'; el.style.opacity='0'; setTimeout(() => el.remove(), 200); }, 1800);
+  }
+</script>
+</body>
+</html>

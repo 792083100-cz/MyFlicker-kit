@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>会话归档 — 原型 · v0.5</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../../colors_and_type.css" />
+  <link rel="stylesheet" href="../../components.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg-base-default);
+      color: var(--text-default);
+      font-family: var(--body-sm-font-family);
+      font-size: var(--body-sm-font-size);
+      line-height: var(--body-sm-line-height);
+      font-weight: var(--body-sm-font-weight);
+      -webkit-font-smoothing: antialiased;
+      height: 100%;
+    }
+
+    /* ── 页面切换 ── */
+    .proto-page { display: none; }
+    .proto-page.is-active { display: block; }
+    #coverPage { min-height: 100vh; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 48px 24px; }
+    #coverPage.is-active { display: flex; }
+    #protoPage { display: none; }
+    #protoPage.is-active { display: block; height: 100vh; }
+
+    /* ── icon (CSS mask) ── */
+    .icon {
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      width: 16px; height: 16px;
+      -webkit-mask-size: contain; mask-size: contain;
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      -webkit-mask-position: center; mask-position: center;
+      background-color: currentColor;
+    }
+    .icon--20 { width: 20px; height: 20px; }
+
+    /* kid icon instances — 路径相对于 prototypes/2026-07-24_session-archive/ */
+    .i-newchat    { -webkit-mask-image: url(../../assets/icons/kid/edit.svg);              mask-image: url(../../assets/icons/kid/edit.svg); }
+    .i-search     { -webkit-mask-image: url(../../assets/icons/kid/search.svg);             mask-image: url(../../assets/icons/kid/search.svg); }
+    .i-schedule   { -webkit-mask-image: url(../../assets/icons/kid/scheduledtasks.svg);     mask-image: url(../../assets/icons/kid/scheduledtasks.svg); }
+    .i-skill      { -webkit-mask-image: url(../../assets/icons/kid/skill.svg);              mask-image: url(../../assets/icons/kid/skill.svg); }
+    .i-knowledge  { -webkit-mask-image: url(../../assets/icons/kid/knowledge.svg);          mask-image: url(../../assets/icons/kid/knowledge.svg); }
+    .i-closefolder{ -webkit-mask-image: url(../../assets/icons/kid/closefolder.svg);        mask-image: url(../../assets/icons/kid/closefolder.svg); }
+    .i-openfolder { -webkit-mask-image: url(../../assets/icons/kid/openfolder.svg);         mask-image: url(../../assets/icons/kid/openfolder.svg); }
+    .i-leftsidebar{ -webkit-mask-image: url(../../assets/icons/kid/leftsidebar.svg);        mask-image: url(../../assets/icons/kid/leftsidebar.svg); }
+    .i-unfold     { -webkit-mask-image: url(../../assets/icons/kid/myflicker_system_unfold.svg); mask-image: url(../../assets/icons/kid/myflicker_system_unfold.svg); }
+    .i-arrowdown  { -webkit-mask-image: url(../../assets/icons/kid/arrowdown.svg);          mask-image: url(../../assets/icons/kid/arrowdown.svg); }
+    .i-add        { -webkit-mask-image: url(../../assets/icons/kid/add.svg);                mask-image: url(../../assets/icons/kid/add.svg); }
+    .i-addgroup   { -webkit-mask-image: url(../../assets/icons/kid/addgroup.svg);           mask-image: url(../../assets/icons/kid/addgroup.svg); }
+    .i-more       { -webkit-mask-image: url(../../assets/icons/kid/more.svg);               mask-image: url(../../assets/icons/kid/more.svg); }
+    .i-setting    { -webkit-mask-image: url(../../assets/icons/kid/setting.svg);            mask-image: url(../../assets/icons/kid/setting.svg); }
+    .i-points     { -webkit-mask-image: url(../../assets/icons/kid/points.svg);             mask-image: url(../../assets/icons/kid/points.svg); }
+    .i-generating { -webkit-mask-image: url(../../assets/icons/kid/generating.svg);         mask-image: url(../../assets/icons/kid/generating.svg); }
+    .i-draft      { -webkit-mask-image: url(../../assets/icons/kid/draft.svg);              mask-image: url(../../assets/icons/kid/draft.svg); }
+    .i-pintotop   { -webkit-mask-image: url(../../assets/icons/kid/pintotop.svg);           mask-image: url(../../assets/icons/kid/pintotop.svg); }
+    .i-generationcompleted { -webkit-mask-image: url(../../assets/icons/kid/generationcompleted.svg); mask-image: url(../../assets/icons/kid/generationcompleted.svg); }
+    .i-send       { -webkit-mask-image: url(../../assets/icons/kid/send.svg);               mask-image: url(../../assets/icons/kid/send.svg); }
+    .i-inspiration{ -webkit-mask-image: url(../../assets/icons/kid/inspiration.svg);        mask-image: url(../../assets/icons/kid/inspiration.svg); }
+    .i-archive    { -webkit-mask-image: url(../../assets/icons/kid/archive.svg);            mask-image: url(../../assets/icons/kid/archive.svg); }
+
+    /* ── App Shell ── */
+    .app-shell {
+      display: flex;
+      height: 100vh;
+      width: 100%;
+      background: var(--bg-brand-subtle);
+      gap: 4px;
+    }
+
+    /* ── icon-btn ── */
+    .icon-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px;
+      border-radius: var(--radius-4); border: none; background: transparent;
+      cursor: pointer; color: var(--text-tertiary);
+      transition: background 120ms, color 120ms; flex-shrink: 0;
+    }
+    .icon-btn:hover { background: var(--fill-default); color: var(--text-default); }
+
+    /* ── Main area ── */
+    .chat-main {
+      flex: 1; display: flex; flex-direction: column;
+      min-width: 0;
+      background: var(--bg-base-default);
+      border-radius: 8px; overflow: hidden;
+      margin: 8px 8px 8px 0;
+      height: calc(100vh - 16px);
+    }
+
+    .chat-topbar {
+      height: 52px; flex-shrink: 0;
+      border-bottom: 1px solid var(--border-neutral-l1);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 var(--spacer-24); gap: var(--spacer-12);
+    }
+    .chat-topbar__left  { display: flex; align-items: center; gap: var(--spacer-8); }
+    .chat-topbar__title { font-size: var(--heading-sm-font-size); font-weight: var(--heading-sm-font-weight); }
+    .chat-topbar__right { display: flex; align-items: center; gap: var(--spacer-8); }
+
+    /* ── Welcome screen ── */
+    .chat-welcome-wrap {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 0 var(--spacer-24) var(--spacer-20);
+      overflow: hidden;
+    }
+    .chat-welcome__headline {
+      display: flex; align-items: center; gap: 12px;
+      user-select: none;
+    }
+    .chat-welcome__headline img { height: 48px; width: auto; display: block; }
+
+    .chat-input-wrap { flex-shrink: 0; padding: 0 var(--spacer-24) var(--spacer-20); }
+    .chat-input-inner--welcome { max-width: 800px; width: 100%; margin-top: 40px; }
+
+    /* ── Local CSS custom props ── */
+    :root {
+      --spacer-6: 6px; --spacer-10: 10px;
+      --spacer-16: 16px; --spacer-20: 20px;
+      --radius-16: 16px;
+    }
+
+    /* ── chat-input 局部微调（仅此原型生效）── */
+    .proto-input-override .mf-chat-input { padding: 12px !important; }
+    .proto-input-override .mf-chat-input__textarea { max-height: 336px !important; overflow-y: hidden; resize: none; }
+    .proto-input-override .mf-chat-input__textarea.is-overflow { overflow-y: auto; }
+    .proto-input-override .mf-chat-input__model-arrow { width: 16px !important; height: 16px !important; flex: 0 0 16px !important; }
+
+    /* ════════════════════════════════════════
+       PROTO-ONLY: Settings Panel Popover
+       以 .proto- 前缀完全隔离，不影响组件库
+    ════════════════════════════════════════ */
+    .proto-settings-popover {
+      position: fixed;
+      z-index: 9999;
+      display: none;
+    }
+    .proto-settings-popover.is-open { display: block; }
+    .proto-settings-popover .settings-panel { width: 224px; }
+    .proto-settings-popover .settings-panel__footer { padding: 0 var(--spacer-8) var(--spacer-8); }
+    .proto-settings-popover .settings-panel__cta { height: 32px; }
+
+    /* archive 图标在 settings-panel__item 内的映射 */
+    .settings-panel__item .ac-i-archive {
+      -webkit-mask-image: url(../../assets/icons/kid/archive.svg);
+      mask-image: url(../../assets/icons/kid/archive.svg);
+    }
+
+    /* ── 原型说明 badge（页面右上角）── */
+    .proto-label {
+      position: fixed; top: 12px; right: 20px; z-index: 1000;
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 10px; border-radius: 20px;
+      background: var(--bg-overlay-l1);
+      border: 1px solid var(--border-neutral-l1);
+      font-size: 11px; color: var(--text-tertiary);
+      pointer-events: none; user-select: none;
+    }
+    .proto-label strong { color: var(--text-secondary); font-weight: 600; }
+
+    /* ── 归档列表图标 & 删除按钮（overlay 外也可复用）── */
+    /* 提升 Toast 容器层级，确保显示在设置 overlay 之上 */
+    #toastContainer { z-index: 10300; }
+    /* Toast 内的 check 图标 & 操作链接 — 复用组件规范类名，无需额外样式 */
+
+    /* 归档图标（list 中使用） */
+    .proto-archive-icon {
+      -webkit-mask-image: url(../../assets/icons/kid/archive.svg);
+      mask-image: url(../../assets/icons/kid/archive.svg);
+      color: var(--text-tertiary); flex-shrink: 0;
+    }
+    .proto-delete-btn { color: var(--text-tertiary); border-radius: var(--radius-6); }
+    .proto-delete-btn:hover { color: #EF4444; background: #FEE2E2; }
+
+    /* ── Tooltip 浮层（JS 控制定位）── */
+    .proto-tooltip {
+      position: fixed;
+      z-index: 10100;
+      pointer-events: none;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.1s ease;
+    }
+    .proto-tooltip.is-visible { opacity: 1; }
+
+    /* ── 清空确认 Dialog 遮罩 ── */
+    .proto-clear-backdrop {
+      position: fixed; inset: 0;
+      z-index: 10200;
+      background: var(--bg-overlay-l4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .proto-clear-backdrop.is-open { display: flex; }
+
+    /* ── 会话操作菜单 Popover ── */
+    .proto-session-menu {
+      position: fixed;
+      z-index: 9998;
+      display: none;
+    }
+    .proto-session-menu.is-open { display: block; }
+
+    /* 菜单内图标（路径从 prototypes/2026-07-24_session-archive/ 出发） */
+    .proto-session-menu .i-share    { -webkit-mask-image: url(../../assets/icons/kid/share.svg);    mask-image: url(../../assets/icons/kid/share.svg); }
+    .proto-session-menu .i-edit     { -webkit-mask-image: url(../../assets/icons/kid/edit.svg);     mask-image: url(../../assets/icons/kid/edit.svg); }
+    .proto-session-menu .i-move     { -webkit-mask-image: url(../../assets/icons/kid/pushto.svg);     mask-image: url(../../assets/icons/kid/pushto.svg); }
+    .proto-session-menu .i-nogroup  { -webkit-mask-image: url(../../assets/icons/kid/nogroup.svg);  mask-image: url(../../assets/icons/kid/nogroup.svg); }
+    .proto-session-menu .i-pintotop { -webkit-mask-image: url(../../assets/icons/kid/pintotop.svg); mask-image: url(../../assets/icons/kid/pintotop.svg); }
+    .proto-session-menu .i-archive  { -webkit-mask-image: url(../../assets/icons/kid/archive.svg);  mask-image: url(../../assets/icons/kid/archive.svg); }
+    .proto-session-menu .i-delete   { -webkit-mask-image: url(../../assets/icons/kid/delete.svg);   mask-image: url(../../assets/icons/kid/delete.svg); }
+
+    /* ══════════════════════════════════════════════════
+       全屏设置页 Overlay — 全量 CSS，作用域限定在
+       .proto-setting-overlay 内，不污染外部组件
+    ══════════════════════════════════════════════════ */
+    .proto-setting-overlay {
+      position: fixed; inset: 0; z-index: 10000;
+      display: none;
+    }
+    .proto-setting-overlay.is-open { display: block; }
+    @keyframes proto-overlay-in {
+      from { opacity: 0; transform: scale(0.98); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    /* Shell */
+    .proto-setting-overlay .setting-shell {
+      display: flex; height: 100vh; width: 100%;
+      background: var(--bg-brand-subtle);
+      animation: proto-overlay-in 180ms ease;
+    }
+
+    /* Left Nav */
+    .proto-setting-overlay .setting-nav {
+      width: 240px; flex-shrink: 0; height: 100vh;
+      display: flex; flex-direction: column;
+      background: transparent; padding: 12px 8px 16px; gap: 4px;
+    }
+    .proto-setting-overlay .setting-nav__back {
+      display: flex; align-items: center; gap: 6px;
+      height: 32px; padding: 0 8px; border-radius: var(--radius-8);
+      color: var(--text-tertiary); font-size: var(--body-sm-font-size);
+      cursor: pointer; border: none; background: transparent;
+      transition: background 120ms, color 120ms; margin-bottom: 4px;
+      font-family: inherit;
+    }
+    .proto-setting-overlay .setting-nav__back:hover { background: var(--fill-default); color: var(--text-default); }
+    .proto-setting-overlay .setting-nav__search {
+      display: flex; align-items: center; gap: 6px;
+      height: 32px; padding: 0 10px; border-radius: var(--radius-8);
+      background: var(--bg-base-default); border: 1px solid var(--border-neutral-l1);
+      color: var(--text-tertiary); font-size: var(--body-sm-font-size); margin-bottom: 8px;
+    }
+    .proto-setting-overlay .setting-nav__search input {
+      flex: 1; border: none; outline: none; background: transparent;
+      font-size: var(--body-sm-font-size); color: var(--text-default); font-family: inherit;
+    }
+    .proto-setting-overlay .setting-nav__search input::placeholder { color: var(--text-tertiary); }
+    .proto-setting-overlay .setting-nav__group-label {
+      padding: 4px 8px 2px; font-size: 12px; color: var(--text-tertiary);
+    }
+    .proto-setting-overlay .setting-nav__item {
+      display: flex; align-items: center; gap: 8px;
+      height: 32px; padding: 0 8px; border-radius: var(--radius-8);
+      color: var(--text-default); font-size: var(--body-sm-font-size);
+      cursor: pointer; border: none; background: transparent;
+      width: 100%; text-align: left;
+      transition: background 120ms, color 120ms; font-family: inherit;
+    }
+    .proto-setting-overlay .setting-nav__item:hover { background: var(--fill-default); }
+    .proto-setting-overlay .setting-nav__item.is-active {
+      background: var(--fill-default); font-weight: 500;
+    }
+    .proto-setting-overlay .setting-nav__item .icon { color: var(--text-default); }
+
+    /* Right Content */
+    .proto-setting-overlay .setting-content {
+      flex: 1; height: calc(100vh - 16px);
+      margin: 8px 8px 8px 0; overflow-y: auto;
+      background: var(--bg-base-default); border-radius: 12px;
+      padding: 48px 48px 64px;
+    }
+    .proto-setting-overlay .setting-content::-webkit-scrollbar { width: 4px; }
+    .proto-setting-overlay .setting-content::-webkit-scrollbar-track { background: transparent; }
+    .proto-setting-overlay .setting-content::-webkit-scrollbar-thumb { background: var(--border-neutral-l1); border-radius: 2px; }
+    .proto-setting-overlay .setting-body { max-width: 880px; margin: 0 auto; }
+    .proto-setting-overlay .setting-page__title {
+      font-size: 20px; font-weight: 600; line-height: 1.4;
+      color: var(--text-default); margin-bottom: 4px;
+    }
+    .proto-setting-overlay .setting-page__desc {
+      font-size: var(--body-sm-font-size); color: var(--text-tertiary); margin-bottom: 24px;
+    }
+
+    /* Groups & Cards */
+    .proto-setting-overlay .setting-group { margin-bottom: 32px; }
+    .proto-setting-overlay .setting-group__header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+    }
+    .proto-setting-overlay .setting-group__title {
+      font-size: var(--body-sm-font-size); font-weight: 600; color: var(--text-default);
+    }
+    .proto-setting-overlay .setting-group__desc {
+      font-size: var(--body-xs-font-size); color: var(--text-tertiary); margin-top: 4px;
+    }
+    .proto-setting-overlay .setting-card {
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-8); overflow: hidden; margin-bottom: 24px;
+    }
+    .proto-setting-overlay .setting-card--list { overflow: visible; }
+
+    /* Rows */
+    .proto-setting-overlay .setting-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px; gap: 12px; min-height: 52px; position: relative;
+    }
+    .proto-setting-overlay .setting-row:not(:last-child)::after {
+      content: ''; position: absolute; bottom: 0; left: 16px; right: 16px;
+      height: 1px; background: var(--border-neutral-l1);
+    }
+    .proto-setting-overlay .setting-row__left {
+      display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0;
+    }
+    .proto-setting-overlay .setting-row__label {
+      font-size: var(--body-sm-font-size); color: var(--text-default); font-weight: 500;
+    }
+    .proto-setting-overlay .setting-row__hint {
+      font-size: var(--body-xs-font-size); color: var(--text-tertiary); line-height: 1.4;
+    }
+    .proto-setting-overlay .setting-row__right {
+      display: flex; align-items: center; gap: 8px;
+      flex-shrink: 0; width: 240px; justify-content: flex-end;
+    }
+
+    /* Toggle */
+    .proto-setting-overlay .s-toggle {
+      position: relative; width: 36px; height: 20px; flex-shrink: 0;
+    }
+    .proto-setting-overlay .s-toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .proto-setting-overlay .s-toggle__track {
+      position: absolute; inset: 0; background: var(--fill-default);
+      border-radius: 10px; cursor: pointer; transition: background 200ms;
+    }
+    .proto-setting-overlay .s-toggle__track::after {
+      content: ''; position: absolute; top: 2px; left: 2px;
+      width: 16px; height: 16px; background: white; border-radius: 50%;
+      transition: transform 200ms; box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    }
+    .proto-setting-overlay .s-toggle input:checked ~ .s-toggle__track { background: #34C759; }
+    .proto-setting-overlay .s-toggle input:checked ~ .s-toggle__track::after { transform: translateX(16px); }
+
+    /* Select */
+    .proto-setting-overlay .s-select-wrap {
+      position: relative; display: inline-flex; align-items: center;
+    }
+    .proto-setting-overlay .s-select-wrap .icon {
+      position: absolute; right: 8px; pointer-events: none; color: var(--text-tertiary);
+    }
+    .proto-setting-overlay .s-select {
+      height: 28px; padding: 0 28px 0 10px;
+      border: 1px solid var(--border-neutral-l1); border-radius: var(--radius-8);
+      background: var(--bg-base-default); font-size: var(--body-sm-font-size);
+      color: var(--text-default); font-family: inherit;
+      cursor: pointer; appearance: none; outline: none; min-width: 100px;
+    }
+
+    /* Buttons */
+    .proto-setting-overlay .s-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      height: 28px; padding: 0 12px;
+      border: 1px solid var(--border-neutral-l1); border-radius: var(--radius-6);
+      background: var(--bg-base-default); font-size: var(--body-sm-font-size);
+      color: var(--text-default); cursor: pointer; font-family: inherit;
+      transition: background 120ms; white-space: nowrap;
+    }
+    .proto-setting-overlay .s-btn:hover { background: var(--fill-tertiary); }
+    .proto-setting-overlay .s-btn.proto-btn-danger { color: #EF4444; border-color: transparent; }
+    .proto-setting-overlay .s-btn.proto-btn-danger:hover { background: #FEE2E2; }
+
+    /* List */
+    .proto-setting-overlay .s-list-toolbar {
+      display: flex; align-items: center; gap: 8px; padding: 16px;
+    }
+    .proto-setting-overlay .s-list-search {
+      flex: 1; display: flex; align-items: center; gap: 6px;
+      height: 28px; padding: 0 10px;
+      border: 1px solid var(--border-neutral-l1); border-radius: var(--radius-8);
+      background: var(--bg-base-default);
+    }
+    .proto-setting-overlay .s-list-search input {
+      flex: 1; border: none; outline: none; background: transparent;
+      font-size: var(--body-sm-font-size); color: var(--text-default); font-family: inherit;
+    }
+    .proto-setting-overlay .s-list-search input::placeholder { color: var(--text-tertiary); }
+    .proto-setting-overlay .s-list { padding: 0 16px 16px; display: flex; flex-direction: column; }
+    .proto-setting-overlay .s-list-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px; border-radius: var(--radius-8);
+      cursor: default; transition: background 120ms;
+    }
+    .proto-setting-overlay .s-list-item:hover { background: var(--bg-brand-subtle); }
+    .proto-setting-overlay .s-list-item__main {
+      flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px;
+    }
+    .proto-setting-overlay .s-list-item__title {
+      font-size: var(--body-sm-font-size); font-weight: 500; color: var(--text-default);
+    }
+    .proto-setting-overlay .s-list-item__desc {
+      font-size: var(--body-xs-font-size); color: var(--text-tertiary); line-height: 1.4;
+    }
+    .proto-setting-overlay .s-icon-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border: none; background: transparent;
+      color: var(--text-tertiary); cursor: pointer;
+      border-radius: var(--radius-6); flex-shrink: 0;
+      transition: background 120ms, color 120ms;
+    }
+    .proto-setting-overlay .s-icon-btn:hover { background: var(--fill-default); color: var(--text-default); }
+    .proto-setting-overlay .s-placeholder {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 120px; color: var(--text-tertiary); font-size: var(--body-sm-font-size);
+    }
+
+    /* 图标路径（overlay 作用域） */
+    .proto-setting-overlay .i-arrowleft  { -webkit-mask-image: url(../../assets/icons/kid/arrowleft.svg);  mask-image: url(../../assets/icons/kid/arrowleft.svg); }
+    .proto-setting-overlay .i-search     { -webkit-mask-image: url(../../assets/icons/kid/search.svg);      mask-image: url(../../assets/icons/kid/search.svg); }
+    .proto-setting-overlay .i-adjustment { -webkit-mask-image: url(../../assets/icons/kid/adjustment.svg);  mask-image: url(../../assets/icons/kid/adjustment.svg); }
+    .proto-setting-overlay .i-appearance { -webkit-mask-image: url(../../assets/icons/kid/appearance.svg);  mask-image: url(../../assets/icons/kid/appearance.svg); }
+    .proto-setting-overlay .i-models     { -webkit-mask-image: url(../../assets/icons/kid/models.svg);      mask-image: url(../../assets/icons/kid/models.svg); }
+    .proto-setting-overlay .i-data       { -webkit-mask-image: url(../../assets/icons/kid/data.svg);        mask-image: url(../../assets/icons/kid/data.svg); }
+    .proto-setting-overlay .i-memory     { -webkit-mask-image: url(../../assets/icons/kid/memory.svg);      mask-image: url(../../assets/icons/kid/memory.svg); }
+    .proto-setting-overlay .i-statepoint { -webkit-mask-image: url(../../assets/icons/kid/around.svg);      mask-image: url(../../assets/icons/kid/around.svg); }
+    .proto-setting-overlay .i-safe       { -webkit-mask-image: url(../../assets/icons/kid/safe.svg);        mask-image: url(../../assets/icons/kid/safe.svg); }
+    .proto-setting-overlay .i-archive    { -webkit-mask-image: url(../../assets/icons/kid/archive.svg);     mask-image: url(../../assets/icons/kid/archive.svg); }
+    .proto-setting-overlay .i-close      { -webkit-mask-image: url(../../assets/icons/kid/close.svg);       mask-image: url(../../assets/icons/kid/close.svg); }
+    .proto-setting-overlay .i-arrowdown  { -webkit-mask-image: url(../../assets/icons/kid/arrowdown.svg);   mask-image: url(../../assets/icons/kid/arrowdown.svg); }
+    .proto-setting-overlay .i-delete     { -webkit-mask-image: url(../../assets/icons/kid/delete.svg);      mask-image: url(../../assets/icons/kid/delete.svg); }
+    .proto-setting-overlay .i-undo       { -webkit-mask-image: url(../../assets/icons/kid/undo.svg);        mask-image: url(../../assets/icons/kid/undo.svg); }
+
+    /* ── 已归档页专用布局 ── */
+    .proto-archived-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px; gap: 12px;
+    }
+    .proto-archived-header .setting-page__title { margin-bottom: 4px; }
+    .proto-archived-header .setting-page__desc  { margin-bottom: 0; }
+    .proto-archived-list {
+      border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-8);
+      padding: 8px;
+    }
+    .proto-archived-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px;
+      border-radius: var(--radius-8);
+      position: relative;
+      transition: background 120ms;
+    }
+    .proto-archived-item:hover { background: var(--fill-tertiary); }
+    .proto-archived-item + .proto-archived-item::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 12px; right: 12px;
+      height: 1px;
+      background: var(--border-neutral-l1);
+    }
+    .proto-archived-item:not(:last-child)::after { display: none; }
+    .proto-archived-item__main { flex: 1; min-width: 0; }
+    .proto-archived-item__title {
+      font-size: var(--body-sm-font-size); font-weight: 500;
+      color: var(--text-default); margin-bottom: 4px;
+    }
+    .proto-archived-item__time {
+      font-size: var(--body-xs-font-size); color: var(--text-tertiary); line-height: 1.4;
+    }
+    .proto-archived-item__actions {
+      display: flex; align-items: center; gap: 4px; flex-shrink: 0;
+      opacity: 0; transition: opacity 120ms;
+    }
+    .proto-archived-item:hover .proto-archived-item__actions { opacity: 1; }
+    .proto-restore-btn { color: var(--text-secondary); }
+    .proto-restore-btn:hover { color: var(--text-brand, var(--bg-brand)); background: var(--bg-brand-subtle); }
+
+    /* 搜索框 */
+    .proto-archived-search {
+      position: relative; display: flex; align-items: center;
+      margin-bottom: 12px;
+    }
+    .proto-archived-search__icon {
+      position: absolute; left: 8px; width: 14px; height: 14px;
+      color: var(--icon-tertiary); pointer-events: none;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .proto-archived-search__input {
+      width: 100%; height: 28px; padding: 0 10px 0 28px;
+      background: var(--bg-base-default); border: 1px solid var(--border-neutral-l1);
+      border-radius: var(--radius-8); font: inherit; font-size: var(--body-sm-font-size);
+      color: var(--text-default); outline: none; transition: border-color 0.15s;
+    }
+    .proto-archived-search__input::placeholder { color: var(--text-tertiary); }
+    .proto-archived-search__input:focus { border-color: var(--border-neutral-l2); }
+  </style>
+</head>
+<body>
+
+<!-- ── 封面页 ── -->
+<div id="coverPage" class="is-active">
+<div class="proto-req-card" id="reqCard" style="max-width:880px;width:100%;">
+  <div class="proto-req-card__header" id="reqCardToggle" style="cursor:pointer;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="proto-req-card__badge">原型</span>
+      <span class="proto-req-card__title">会话归档</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span class="proto-req-card__meta">2026-07-27 · 会话管理</span>
+      <span class="proto-req-card__toggle-icon" id="reqCardChevron" aria-label="展开/收起">
+        <svg width="14" height="14" viewBox="0 0 1024 1024" fill="currentColor" style="display:block;color:var(--text-tertiary);transition:transform 0.2s;"><path d="M230.72 409.664A38.4 38.4 0 0 1 287.552 358.08L480.896 571.392C493.248 584.96 502.016 593.152 508.672 597.76 514.88 602.112 516.48 601.472 515.136 601.472 513.92 601.472 515.392 602.112 521.664 597.76 528.256 593.088 536.96 584.96 549.376 571.392L742.656 358.08A38.425 38.425 0 0 1 799.68 409.6L606.272 622.912A257.92 257.92 0 0 1 565.76 660.672C551.744 670.4 534.912 678.144 515.2 678.144 495.36 678.272 478.464 670.464 464.448 660.608A255.744 255.744 0 0 1 424 622.912L230.72 409.664Z"/></svg>
+      </span>
+    </div>
+  </div>
+  <div class="proto-req-card__body" id="reqCardBody">
+    <div class="proto-req-card__cols">
+      <div class="proto-req-card__col">
+        <div class="proto-req-card__col-title">需求背景</div>
+        <div class="proto-req-card__col-body">用户希望将某些历史会话从主列表隐藏，但不希望就此删除，以便未来查阅或恢复。当历史会话累积较多时，主列表信息负载过重，需要一种轻量、可逆的会话整理方式。</div>
+      </div>
+      <div class="proto-req-card__col">
+        <div class="proto-req-card__col-title">痛点</div>
+        <div class="proto-req-card__col-body">历史会话只能删除，无法「暂时隐藏」。删除后无法找回，导致用户对重要会话犯怒而不格。同时缺少操作反馈（Toast）和二次确认（Dialog）机制，误操作风险高。</div>
+      </div>
+      <div class="proto-req-card__col">
+        <div class="proto-req-card__col-title">解决方案</div>
+        <div class="proto-req-card__col-body">主列表会话行「……」菜单增加「归档」入口，归档后 Toast 全局提示 + 带「去查看」跳转。已归档列表支持单条/清空二次确认，恢复后自动选中该会话。</div>
+      </div>
+    </div>
+    <div class="proto-req-card__changes">
+      <div class="proto-req-card__changes-title">本次改动</div>
+      <ul class="proto-req-card__changes-list">
+        <li>会话列表行 hover 展示「……」更多操作按鈕，点击唤起 <code>.mf-menu</code> 菜单（分享 / 重命名 / 移动至 / 置顶 / <strong>归档</strong> / 删除）</li>
+        <li>点击「归档」后会话从侧边栏移除，插入设置页已归档列表顶部</li>
+        <li>弹出 <code>.mf-notif--float.mf-notif--success</code> Toast，文案带「去查看」跳转设置-已归档页</li>
+        <li>已归档页支持单条「徒标」确认 Dialog、「恢复」展示恢复 Toast + 「去查看」选中会话</li>
+        <li>「清空全部」二次确认 Dialog 展示当前归档数量，确认后批量清除</li>
+        <li>删除 / 恢复按鈕 hover 展示 <code>.mf-tooltip</code> 功能提示</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 查看原型按钮 -->
+  <div style="display:flex;justify-content:flex-end;max-width:880px;width:100%;margin-top:8px;">
+    <button class="mf-btn mf-btn--primary" id="gotoProtoBtn" style="height:36px;padding:0 20px;font-size:14px;">查看原型</button>
+  </div>
+</div>
+</div>
+
+<!-- ── 原型页 ── -->
+<div id="protoPage">
+
+<style>
+  /* ── 需求概览卡片（原型专有）── */
+  .proto-req-card {
+    border: 1.5px solid var(--border-neutral-l1);
+    border-radius: var(--radius-12);
+    padding: var(--spacer-24);
+    margin-bottom: 0;
+    display: flex; flex-direction: column; gap: var(--spacer-20);
+  }
+  .proto-req-card__header:hover .proto-req-card__toggle-icon svg { color: var(--text-default); }
+  .proto-req-card__body { display: flex; flex-direction: column; gap: var(--spacer-16); }
+  .proto-req-card__body.is-collapsed { display: none; }
+  .proto-req-card__header { display: flex; align-items: center; justify-content: space-between; }
+  .proto-req-card__badge {
+    font-size: 11px; font-weight: 500;
+    color: var(--text-default);
+    background: var(--bg-base-secondary);
+    border-radius: 4px; padding: 1px 6px; line-height: 18px;
+  }
+  .proto-req-card__title {
+    font-size: var(--heading-sm-font-size);
+    font-weight: var(--heading-sm-font-weight);
+    color: var(--text-default);
+  }
+  .proto-req-card__meta { font-size: 12px; color: var(--text-tertiary); }
+  .proto-req-card__cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--spacer-12); }
+  .proto-req-card__col {
+    background: var(--bg-base-secondary); border-radius: var(--radius-8);
+    padding: 14px 16px; display: flex; flex-direction: column; gap: var(--spacer-8);
+  }
+  .proto-req-card__col-title { font-size: 13px; font-weight: 600; color: var(--text-default); }
+  .proto-req-card__col-body { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+  .proto-req-card__changes { display: flex; flex-direction: column; gap: var(--spacer-8); }
+  .proto-req-card__changes-title { font-size: 13px; font-weight: 600; color: var(--text-default); }
+  .proto-req-card__changes-list {
+    padding-left: var(--spacer-16); display: flex; flex-direction: column; gap: var(--spacer-4);
+  }
+  .proto-req-card__changes-list li { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+  .proto-req-card__changes-list code {
+    font-family: "SF Mono", monospace; font-size: 11px;
+    background: var(--bg-base-secondary); padding: 1px 5px; border-radius: 4px;
+    color: var(--text-default);
+  }
+</style>
+
+<div class="app-shell" id="appShell">
+
+  <!-- ════════════════════════════════════════
+       SIDEBAR — .mf-aside（来自 chat-main 模版）
+  ════════════════════════════════════════ -->
+  <aside class="mf-aside">
+
+    <!-- 头部 -->
+    <div class="mf-aside__header">
+      <div class="mf-aside__workspace">
+        <img class="mf-aside__workspace-avatar" src="../../assets/icons/workspace-myflicker.svg" alt="workspace" />
+        <span class="mf-aside__workspace-name">个人空间</span>
+        <span class="icon i-unfold mf-aside__workspace-unfold"></span>
+      </div>
+      <button class="mf-aside__collapse" aria-label="收起侧边栏">
+        <span class="icon i-leftsidebar"></span>
+      </button>
+    </div>
+
+    <!-- 主导航 -->
+    <nav class="mf-aside__nav">
+      <div class="mf-aside__nav-item is-active">
+        <span class="icon i-newchat"></span>
+        <span class="mf-aside__nav-item__label">新对话</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-search"></span>
+        <span class="mf-aside__nav-item__label">搜索</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-schedule"></span>
+        <span class="mf-aside__nav-item__label">定时任务</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-skill"></span>
+        <span class="mf-aside__nav-item__label">技能</span>
+      </div>
+      <div class="mf-aside__nav-item">
+        <span class="icon i-knowledge"></span>
+        <span class="mf-aside__nav-item__label">知识</span>
+      </div>
+    </nav>
+
+    <!-- 滚动区 -->
+    <div class="mf-aside__body">
+
+      <!-- 分组 label -->
+      <div class="mf-aside__section-label is-always-show">
+        <span>分组</span>
+        <div class="mf-aside__section-label-actions">
+          <button class="mf-aside__icon-btn" aria-label="新建分组">
+            <span class="icon i-addgroup"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 分组 1 — 展开 -->
+      <div class="mf-aside__group">
+        <div class="mf-aside__group-icon"><span class="icon i-openfolder"></span></div>
+        <span class="mf-aside__group-name">设计系统项目</span>
+        <div class="mf-aside__group-actions">
+          <button class="mf-aside__icon-btn" aria-label="新建会话"><span class="icon i-add"></span></button>
+          <button class="mf-aside__icon-btn" aria-label="更多"><span class="icon i-more"></span></button>
+        </div>
+      </div>
+      <div class="mf-aside__group-sessions">
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status"><span class="icon i-generating" style="color:var(--text-brand);"></span></span>
+          <span class="mf-aside__session-title">组件 Token 绑定机制</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">14:30</span>
+            <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status"></span>
+          <span class="mf-aside__session-title">AI 对话页 UI Kit</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">昨天</span>
+            <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status"><span class="icon i-generationcompleted" style="color:var(--text-secondary);"></span></span>
+          <span class="mf-aside__session-title">颜色系统整理</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">2026/7/12</span>
+            <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+      </div>
+
+      <!-- 分组 2 — 折叠 -->
+      <div class="mf-aside__group" style="margin-top:4px;">
+        <div class="mf-aside__group-icon"><span class="icon i-closefolder"></span></div>
+        <span class="mf-aside__group-name">个人任务</span>
+        <div class="mf-aside__group-actions">
+          <button class="mf-aside__icon-btn"><span class="icon i-add"></span></button>
+          <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+        </div>
+      </div>
+
+      <!-- 对话 section -->
+      <div class="mf-aside__section-label">
+        <span>对话</span>
+        <div class="mf-aside__section-label-actions">
+          <button class="mf-aside__icon-btn" aria-label="新建对话"><span class="icon i-add"></span></button>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:4px;">
+        <div class="mf-aside__session is-active">
+          <span class="mf-aside__session-status"><span class="icon i-generating" style="color:var(--text-brand);"></span></span>
+          <span class="mf-aside__session-title">构建 MyFlicker 世界</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">16:22</span>
+            <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status"><span class="icon i-pintotop" style="color:var(--text-tertiary);"></span></span>
+          <span class="mf-aside__session-title">帮我顶会议</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">今天</span>
+            <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status"></span>
+          <span class="mf-aside__session-title">订机票</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">昨天</span>
+            <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+        <div class="mf-aside__session">
+          <span class="mf-aside__session-status"><span class="icon i-draft" style="color:var(--text-tertiary);"></span></span>
+          <span class="mf-aside__session-title">设计规范草稿</span>
+          <span class="mf-aside__session-meta">
+            <span class="mf-aside__session-time">2026/7/13</span>
+            <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+          </span>
+        </div>
+      </div>
+
+    </div><!-- /mf-aside__body -->
+
+    <!-- 底部 footer -->
+    <div class="mf-aside__footer">
+      <button class="mf-aside__footer-setting" id="settingsBtn" aria-expanded="false">
+        <span class="icon i-setting"></span>
+        <span>设置</span>
+      </button>
+      <div class="mf-aside__footer-credit">
+        <img src="../../assets/icons/points-gradient.svg" width="14" height="14" style="flex-shrink:0;" />
+        <span>积分：剩余 92%</span>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- Toast 容器 — 顶部居中，复用 mf-toast-container 规范 -->
+  <div class="mf-toast-container" id="toastContainer"></div>
+
+  <!-- 会话操作菜单 — position:fixed，mf-menu 组件规范 -->
+  <div class="proto-session-menu" id="sessionMenu">
+    <div class="mf-menu">
+      <button class="mf-menu__item">
+        <span class="icon i-share"></span>
+        分享
+      </button>
+      <button class="mf-menu__item">
+        <span class="icon i-edit"></span>
+        重命名
+      </button>
+      <button class="mf-menu__item mf-menu__item--submenu">
+        <span class="icon i-move"></span>
+        移动至
+        <span class="mf-menu__arrow">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </button>
+      <button class="mf-menu__item">
+        <span class="icon i-nogroup"></span>
+        移出分组
+      </button>
+      <button class="mf-menu__item">
+        <span class="icon i-pintotop"></span>
+        置顶
+      </button>
+      <button class="mf-menu__item" id="menuArchiveBtn">
+        <span class="icon i-archive"></span>
+        归档
+      </button>
+      <div class="mf-menu__divider"></div>
+      <button class="mf-menu__item mf-menu__item--danger">
+        <span class="icon i-delete"></span>
+        删除
+      </button>
+    </div>
+  </div>
+
+  <!-- Settings Panel Popover — 挂在 body 直属，position:fixed，不受任何 overflow 裁切 -->
+  <div class="proto-settings-popover" id="settingsPopover">
+    <div class="settings-panel">
+      <div class="settings-panel__list">
+
+        <button class="settings-panel__item">
+          <span class="settings-panel__icon ac-icon ac-i-internet" aria-hidden="true"></span>
+          <span class="settings-panel__label">语言</span>
+          <span class="settings-panel__value">
+            简体中文
+            <span class="sp-arrow"><svg viewBox="0 0 1024 1024" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M409.664 793.344A38.4 38.4 0 0 1 358.08 736.512L571.392 543.232C584.96 530.752 593.152 521.984 597.76 515.392 602.176 509.184 601.472 507.52 601.472 508.928 601.472 510.272 602.112 508.672 597.76 502.4 593.152 495.808 584.96 487.04 571.392 474.688L358.08 281.408A38.425 38.425 0 0 1 409.6 224.384L622.912 417.856C637.76 431.232 651.072 444.672 660.672 458.304 670.4 472.32 678.208 489.152 678.208 508.928 678.272 528.704 670.464 545.536 660.608 559.552 651.008 573.248 637.76 586.624 622.912 600.064L409.664 793.344Z"/></svg></span>
+          </span>
+        </button>
+
+        <button class="settings-panel__item">
+          <span class="settings-panel__icon ac-icon ac-i-lightanddarkswitching" aria-hidden="true"></span>
+          <span class="settings-panel__label">主题</span>
+          <span class="settings-panel__value">
+            浅色
+            <span class="sp-arrow"><svg viewBox="0 0 1024 1024" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M409.664 793.344A38.4 38.4 0 0 1 358.08 736.512L571.392 543.232C584.96 530.752 593.152 521.984 597.76 515.392 602.176 509.184 601.472 507.52 601.472 508.928 601.472 510.272 602.112 508.672 597.76 502.4 593.152 495.808 584.96 487.04 571.392 474.688L358.08 281.408A38.425 38.425 0 0 1 409.6 224.384L622.912 417.856C637.76 431.232 651.072 444.672 660.672 458.304 670.4 472.32 678.208 489.152 678.208 508.928 678.272 528.704 670.464 545.536 660.608 559.552 651.008 573.248 637.76 586.624 622.912 600.064L409.664 793.344Z"/></svg></span>
+          </span>
+        </button>
+
+        <div class="settings-panel__divider"></div>
+
+        <button class="settings-panel__item">
+          <span class="settings-panel__icon ac-icon ac-i-problemfeedback" aria-hidden="true"></span>
+          <span class="settings-panel__label">问题反馈</span>
+        </button>
+
+        <button class="settings-panel__item">
+          <span class="settings-panel__icon ac-icon ac-i-help" aria-hidden="true"></span>
+          <span class="settings-panel__label">帮助手册</span>
+        </button>
+
+        <button class="settings-panel__item">
+          <span class="settings-panel__icon ac-icon ac-i-joinusergroup" aria-hidden="true"></span>
+          <span class="settings-panel__label">加入用户群</span>
+        </button>
+
+        <button class="settings-panel__item" id="moreSettingsBtn">
+          <span class="settings-panel__icon ac-icon ac-i-more" aria-hidden="true"></span>
+          <span class="settings-panel__label">更多设置</span>
+        </button>
+
+      </div>
+      <div class="settings-panel__footer">
+        <button class="settings-panel__cta">下载客户端</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       全屏设置页 Overlay（点击「更多设置」触发）
+       复用 ui_kits/setting 模版结构，proto- 前缀隔离
+  ════════════════════════════════════════ -->
+  <div class="proto-setting-overlay" id="settingOverlay">
+    <div class="setting-shell">
+
+      <!-- 左侧导航 -->
+      <nav class="setting-nav">
+        <button class="setting-nav__back" id="settingBackBtn">
+          <span class="icon i-arrowleft icon--14"></span>
+          返回应用
+        </button>
+        <div class="setting-nav__search">
+          <span class="icon i-search" style="color:var(--text-tertiary);"></span>
+          <input type="text" placeholder="请输入" />
+        </div>
+
+        <button class="setting-nav__item" data-page="memory">
+          <span class="icon i-memory"></span>
+          记忆
+        </button>
+        <button class="setting-nav__item" data-page="sysstate">
+          <span class="icon i-statepoint"></span>
+          系统状态
+        </button>
+        <button class="setting-nav__item" data-page="models">
+          <span class="icon i-models"></span>
+          模型
+        </button>
+        <button class="setting-nav__item is-active" data-page="archived">
+          <span class="icon i-archive"></span>
+          已归档
+        </button>
+      </nav>
+
+      <!-- 右侧内容 -->
+      <div class="setting-content">
+        <div class="setting-body">
+
+          <!-- ★ 会话管理页 -->
+          <div id="page-sessions" style="display:none;">
+            <div class="setting-page__title">会话管理</div>
+            <div class="setting-page__desc">管理你的会话列表，归档不常用的会话以保持侧边栏整洁</div>
+
+            <!-- 归档设置 -->
+            <div class="setting-group">
+              <div class="setting-group__header">
+                <div>
+                  <div class="setting-group__title">归档设置</div>
+                  <div class="setting-group__desc">归档后的会话将从主列表隐藏，可随时在归档列表中查看或恢复</div>
+                </div>
+              </div>
+              <div class="setting-card">
+
+                <div class="setting-row">
+                  <div class="setting-row__left">
+                    <div class="setting-row__label">启用会话归档</div>
+                    <div class="setting-row__hint">开启后，可在会话右键菜单中使用「归档」操作</div>
+                  </div>
+                  <div class="setting-row__right">
+                    <label class="s-toggle" id="archiveToggle">
+                      <input type="checkbox" checked />
+                      <span class="s-toggle__track"></span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="setting-row">
+                  <div class="setting-row__left">
+                    <div class="setting-row__label">归档后保留天数</div>
+                    <div class="setting-row__hint">超过保留期的归档会话将被自动清除（0 = 永久保留）</div>
+                  </div>
+                  <div class="setting-row__right">
+                    <div class="s-select-wrap" style="width:120px;">
+                      <select class="s-select">
+                        <option>永久保留</option>
+                        <option>30 天</option>
+                        <option>90 天</option>
+                        <option>180 天</option>
+                      </select>
+                      <span class="icon i-arrowdown icon--12"></span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- 已归档会话 -->
+            <div class="setting-group">
+              <div class="setting-group__header">
+                <div>
+                  <div class="setting-group__title">已归档会话</div>
+                  <div class="setting-group__desc">共 7 条归档会话</div>
+                </div>
+              </div>
+              <div class="setting-card setting-card--list">
+
+                <div class="s-list-toolbar">
+                  <div class="s-list-search">
+                    <span class="icon i-search" style="color:var(--text-tertiary);flex-shrink:0;"></span>
+                    <input type="text" placeholder="搜索归档会话" />
+                  </div>
+                  <button class="s-btn proto-btn-danger">清空全部</button>
+                </div>
+
+                <div class="s-list">
+
+                  <div class="s-list-item">
+                    <span class="icon i-archive proto-archive-icon"></span>
+                    <div class="s-list-item__main">
+                      <div class="s-list-item__title">帮我顶会议</div>
+                      <div class="s-list-item__desc">归档于 2026/7/20 · 共 12 条消息</div>
+                    </div>
+                    <button class="s-btn" style="flex-shrink:0;">恢复</button>
+                    <button class="s-icon-btn proto-delete-btn"><span class="icon i-close"></span></button>
+                  </div>
+
+                  <div class="s-list-item">
+                    <span class="icon i-archive proto-archive-icon"></span>
+                    <div class="s-list-item__main">
+                      <div class="s-list-item__title">订机票</div>
+                      <div class="s-list-item__desc">归档于 2026/7/18 · 共 8 条消息</div>
+                    </div>
+                    <button class="s-btn" style="flex-shrink:0;">恢复</button>
+                    <button class="s-icon-btn proto-delete-btn"><span class="icon i-close"></span></button>
+                  </div>
+
+                  <div class="s-list-item">
+                    <span class="icon i-archive proto-archive-icon"></span>
+                    <div class="s-list-item__main">
+                      <div class="s-list-item__title">设计规范草稿</div>
+                      <div class="s-list-item__desc">归档于 2026/7/13 · 共 31 条消息</div>
+                    </div>
+                    <button class="s-btn" style="flex-shrink:0;">恢复</button>
+                    <button class="s-icon-btn proto-delete-btn"><span class="icon i-close"></span></button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div><!-- /page-sessions -->
+
+          <!-- 已归档页 -->
+          <div id="page-archived">
+            <div class="proto-archived-header">
+              <div>
+                <div class="setting-page__title">已归档</div>
+                <div class="setting-page__desc">归档的会话将从主列表隐藏，可在此查看或恢复</div>
+              </div>
+              <button class="s-btn proto-btn-danger" id="clearAllBtn">清空全部</button>
+            </div>
+
+            <!-- 搜索框 -->
+            <div class="proto-archived-search">
+              <span class="proto-archived-search__icon" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 1024 1024" fill="currentColor"><path d="M909.6 854.4L700.8 645.6C757.3 576.2 789.3 487.5 789.3 392 789.3 176 613.3 0 397.3 0 181.3 0 5.3 176 5.3 392S181.3 784 397.3 784c95.5 0 184.2-32 253.6-88.5l208.8 208.8a38.4 38.4 0 0 0 54.4-54.4zM397.3 707.7C222.9 707.7 82 566.8 82 392.4S222.9 77.1 397.3 77.1 712.6 218 712.6 392.4 571.7 707.7 397.3 707.7z"/></svg>
+              </span>
+              <input class="proto-archived-search__input" type="text" placeholder="搜索归档会话" id="archivedSearchInput" />
+            </div>
+
+            <div class="proto-archived-list" id="archivedList">
+
+              <div class="proto-archived-item">
+                <div class="proto-archived-item__main">
+                  <div class="proto-archived-item__title">帮我顶会议</div>
+                  <div class="proto-archived-item__time">归档于 2026/7/20 · 共 12 条消息</div>
+                </div>
+                <div class="proto-archived-item__actions">
+                  <button class="s-icon-btn proto-delete-btn" title="删除">
+                    <span class="icon i-delete"></span>
+                  </button>
+                  <button class="s-icon-btn proto-restore-btn" title="恢复">
+                    <span class="icon i-undo"></span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="proto-archived-item">
+                <div class="proto-archived-item__main">
+                  <div class="proto-archived-item__title">订机票</div>
+                  <div class="proto-archived-item__time">归档于 2026/7/18 · 共 8 条消息</div>
+                </div>
+                <div class="proto-archived-item__actions">
+                  <button class="s-icon-btn proto-delete-btn" title="删除">
+                    <span class="icon i-delete"></span>
+                  </button>
+                  <button class="s-icon-btn proto-restore-btn" title="恢复">
+                    <span class="icon i-undo"></span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="proto-archived-item">
+                <div class="proto-archived-item__main">
+                  <div class="proto-archived-item__title">设计规范草稿</div>
+                  <div class="proto-archived-item__time">归档于 2026/7/13 · 共 31 条消息</div>
+                </div>
+                <div class="proto-archived-item__actions">
+                  <button class="s-icon-btn proto-delete-btn" title="删除">
+                    <span class="icon i-delete"></span>
+                  </button>
+                  <button class="s-icon-btn proto-restore-btn" title="恢复">
+                    <span class="icon i-undo"></span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="proto-archived-item">
+                <div class="proto-archived-item__main">
+                  <div class="proto-archived-item__title">Q3 OKR 拆解讨论</div>
+                  <div class="proto-archived-item__time">归档于 2026/7/10 · 共 24 条消息</div>
+                </div>
+                <div class="proto-archived-item__actions">
+                  <button class="s-icon-btn proto-delete-btn" title="删除">
+                    <span class="icon i-delete"></span>
+                  </button>
+                  <button class="s-icon-btn proto-restore-btn" title="恢复">
+                    <span class="icon i-undo"></span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="proto-archived-item">
+                <div class="proto-archived-item__main">
+                  <div class="proto-archived-item__title">周报撰写助手</div>
+                  <div class="proto-archived-item__time">归档于 2026/7/6 · 共 6 条消息</div>
+                </div>
+                <div class="proto-archived-item__actions">
+                  <button class="s-icon-btn proto-delete-btn" title="删除">
+                    <span class="icon i-delete"></span>
+                  </button>
+                  <button class="s-icon-btn proto-restore-btn" title="恢复">
+                    <span class="icon i-undo"></span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="proto-archived-item">
+                <div class="proto-archived-item__main">
+                  <div class="proto-archived-item__title">竞品分析报告</div>
+                  <div class="proto-archived-item__time">归档于 2026/7/2 · 共 19 条消息</div>
+                </div>
+                <div class="proto-archived-item__actions">
+                  <button class="s-icon-btn proto-delete-btn" title="删除">
+                    <span class="icon i-delete"></span>
+                  </button>
+                  <button class="s-icon-btn proto-restore-btn" title="恢复">
+                    <span class="icon i-undo"></span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="proto-archived-item">
+                <div class="proto-archived-item__main">
+                  <div class="proto-archived-item__title">Spring Boot 报错排查</div>
+                  <div class="proto-archived-item__time">归档于 2026/6/28 · 共 43 条消息</div>
+                </div>
+                <div class="proto-archived-item__actions">
+                  <button class="s-icon-btn proto-delete-btn" title="删除">
+                    <span class="icon i-delete"></span>
+                  </button>
+                  <button class="s-icon-btn proto-restore-btn" title="恢复">
+                    <span class="icon i-undo"></span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div><!-- /page-archived -->
+
+          <!-- 其他页占位 -->
+          <div id="page-general" style="display:none;">
+            <div class="setting-page__title">通用设置</div>
+            <div class="setting-page__desc">语言、主题等基础偏好设置</div>
+            <div class="s-placeholder">（内容待补充）</div>
+          </div>
+          <div id="page-appearance" style="display:none;">
+            <div class="setting-page__title">外观</div>
+            <div class="setting-page__desc">界面主题与显示设置</div>
+            <div class="s-placeholder">（内容待补充）</div>
+          </div>
+          <div id="page-models" style="display:none;">
+            <div class="setting-page__title">模型与 AI 偏好</div>
+            <div class="setting-page__desc">默认模型及推理参数配置</div>
+            <div class="s-placeholder">（内容待补充）</div>
+          </div>
+          <div id="page-memory" style="display:none;">
+            <div class="setting-page__title">记忆</div>
+            <div class="setting-page__desc">跨会话记忆管理</div>
+            <div class="s-placeholder">（内容待补充）</div>
+          </div>
+          <div id="page-privacy" style="display:none;">
+            <div class="setting-page__title">隐私与安全</div>
+            <div class="setting-page__desc">数据隐私和安全配置</div>
+            <div class="s-placeholder">（内容待补充）</div>
+          </div>
+
+        </div>
+      </div><!-- /setting-content -->
+    </div><!-- /setting-shell -->
+  </div><!-- /proto-setting-overlay -->
+
+  <!-- ════════════════════════════════════════
+       MAIN AREA — Chat Welcome（来自 chat-main 模版）
+  ════════════════════════════════════════ -->
+  <main class="chat-main">
+
+    <div class="chat-welcome-wrap">
+      <div class="chat-welcome__headline">
+        <img src="../../assets/icons/welcome-work-light.svg" alt="Work with Flicker" />
+      </div>
+      <div class="chat-input-inner--welcome proto-input-override">
+        <div class="mf-chat-input-wrap">
+          <div class="mf-chat-input">
+            <textarea class="mf-chat-input__textarea" rows="1" placeholder="问点什么…" id="mainTextarea"></textarea>
+            <div class="mf-chat-input__toolbar">
+              <div class="mf-chat-input__toolbar-left">
+                <button class="mf-chat-input__btn" aria-label="添加">
+                  <span class="icon i-add"></span>
+                </button>
+                <button class="mf-chat-input__action">
+                  <span class="icon i-skill"></span>
+                  <span>技能</span>
+                </button>
+                <button class="mf-chat-input__action">
+                  <span class="icon i-inspiration"></span>
+                  <span>灵感触发</span>
+                </button>
+              </div>
+              <div class="mf-chat-input__toolbar-right">
+                <button class="mf-chat-input__model">
+                  <img src="../../assets/icons/brand/claude.svg" width="14" height="14" alt="Claude" style="flex-shrink:0;">
+                  <span>Claude Sonnet 4.6</span>
+                  <span class="icon i-arrowdown mf-chat-input__model-arrow"></span>
+                </button>
+                <button class="mf-chat-input__send" aria-label="发送">
+                  <span class="icon i-send"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <p class="mf-chat-input__notice">当前模型为公有云模型，请勿外泄公司内部信息</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+  <!-- 清空全部二次确认 Dialog -->
+  <div class="proto-clear-backdrop" id="clearAllDialog">
+    <div class="mf-dialog" style="max-width:420px;">
+      <div class="mf-dialog__head">
+        <span class="mf-dialog__title" style="display:inline-flex;align-items:center;gap:var(--spacer-8);">
+          <span style="width:20px;height:20px;flex:0 0 auto;color:var(--status-error-default);display:inline-flex;align-items:center;justify-content:center;" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M960 512A448 448 0 1 1 64 512 448 448 0 0 1 960 512Z"></path><path style="fill:white" d="M448 320A64 64 0 0 1 576 320V512A64 64 0 0 1 448 512V320zM448 704A64 64 0 1 1 576 704 64 64 0 0 1 448 704z"></path></svg></span>
+          清空所有归档会话
+        </span>
+        <button class="mf-dialog__close" id="clearDialogCloseBtn" aria-label="关闭">
+          <span style="width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M820.352 149.312A38.421 38.421 0 0 1 874.688 203.648L566.336 512 874.688 820.352A38.421 38.421 0 0 1 820.352 874.688L512 566.336 203.648 874.688A38.421 38.421 0 0 1 149.312 820.352L457.664 512 149.312 203.648A38.421 38.421 0 0 1 203.648 149.312L512 457.664 820.352 149.312Z"></path></svg></span>
+        </button>
+      </div>
+      <div class="mf-dialog__body">此操作将永久删除全部 <strong style="color:var(--text-default)" id="clearCount">7</strong> 条归档会话，无法恢复。确定继续吗？</div>
+      <div class="mf-dialog__foot">
+        <button class="mf-btn mf-btn--secondary mf-btn--lg" id="clearCancelBtn">取消</button>
+        <button class="mf-btn mf-btn--danger mf-btn--lg" id="clearConfirmBtn">清空全部</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 单条删除二次确认 Dialog -->
+  <div class="proto-clear-backdrop" id="deleteSingleDialog">
+    <div class="mf-dialog" style="max-width:420px;">
+      <div class="mf-dialog__head">
+        <span class="mf-dialog__title" style="display:inline-flex;align-items:center;gap:var(--spacer-8);">
+          <span style="width:20px;height:20px;flex:0 0 auto;color:var(--status-error-default);display:inline-flex;align-items:center;justify-content:center;" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M960 512A448 448 0 1 1 64 512 448 448 0 0 1 960 512Z"></path><path style="fill:white" d="M448 320A64 64 0 0 1 576 320V512A64 64 0 0 1 448 512V320zM448 704A64 64 0 1 1 576 704 64 64 0 0 1 448 704z"></path></svg></span>
+          删除归档会话
+        </span>
+        <button class="mf-dialog__close" id="deleteSingleCloseBtn" aria-label="关闭">
+          <span style="width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" fill-rule="evenodd" d="M820.352 149.312A38.421 38.421 0 0 1 874.688 203.648L566.336 512 874.688 820.352A38.421 38.421 0 0 1 820.352 874.688L512 566.336 203.648 874.688A38.421 38.421 0 0 1 149.312 820.352L457.664 512 149.312 203.648A38.421 38.421 0 0 1 203.648 149.312L512 457.664 820.352 149.312Z"></path></svg></span>
+        </button>
+      </div>
+      <div class="mf-dialog__body">将永久删除「<strong style="color:var(--text-default)" id="deleteItemTitle">未命名会话</strong>」，无法恢复。确定继续吗？</div>
+      <div class="mf-dialog__foot">
+        <button class="mf-btn mf-btn--secondary mf-btn--lg" id="deleteSingleCancelBtn">取消</button>
+        <button class="mf-btn mf-btn--danger mf-btn--lg" id="deleteSingleConfirmBtn">删除</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tooltip 浮层 — body 直接子级 -->
+  <span class="mf-tooltip proto-tooltip" id="protoTooltip"></span>
+
+</div><!-- /protoPage -->
+
+<script>
+  /* textarea auto-resize */
+  const ta = document.getElementById('mainTextarea');
+  function resizeTextarea() {
+    ta.style.height = 'auto';
+    const next = Math.min(ta.scrollHeight, 336);
+    ta.style.height = next + 'px';
+    ta.classList.toggle('is-overflow', ta.scrollHeight > 336);
+  }
+  ta.addEventListener('input', resizeTextarea);
+  resizeTextarea();
+
+  /* Settings panel toggle — fixed 定位，锚定到按钮上方 */
+  const btn = document.getElementById('settingsBtn');
+  const popover = document.getElementById('settingsPopover');
+
+  function positionPopover() {
+    const rect = btn.getBoundingClientRect();
+    popover.style.left   = rect.left + 'px';
+    popover.style.bottom = (window.innerHeight - rect.top + 6) + 'px';
+  }
+
+  function closePopover() {
+    popover.classList.remove('is-open');
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    positionPopover();
+    const isOpen = popover.classList.toggle('is-open');
+    btn.setAttribute('aria-expanded', isOpen);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!popover.contains(e.target) && e.target !== btn) closePopover();
+  });
+
+  /* 更多设置 → 打开设置页 overlay */
+  const moreBtn = document.getElementById('moreSettingsBtn');
+  const overlay = document.getElementById('settingOverlay');
+  const backBtn = document.getElementById('settingBackBtn');
+
+  moreBtn.addEventListener('click', () => {
+    closePopover();
+    overlay.classList.add('is-open');
+  });
+
+  backBtn.addEventListener('click', () => {
+    overlay.classList.remove('is-open');
+  });
+
+  /* 会话「...」按钮唤起操作菜单 */
+  const sessionMenu = document.getElementById('sessionMenu');
+  let activeMoreBtn = null;
+
+  function openSessionMenu(btn) {
+    const rect = btn.getBoundingClientRect();
+    // 菜单出现在按钮右侧，顶部对齐按钮
+    let left = rect.right + 4;
+    let top  = rect.top;
+    // 防止右侧超出视口
+    const menuW = 180;
+    if (left + menuW > window.innerWidth - 8) {
+      left = rect.left - menuW - 4;
+    }
+    // 防止底部超出视口
+    const menuH = 280;
+    if (top + menuH > window.innerHeight - 8) {
+      top = window.innerHeight - menuH - 8;
+    }
+    sessionMenu.style.left = left + 'px';
+    sessionMenu.style.top  = top  + 'px';
+    sessionMenu.classList.add('is-open');
+    activeMoreBtn = btn;
+  }
+
+  document.querySelectorAll('.mf-aside__session .mf-aside__icon-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (sessionMenu.classList.contains('is-open') && activeMoreBtn === btn) {
+        sessionMenu.classList.remove('is-open');
+        activeMoreBtn = null;
+      } else {
+        openSessionMenu(btn);
+      }
+    });
+  });
+
+  /* 点击外部关闭菜单 */
+  document.addEventListener('click', (e) => {
+    if (!sessionMenu.contains(e.target)) {
+      sessionMenu.classList.remove('is-open');
+      activeMoreBtn = null;
+    }
+  });
+
+  /* ── Tooltip 工具 ── */
+  const protoTooltip = document.getElementById('protoTooltip');
+  let tooltipTimer;
+  function showTooltip(el, text) {
+    clearTimeout(tooltipTimer);
+    protoTooltip.textContent = text;
+    const r = el.getBoundingClientRect();
+    protoTooltip.style.top  = (r.top - 32) + 'px';
+    protoTooltip.style.left = (r.left + r.width / 2) + 'px';
+    protoTooltip.style.transform = 'translateX(-50%)';
+    protoTooltip.classList.add('is-visible');
+  }
+  function hideTooltip() {
+    tooltipTimer = setTimeout(() => protoTooltip.classList.remove('is-visible'), 80);
+  }
+  document.addEventListener('mouseover', e => {
+    const btn = e.target.closest('.proto-delete-btn, .proto-restore-btn');
+    if (!btn) return;
+    showTooltip(btn, btn.classList.contains('proto-delete-btn') ? '永久删除' : '恢复到会话列表');
+  });
+  document.addEventListener('mouseout', e => {
+    if (e.target.closest('.proto-delete-btn, .proto-restore-btn')) hideTooltip();
+  });
+
+  /* ── 单条删除 Dialog ── */
+  const deleteSingleDialog = document.getElementById('deleteSingleDialog');
+  const deleteItemTitleEl  = document.getElementById('deleteItemTitle');
+  let pendingDeleteItem = null;
+  function openDeleteDialog(itemEl) {
+    pendingDeleteItem = itemEl;
+    const title = itemEl.querySelector('.proto-archived-item__title')?.textContent?.trim() || '未命名会话';
+    if (deleteItemTitleEl) deleteItemTitleEl.textContent = title;
+    deleteSingleDialog.classList.add('is-open');
+  }
+  function closeDeleteDialog() { deleteSingleDialog.classList.remove('is-open'); pendingDeleteItem = null; }
+  document.getElementById('deleteSingleCloseBtn')?.addEventListener('click', closeDeleteDialog);
+  document.getElementById('deleteSingleCancelBtn')?.addEventListener('click', closeDeleteDialog);
+  document.getElementById('deleteSingleConfirmBtn')?.addEventListener('click', () => {
+    if (pendingDeleteItem) pendingDeleteItem.remove();
+    closeDeleteDialog();
+  });
+  deleteSingleDialog?.addEventListener('click', e => { if (e.target === deleteSingleDialog) closeDeleteDialog(); });
+
+  /* 单条删除按鈕事件委托 — 拦截 proto-delete-btn 点击 */
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('.proto-delete-btn');
+    if (!btn) return;
+    const item = btn.closest('.proto-archived-item');
+    if (!item) return;
+    e.stopPropagation();
+    openDeleteDialog(item);
+  });
+
+  /* ── 恢复按钮事件委托 ── */
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('.proto-restore-btn');
+    if (!btn) return;
+    const item = btn.closest('.proto-archived-item');
+    if (!item) return;
+    e.stopPropagation();
+
+    const title = item.querySelector('.proto-archived-item__title')?.textContent?.trim() || '未命名会话';
+
+    // 从归档列表移除
+    item.remove();
+
+    // 插入到侧边栏会话列表顶部，带 is-active 选中态
+    const sessionList = document.querySelector('.mf-aside__group-sessions');
+    if (sessionList) {
+      const newSession = document.createElement('div');
+      newSession.className = 'mf-aside__session is-active';
+      newSession.dataset.restored = 'true';
+      newSession.innerHTML = `
+        <span class="mf-aside__session-status"></span>
+        <span class="mf-aside__session-title">${title}</span>
+        <span class="mf-aside__session-meta">
+          <span class="mf-aside__session-time">刚刚</span>
+          <button class="mf-aside__icon-btn"><span class="icon i-more"></span></button>
+        </span>`;
+      // 去掉其他 is-active
+      sessionList.querySelectorAll('.mf-aside__session.is-active').forEach(s => s.classList.remove('is-active'));
+      sessionList.prepend(newSession);
+    }
+
+    // 弹出恢复成功 Toast（留在设置页，不关闭 overlay）
+    showRestoreToast(title);
+  });
+
+  function showRestoreToast(title) {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = 'mf-notif mf-notif--float mf-notif--simple mf-notif--success mf-notif--entering';
+    toast.innerHTML = `
+      <span class="mf-notif__icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64Z"/><path fill="#fff" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 301.12 543.68L428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg></span>
+      <span class="mf-notif__text">「${title}」已恢复到会话列表</span>
+      <a class="mf-alert__action" id="restoreViewBtn">去查看</a>`;
+    container.appendChild(toast);
+
+    toast.querySelector('#restoreViewBtn').addEventListener('click', () => {
+      dismissToast(toast);
+      // 关闭 overlay，高亮已恢复的会话
+      document.getElementById('settingOverlay')?.classList.remove('is-open');
+      const restored = document.querySelector('.mf-aside__session[data-restored]');
+      if (restored) {
+        document.querySelectorAll('.mf-aside__session.is-active').forEach(s => s.classList.remove('is-active'));
+        restored.classList.add('is-active');
+        restored.scrollIntoView({ block: 'nearest' });
+      }
+    });
+
+    setTimeout(() => dismissToast(toast), 3000);
+  }
+
+  /* ── 清空全部 Dialog ── */
+  const clearAllDialog = document.getElementById('clearAllDialog');
+  const clearCountEl   = document.getElementById('clearCount');
+  function openClearDialog() {
+    const n = document.querySelectorAll('#page-archived .proto-archived-item').length;
+    if (clearCountEl) clearCountEl.textContent = n;
+    clearAllDialog.classList.add('is-open');
+  }
+  function closeClearDialog() { clearAllDialog.classList.remove('is-open'); }
+  document.getElementById('clearAllBtn')?.addEventListener('click', openClearDialog);
+  document.getElementById('clearDialogCloseBtn')?.addEventListener('click', closeClearDialog);
+  document.getElementById('clearCancelBtn')?.addEventListener('click', closeClearDialog);
+  document.getElementById('clearConfirmBtn')?.addEventListener('click', () => {
+    document.querySelectorAll('#page-archived .proto-archived-item').forEach(el => el.remove());
+    const countEl = document.querySelector('#page-archived .setting-group__desc');
+    if (countEl) countEl.textContent = '共 0 条归档会话';
+    closeClearDialog();
+  });
+  clearAllDialog?.addEventListener('click', e => { if (e.target === clearAllDialog) closeClearDialog(); });
+
+  /* 归档操作：把对应会话移入已归档列表 */
+  document.getElementById('menuArchiveBtn').addEventListener('click', () => {
+    if (!activeMoreBtn) return;
+    const sessionEl = activeMoreBtn.closest('.mf-aside__session');
+    const title = sessionEl?.querySelector('.mf-aside__session-title')?.textContent?.trim() || '未命名会话';
+
+    // 从侧边栏移除
+    sessionEl?.remove();
+
+    // 插入到设置页归档列表顶部
+    const list = document.querySelector('.proto-archived-list');
+    if (list) {
+      const today = new Date();
+      const dateStr = `${today.getFullYear()}/${today.getMonth()+1}/${today.getDate()}`;
+      const item = document.createElement('div');
+      item.className = 'proto-archived-item';
+      item.innerHTML = `
+        <div class="proto-archived-item__main">
+          <div class="proto-archived-item__title">${title}</div>
+          <div class="proto-archived-item__time">归档于 ${dateStr} · 共 0 条消息</div>
+        </div>
+        <div class="proto-archived-item__actions">
+          <button class="s-icon-btn proto-delete-btn" title="删除"><span class="icon i-delete"></span></button>
+          <button class="s-icon-btn proto-restore-btn" title="恢复"><span class="icon i-undo"></span></button>
+        </div>`;
+      list.prepend(item);
+
+      // 更新计数
+      const countEl = document.querySelector('#page-archived .setting-group__desc');
+      if (countEl) {
+        const n = list.querySelectorAll('.proto-archived-item').length;
+        countEl.textContent = `共 ${n} 条归档会话`;
+      }
+    }
+
+    sessionMenu.classList.remove('is-open');
+    activeMoreBtn = null;
+
+    // 弹出 Toast
+    showArchiveToast();
+  });
+
+  /* ── Toast 工具函数 ── */
+  function showArchiveToast() {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = 'mf-notif mf-notif--float mf-notif--simple mf-notif--success mf-notif--entering';
+    toast.innerHTML = `
+      <span class="mf-notif__icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path fill-rule="evenodd" d="M512 64A448.064 448.064 0 1 1 511.872 960.128 448.064 448.064 0 0 1 512 64Z"/><path fill="#fff" fill-rule="evenodd" d="M707.52 390.72A44.8 44.8 0 0 0 644.16 390.72L485.76 549.12 459.712 575.552 364.48 480.32A44.8 44.8 0 0 0 301.12 543.68L428.16 670.848A44.8 44.8 0 0 0 491.648 670.848L707.52 454.08A44.8 44.8 0 0 0 707.52 390.72Z"/></svg></span>
+      <span class="mf-notif__text">会话已归档，可以到「设置-更多设置-已归档」恢复会话</span>
+      <a class="mf-alert__action" id="toastViewBtn">去查看</a>`;
+    container.appendChild(toast);
+
+    // 点击「去查看」跳转至设置页-已归档
+    toast.querySelector('#toastViewBtn').addEventListener('click', () => {
+      dismissToast(toast);
+      // 打开设置 overlay 并切到已归档页
+      const overlay = document.getElementById('settingOverlay');
+      if (!overlay) return;
+      overlay.classList.add('is-open');
+      overlay.querySelectorAll('.setting-nav__item[data-page]').forEach(i => i.classList.remove('is-active'));
+      const archivedNav = overlay.querySelector('.setting-nav__item[data-page="archived"]');
+      if (archivedNav) archivedNav.classList.add('is-active');
+      const pages = ['memory', 'sysstate', 'models', 'archived', 'sessions', 'general', 'appearance', 'privacy'];
+      pages.forEach(p => {
+        const el = document.getElementById('page-' + p);
+        if (el) el.style.display = p === 'archived' ? '' : 'none';
+      });
+    });
+
+    // 3s 后退场
+    setTimeout(() => dismissToast(toast), 3000);
+  }
+
+  function dismissToast(toast) {
+    if (!toast.isConnected) return;
+    toast.classList.remove('mf-notif--entering');
+    toast.classList.add('mf-notif--leaving');
+    toast.addEventListener('animationend', () => toast.remove(), { once: true });
+    // 兼容没有动画的情况
+    setTimeout(() => { if (toast.isConnected) toast.remove(); }, 500);
+  }
+
+  const pages = ['memory', 'sysstate', 'models', 'archived', 'sessions', 'general', 'appearance', 'privacy'];
+  overlay.querySelectorAll('.setting-nav__item[data-page]').forEach((item) => {
+    item.addEventListener('click', () => {
+      overlay.querySelectorAll('.setting-nav__item[data-page]').forEach(i => i.classList.remove('is-active'));
+      item.classList.add('is-active');
+      pages.forEach(p => {
+        const el = document.getElementById('page-' + p);
+        if (el) el.style.display = p === item.dataset.page ? '' : 'none';
+      });
+    });
+  });
+
+  // 需求卡片展开/收起
+  document.getElementById('reqCardToggle').addEventListener('click', function() {
+    const body = document.getElementById('reqCardBody');
+    const chevron = document.getElementById('reqCardChevron').querySelector('svg');
+    const collapsed = body.classList.toggle('is-collapsed');
+    if (chevron) chevron.style.transform = collapsed ? 'rotate(-90deg)' : 'rotate(0deg)';
+  });
+
+  // 封面页 → 原型页
+  document.getElementById('gotoProtoBtn').addEventListener('click', function() {
+    document.getElementById('coverPage').classList.remove('is-active');
+    document.getElementById('protoPage').classList.add('is-active');
+  });
+</script>
+
+</body>
+</html>
