@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 3,
+  "updatedAt": "2026-07-15",
+  "product": "MyFlicker",
+  "tokenSource": "css.json",
+  "uikitPlan": "uikit-plan.json",
+  "componentsIndex": "components/index.json",
+  "componentContractDir": "components",
+  "componentsCss": "components.css",
+  "tokenCss": "colors_and_type.css",
+  "previewDir": "preview",
+  "uiKitsDir": "ui_kits",
+  "consumptionLayers": {
+    "tokens": {
+      "files": [
+        "colors_and_type.css",
+        "css.json"
+      ],
+      "copyable": true,
+      "purpose": "Light-mode design language source: color, typography, radius, spacing, size, and compatibility aliases.",
+      "downstreamRule": "Use canonical --bg-*, --text-*, --icon-*, --border-*, --status-*, --radius-*, and --spacer-* tokens first. Treat --color-* and legacy aliases as compatibility names."
+    },
+    "components": {
+      "files": [
+        "components.css",
+        "preview/component-*.html",
+        "components/{slug}.json"
+      ],
+      "copyable": true,
+      "purpose": "Stable atoms, component-level markup, classes, token consumption, DOM anatomy, assets, and provenance.",
+      "cssPrefix": ".mf-",
+      "downstreamRule": "Copy markup from preview/component-{slug}.html, link colors_and_type.css + components.css. All component classes use .mf-* prefix. Keep page-local showcase layout out of shared component CSS."
+    },
+    "icons": {
+      "primaryDir": "assets/icons/kid",
+      "primaryIndex": "assets/icons/kid/icon-list.json",
+      "iconBrowser": "preview/icon-browser.html",
+      "syncScript": "scripts/sync-icons.sh",
+      "iconSource": "@kid/enterprise-icon (internal npm: https://npm.corp.kuaishou.com)",
+      "iconCount": 204,
+      "iconVersion": "1.0.1023",
+      "copyable": true,
+      "purpose": "MyFlicker-specific SVG icon library. All icons use viewBox 0 0 1024 1024 and fill=currentColor.",
+      "downstreamRule": "Use assets/icons/kid/{name}.svg. Look up available icon names from assets/icons/kid/icon-list.json or preview/icon-browser.html. Inline SVG content inside a <span class=\"icon\"> wrapper. Ensure .icon svg, .icon svg * { fill: currentColor } is present in component CSS block.",
+      "inlinePattern": "<span class=\"icon\" style=\"width:16px;height:16px;\" aria-hidden=\"true\" data-asset-icon=\"assets/icons/kid/{name}.svg\">{svg-content}</span>",
+      "legacyDir": "assets/icons",
+      "legacyNote": "Pre-MyFlicker icons in assets/icons/ are still used by ui_kits/ pages and will be removed when M4 UI Kit rewrite is complete. Do not use for new work."
+    },
+    "uikit": {
+      "files": [
+        "ui_kits/{type}/index.html",
+        "ui_kits/{type}/quality-report.json"
+      ],
+      "copyable": false,
+      "status": "legacy — M4 rewrite pending",
+      "purpose": "Page-level visual showcase and component-composition evidence. Note: current ui_kits pages use pre-MyFlicker icons and legacy .ds-* classes; treat as structural reference only.",
+      "downstreamRule": "Read UIKit pages for layout and product patterns only. Do not copy the outer shell as a production page template. Use component previews for reusable markup."
+    }
+  },
+  "iconUsage": {
+    "canonicalDir": "assets/icons/kid",
+    "iconIndex": "assets/icons/kid/icon-list.json",
+    "iconBrowser": "preview/icon-browser.html",
+    "iconCount": 204,
+    "modeA_inlineSvg": {
+      "syntax": "<span class=\"icon\" style=\"width:16px;height:16px;\" aria-hidden=\"true\" data-asset-icon=\"assets/icons/kid/{name}.svg\">{svg-content}</span>",
+      "cssRequired": ".icon svg, .icon svg * { fill: currentColor; }",
+      "useFor": "Primary usage. Inline SVG inherits color from parent CSS color token."
+    },
+    "modeB_imgTag": {
+      "syntax": "<img src=\"assets/icons/kid/{name}.svg\" width=\"16\" height=\"16\" alt=\"\" />",
+      "useFor": "Static HTML where no runtime recoloring is required."
+    },
+    "noRuntimeSprite": true,
+    "colorRule": "Do not edit shipped SVG geometry or invent arbitrary icon colors. Add a semantic token first when a new fixed tint is required.",
+    "syncCommand": "zsh scripts/sync-icons.sh",
+    "syncCommandVersioned": "zsh scripts/sync-icons.sh 1.0.1023"
+  },
+  "downstreamScenarios": {
+    "useTokensOnly": {
+      "read": [
+        "colors_and_type.css",
+        "css.json"
+      ],
+      "consume": "Link the CSS or read css.json for machine consumption."
+    },
+    "buildSingleComponent": {
+      "read": [
+        "components/{slug}.json",
+        "preview/component-{slug}.html",
+        "components.css",
+        "colors_and_type.css",
+        "assets/icons/kid/icon-list.json"
+      ],
+      "consume": "Copy component markup from preview, keep .mf-* class names, inline kid SVG icons."
+    },
+    "buildFullPageCustomCanvas": {
+      "read": [
+        "components/index.json",
+        "preview/component-{slug}.html",
+        "assets/icons/kid/icon-list.json",
+        "ui_kits/{type}/index.html"
+      ],
+      "consume": "Use UIKit as structural reference. Write your own responsive outer grid. Use .mf-* component classes and kid icons throughout."
+    }
+  },
+  "uikitConstraints": {
+    "maxShellWidth": 1184,
+    "fluidInnerComponents": true,
+    "warningForDownstream": "UIKit pages are legacy showcases using pre-MyFlicker .ds-* classes and icons. Do not copy them as production templates. M4 rewrite will update these pages."
+  },
+  "recommendedReadOrder": [
+    "README.md",
+    "library-consumption.json",
+    "uikit-plan.json",
+    "css.json",
+    "colors_and_type.css",
+    "components/index.json",
+    "components/{slug}.json",
+    "preview/component-{slug}.html",
+    "assets/icons/kid/icon-list.json"
+  ],
+  "coreComponents": [
+    "buttons",
+    "cards",
+    "forms",
+    "menu",
+    "pagination",
+    "table",
+    "tabs",
+    "tag"
+  ],
+  "supportComponents": [
+    "alert",
+    "avatar",
+    "breadcrumb",
+    "dialog",
+    "progress",
+    "skeleton",
+    "tooltip"
+  ],
+  "uiKits": {
+    "legacy": [
+      "dashboard",
+      "dashboard-2",
+      "dev-explorer",
+      "pricing-doc",
+      "skills-library",
+      "product-overview",
+      "comment-threads-plan",
+      "html-effectiveness-doc",
+      "landing",
+      "settings"
+    ],
+    "m4Planned": [
+      "chat-main",
+      "settings",
+      "agent-marketplace",
+      "task-dashboard",
+      "onboarding"
+    ]
+  }
+}

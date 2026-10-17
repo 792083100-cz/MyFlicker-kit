@@ -1,0 +1,489 @@
+/**
+ * MyFlicker design system tokens
+ * Light + Dark dual-mode tokens.
+ *
+ * Source of truth:
+ * - Figma: Myflicker字体样式库
+ * - Figma Variables: 颜色 (Color) / 间距 (Spacing) / 圆角 (Radius)
+ *
+ * Brand: Near-black (#242323) as primary
+ * Modes: Light (default) + Dark ([data-theme="dark"])
+ *
+ * @group-priority: radius, spacers, font, body, heading, bg, bg-brand, text, icon, border, status
+ */
+
+/* ============================================================
+   LIGHT MODE (default)
+   ============================================================ */
+:root {
+
+  /* radius — from Figma borderRadius tokens */
+  --radius-0: 0px;
+  --radius-2: 2px;
+  --radius-4: 4px;   /* borderRadiusSM */
+  --radius-6: 6px;
+  --radius-8: 8px;   /* borderRadius */
+  --radius-10: 10px;
+  --radius-12: 12px;
+  --radius-16: 16px;
+  --radius-20: 20px;
+  --radius-24: 24px;
+  --radius-32: 32px;
+  --radius-full: 999px;
+  --radius-xs: var(--radius-2);
+  --radius-sm: var(--radius-4);
+  --radius-md: var(--radius-6);
+  --radius-lg: var(--radius-8);
+  --radius-xl: var(--radius-10);
+  --border-width-default: 1px;
+
+  /* spacers — from Figma Spacing tokens */
+  --spacer-0: 0px;
+  --spacer-2: 2px;
+  --spacer-3: 3px;
+  --spacer-4: 4px;   /* SpacingXS */
+  --spacer-6: 6px;   /* SpacingSM */
+  --spacer-8: 8px;   /* Spacing (base) */
+  --spacer-10: 10px;
+  --spacer-12: 12px; /* SpacingL */
+  --spacer-16: 16px; /* SpacingXL */
+  --spacer-20: 20px;
+  --spacer-24: 24px; /* SpacingXXL */
+  --spacer-32: 32px;
+  --spacer-40: 40px;
+  --spacer-48: 48px;
+  --spacer-64: 64px;
+
+  /* icon sizes */
+  --icon-size-12: 12px;
+  --icon-size-14: 14px;
+  --icon-size-16: 16px;
+  --icon-size-20: 20px;
+  --icon-size-24: 24px;
+
+  /* font family */
+  --font-family-default: "PingFang SC", "SF Pro Text", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-family-heading: "PingFang SC", "SF Pro", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-family-metric: "Inter", "PingFang SC", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-family-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* font weight — from Myflicker字体样式库 */
+  --font-weight-default: 400;   /* regular */
+  --font-weight-medium: 500;    /* medium */
+  --font-weight-strong: 600;    /* bold */
+  --font-weight-code: 450;
+
+  --font-family-base: var(--font-family-default);
+  --font-family-heading-alias: var(--font-family-heading);
+  --font-family-mono-alias: var(--font-family-mono);
+
+  /* ── body text styles (from Myflicker字体样式库) ── */
+
+  /* 辅助描述 description · 12/18 · 400 */
+  --body-xs-font-family: var(--font-family-default);
+  --body-xs-font-size: 12px;
+  --body-xs-font-weight: 400;
+  --body-xs-line-height: 18px;
+  --body-xs-letter-spacing: 0;
+
+  /* 普通正文 regular · 13/20 · 400 */
+  --body-sm-font-family: var(--font-family-default);
+  --body-sm-font-size: 13px;
+  --body-sm-font-weight: 400;
+  --body-sm-line-height: 20px;
+  --body-sm-letter-spacing: 0;
+
+  /* 普通正文 medium · 13/20 · 500 */
+  --body-sm-medium-font-family: var(--font-family-default);
+  --body-sm-medium-font-size: 13px;
+  --body-sm-medium-font-weight: 500;
+  --body-sm-medium-line-height: 20px;
+  --body-sm-medium-letter-spacing: 0;
+
+  /* 普通正文 bold · 13/20 · 600 */
+  --body-sm-bold-font-family: var(--font-family-default);
+  --body-sm-bold-font-size: 13px;
+  --body-sm-bold-font-weight: 600;
+  --body-sm-bold-line-height: 20px;
+  --body-sm-bold-letter-spacing: 0;
+
+  /* 标题 medium · 16/24 · 500 */  /* NOTE: 16px/400 已去除，16px只用medium(500) */
+  --body-md-medium-font-family: var(--font-family-default);
+  --body-md-medium-font-size: 16px;
+  --body-md-medium-font-weight: 500;
+  --body-md-medium-line-height: 24px;
+  --body-md-medium-letter-spacing: 0;
+
+  /* 特大标题（一般不用）medium · 18/28 · 500 */
+  --body-lg-font-family: var(--font-family-default);
+  --body-lg-font-size: 18px;
+  --body-lg-font-weight: 500;
+  --body-lg-line-height: 28px;
+  --body-lg-letter-spacing: 0;
+
+  /* legacy aliases */
+  --body-md-font-size: 16px;
+  --body-md-font-weight: 400;
+  --body-md-line-height: 24px;  /* kept as alias only, prefer --body-md-medium */
+  /* legacy aliases — keep for component backward-compat */
+  --body-xs-strong-font-size: 12px;
+  --body-xs-strong-font-weight: 500;
+  --body-xs-strong-line-height: 18px;
+  --body-base-font-size: 13px;
+  --body-base-font-weight: 400;
+  --body-base-line-height: 20px;
+  --body-base-letter-spacing: 0;
+  --body-base-strong-font-size: 13px;
+  --body-base-strong-font-weight: 500;
+  --body-base-strong-line-height: 20px;
+
+  /* ── heading text styles ── */
+  --heading-xs-font-family: var(--font-family-default);
+  --heading-xs-font-size: 13px;
+  --heading-xs-font-weight: 600;
+  --heading-xs-line-height: 20px;
+  --heading-xs-letter-spacing: 0;
+
+  --heading-sm-font-family: var(--font-family-default);
+  --heading-sm-font-size: 16px;
+  --heading-sm-font-weight: 600;
+  --heading-sm-line-height: 24px;
+  --heading-sm-letter-spacing: 0;
+
+  --heading-md-font-family: var(--font-family-heading);
+  --heading-md-font-size: 18px;
+  --heading-md-font-weight: 600;
+  --heading-md-line-height: 28px;
+  --heading-md-letter-spacing: 0;
+
+  --heading-lg-font-family: var(--font-family-heading);
+  --heading-lg-font-size: 20px;
+  --heading-lg-font-weight: 600;
+  --heading-lg-line-height: 28px;
+  --heading-lg-letter-spacing: 0;
+
+  --heading-xl-font-family: var(--font-family-heading);
+  --heading-xl-font-size: 24px;
+  --heading-xl-font-weight: 600;
+  --heading-xl-line-height: 32px;
+  --heading-xl-letter-spacing: 0;
+
+  --heading-2xl-font-family: var(--font-family-heading);
+  --heading-2xl-font-size: 28px;
+  --heading-2xl-font-weight: 600;
+  --heading-2xl-line-height: 36px;
+  --heading-2xl-letter-spacing: 0;
+
+  --heading-3xl-font-family: var(--font-family-heading);
+  --heading-3xl-font-size: 32px;
+  --heading-3xl-font-weight: 600;
+  --heading-3xl-line-height: 40px;
+  --heading-3xl-letter-spacing: 0;
+
+  --heading-display-font-family: var(--font-family-heading);
+  --heading-display-font-size: 40px;
+  --heading-display-font-weight: 600;
+  --heading-display-line-height: 48px;
+  --heading-display-letter-spacing: -0.02em;
+
+  /* code */
+  --code-editor-font-family: var(--font-family-mono);
+  --code-editor-font-size: 13px;
+  --code-editor-font-weight: 450;
+  --code-editor-line-height: 20px;
+  --code-terminal-font-family: var(--font-family-mono);
+  --code-terminal-font-size: 12px;
+  --code-terminal-font-weight: 450;
+  --code-terminal-line-height: 18px;
+
+  /* ── background — Neutral scale (Light) ── */
+  /* N100=#FFFFFF N200=#F5F7FA N300=#F0F2F5 N400=#EBEDF0 */
+  --bg-base-default: #FFFFFF;        /* colorBg · N100 */
+  --bg-base-secondary: #F5F7FA;      /* N200 */
+  --bg-base-tertiary: #F0F2F5;       /* N300 */
+  --bg-overlay-l1: rgba(92, 96, 102, 0.08);
+  --bg-overlay-l2: rgba(92, 96, 102, 0.12);
+  --bg-overlay-l3: rgba(92, 96, 102, 0.16);
+  --bg-overlay-l4: rgba(92, 96, 102, 0.20);
+  --bg-white: #FFFFFF;
+  --bg-menu: #FFFFFF;
+  --bg-tooltip: #242323;              /* Inverted — matches Figma light-mode tooltip (dark bg + white text) */
+  --bg-invert: #242323;              /* Primary 1000 */
+  --bg-invert-hover: #4D4D4D;        /* Primary 900 */
+  --bg-invert-active: #000000;       /* Primary 1100 */
+  --bg-invert-disabled: rgba(36, 35, 35, 0.20);
+
+  /* ── bg — status semantic backgrounds (from Figma 背景色) ── */
+  --bg-success: #F0FFF4;             /* colorSuccessBg · G100 */
+  --bg-success-hover: #DBFFE7;       /* colorSuccessBgHover · G200 */
+  --bg-warning: #FFFCF0;             /* colorWarningBg · O100 */
+  --bg-warning-hover: #FFF8E3;       /* colorWarningBgHover · O200 */
+  --bg-error: #FFF2F0;               /* colorErrorBg · R100 */
+  --bg-error-hover: #FFD9D4;         /* colorErrorBgHover · R200 */
+  --bg-info: #E5F2FF;                /* colorInfoBg · B100 */
+  --bg-info-hover: #D9ECFF;          /* colorInfoBgHover · B200 */
+  --bg-mask: rgba(0, 0, 0, 0.45);   /* colorBgMask */
+
+  /* ── fill — neutral fill scale (from Figma 填充色) ── */
+  --fill-default: #E1E3E6;           /* colorFill · N600 — 一级填充 */
+  --fill-secondary: #EBEDF0;         /* colorFillSecondary · N400 — 二级填充 */
+  --fill-tertiary: #F0F2F5;          /* colorFillTertiary · N300 — 三级填充 */
+  --fill-quaternary: #F5F7FA;        /* colorFillQuaternary · N200 — 四级填充 */
+  --fill-white: #FFFFFF;             /* Colorfillwhite · N100 — 白色填充 */
+  --fill-disabled: #EDEDED;          /* colorPrimaryDisable · Primary 200 */
+  --color-background: var(--bg-base-default);
+  --color-surface: var(--bg-base-secondary);
+  --color-surface-variant: var(--bg-base-tertiary);
+  --color-overlay-1: var(--bg-overlay-l1);
+  --color-overlay-2: var(--bg-overlay-l2);
+  --color-overlay-3: var(--bg-overlay-l3);
+  --color-overlay-4: var(--bg-overlay-l4);
+  --color-card: var(--bg-base-secondary);
+  --color-tooltip: var(--bg-tooltip);
+  --color-menu: var(--bg-menu);
+
+  /* ── bg-brand — Primary (near-black) ── */
+  /* Primary 1000=#242323  900=#4D4D4D  1100=#000000  100=#F6F6F6 */
+  --bg-brand: #242323;               /* colorPrimary · Primary 1000 */
+  --bg-brand-hover: #4D4D4D;         /* colorPrimaryHover · Primary 900 */
+  --bg-brand-active: #000000;        /* colorPrimaryActive · Primary 1100 */
+  --bg-brand-disabled: rgba(36, 35, 35, 0.22);
+  --bg-brand-popup: rgba(36, 35, 35, 0.10);
+  --bg-brand-subtle: #F6F6F6;        /* colorPrimaryBg · Primary 100 */
+  --bg-brand-subtle-hover: #EDEDED;  /* colorPrimaryBgHover · Primary 200 */
+  --color-primary: var(--bg-brand);
+  --color-primary-hover: var(--bg-brand-hover);
+  --color-primary-disabled: var(--bg-brand-disabled);
+  --color-primary-soft: var(--bg-brand-popup);
+  --color-accent: var(--bg-brand);
+
+  /* ── text ── */
+  /* N1000=#1F2329  N900=#5C6066  N800=#95999E  N700=#C4C7CC */
+  --text-default: #1F2329;           /* colorText · N1000 */
+  --text-default-hover: #0D0E0F;
+  --text-default-active: #0D0E0F;
+  --text-secondary: #5C6066;         /* colorTextSecondary · N900 */
+  --text-secondary-hover: #1F2329;
+  --text-secondary-active: #1F2329;
+  --text-tertiary: #95999E;          /* colorTextTertiary · N800 */
+  --text-disabled: #C4C7CC;          /* colorTextQuaternary · N700 */
+  --text-onbrand: #FFFFFF;
+  --text-onaccent: #FFFFFF;
+  --text-white: #FFFFFF;
+  --text-brand: #242323;             /* brand text (near-black) */
+  --text-brand-hover: #4D4D4D;
+  --color-foreground: var(--text-default);
+  --color-foreground-hover: var(--text-default-hover);
+  --color-on-surface: var(--text-default);
+  --color-on-surface-variant: var(--text-secondary);
+  --color-muted-foreground: var(--text-secondary);
+  --color-disabled-foreground: var(--text-disabled);
+  --color-on-primary: var(--text-onbrand);
+
+  /* ── icon ── */
+  --icon-default: #1F2329;
+  --icon-default-hover: #0D0E0F;
+  --icon-default-active: #0D0E0F;
+  --icon-secondary: #5C6066;
+  --icon-secondary-hover: #1F2329;
+  --icon-secondary-active: #1F2329;
+  --icon-tertiary: #95999E;
+  --icon-disabled: #C4C7CC;
+  --icon-onbrand: #FFFFFF;
+  --icon-onaccent: #FFFFFF;
+  --icon-white: #FFFFFF;
+  --icon-brand: #242323;
+  --icon-brand-hover: #4D4D4D;
+
+  /* ── border ── */
+  /* Figma: colorBorder=N400, colorBorderHover=N600, colorBorderSecondary=N300 */
+  --border-neutral-l1: #EBEDF0;      /* colorBorder · N400 — 默认描边 */
+  --border-neutral-l2: #E1E3E6;      /* colorBorderHover · N600 — 描边悬浮 */
+  --border-neutral-subtle: #F0F2F5;  /* colorBorderSecondary · N300 — 次级浅描边 */
+  --border-white: #FFFFFF;           /* ColorBorderwhite · N100 — 白色描边 */
+  --border-brand: #242323;           /* colorPrimaryBorder · Primary 1000 */
+  --border-brand-hover: #4D4D4D;     /* colorPrimaryBorderHover · Primary 900 */
+  --border-success: #32E485;         /* colorSuccessBorder · G600 */
+  --border-success-hover: #20BD6E;   /* colorSuccessBorderHover · G500→G700 */
+  --border-warning: #FFB641;         /* colorWarningBorder · O600 */
+  --border-warning-hover: #FFCA69;   /* colorWarningBorderHover · O500 */
+  --border-error: #FF3135;           /* colorErrorBorder · R600 */
+  --border-error-hover: #FF5C59;     /* colorErrorBorderHover · R500 */
+  --color-border: var(--border-neutral-l1);
+  --color-border-strong: var(--border-neutral-l2);
+  --color-border-subtle: var(--border-neutral-subtle);
+  --color-outline: var(--border-neutral-l1);
+
+  /* ── status colors (from MF Figma palette) ── */
+  /* Success: Polar Green G700=#20BD6E */
+  --status-success-default: #20BD6E;
+  --status-success-hover: #32E485;   /* G600 */
+  --status-success-active: #129659;  /* G800 */
+  --status-success-surface-l1: rgba(32, 189, 110, 0.12);
+  --status-success-surface-l2: rgba(32, 189, 110, 0.18);
+  --status-success-surface-l3: rgba(32, 189, 110, 0.36);
+
+  /* Warning: Calendula Gold O600=#FFB641 */
+  --status-warning-default: #FFB641;
+  --status-warning-hover: #FFCA69;   /* O500 */
+  --status-warning-active: #D9912B;  /* O700 */
+  --status-warning-surface-l1: rgba(255, 182, 65, 0.12);
+  --status-warning-surface-l2: rgba(255, 182, 65, 0.16);
+  --status-warning-surface-l3: rgba(255, 182, 65, 0.36);
+
+  /* Error: Duse Red R600=#FF3135 */
+  --status-error-default: #FF3135;
+  --status-error-hover: #FF5C59;     /* R500 */
+  --status-error-active: #D91E28;    /* R700 */
+  --status-error-surface-l1: rgba(255, 49, 53, 0.12);
+  --status-error-surface-l2: rgba(255, 49, 53, 0.16);
+  --status-error-surface-l3: rgba(255, 49, 53, 0.36);
+
+  /* Info / Link: GEEK BLUE B700=#1380ED */
+  --status-primary-default: #1380ED;
+  --status-primary-hover: #339CFF;   /* B600 */
+  --status-primary-active: #0A74DF;  /* B800 */
+  --status-primary-surface-l1: rgba(19, 128, 237, 0.12);
+  --status-primary-surface-l2: rgba(19, 128, 237, 0.18);
+  --status-primary-surface-l3: rgba(19, 128, 237, 0.36);
+
+  /* Alert (amber tone) */
+  --status-alert-default: #FFB641;
+  --status-alert-hover: #FFCA69;
+  --status-alert-active: #D9912B;
+  --status-alert-surface-l1: rgba(255, 182, 65, 0.14);
+  --status-alert-surface-l2: rgba(255, 182, 65, 0.20);
+  --status-alert-surface-l3: rgba(255, 182, 65, 0.36);
+
+  --color-info: var(--status-primary-default);
+  --color-success: var(--status-success-default);
+  --color-warning: var(--status-warning-default);
+  --color-error: var(--status-error-default);
+  --color-error-soft: var(--status-error-surface-l1);
+
+  /* ── brand palette — Primary (near-black) scale ── */
+  --brand-50: #F6F6F6;   /* Primary 100 */
+  --brand-100: #EDEDED;  /* Primary 200 */
+  --brand-200: #DEDEDE;  /* Primary 300 */
+  --brand-300: #DDDBDB;  /* Primary 400 */
+  --brand-400: #D9D9D9;  /* Primary 500 */
+  --brand-500: #C5C3C3;  /* Primary 600 */
+  --brand-600: #999696;  /* Primary 700 */
+  --brand-700: #737272;  /* Primary 800 */
+  --brand-800: #4D4D4D;  /* Primary 900 */
+  --brand-900: #242323;  /* Primary 1000 — main brand */
+  --brand-950: #000000;  /* Primary 1100 */
+
+  /* neutral grey scale (Figma Neutral palette) */
+  --brand-grey-50: #FFFFFF;   /* N100 */
+  --brand-grey-100: #F5F7FA;  /* N200 */
+  --brand-grey-200: #F0F2F5;  /* N300 */
+  --brand-grey-300: #EBEDF0;  /* N400 */
+  --brand-grey-400: #E6E8EB;  /* N500 */
+  --brand-grey-500: #E1E3E6;  /* N600 */
+  --brand-grey-600: #C4C7CC;  /* N700 */
+  --brand-grey-700: #95999E;  /* N800 */
+  --brand-grey-800: #5C6066;  /* N900 */
+  --brand-grey-900: #1F2329;  /* N1000 */
+  --brand-grey-950: #0D0E0F;
+
+  /* functional palette references */
+  --brand-1: var(--brand-900);
+  --brand-2: var(--brand-700);
+  --brand-3: var(--brand-400);
+  --brand-4: var(--brand-50);
+  --site-canvas: var(--bg-base-default);
+  --bg-layout-1: var(--bg-base-secondary);
+  --bg-layout-2: var(--bg-overlay-l1);
+  --border-1: var(--border-neutral-l1);
+
+  /* ── purple accent — Golden Purple (P100-P1000) ──
+     Use for: fill / border / background only. NOT for text.
+     Binding logic mirrors Success/Warning/Error color pattern.
+  */
+  --purple-fill:             #722ED1;   /* colorPurple · P600 */
+  --purple-fill-hover:       #9254DE;   /* P500 */
+  --purple-fill-active:      #531DAB;   /* P700 */
+  --purple-fill-disabled:    rgba(114, 46, 209, 0.22);
+  --purple-border:           #722ED1;   /* P600 */
+  --purple-border-hover:     #9254DE;   /* P500 */
+  --purple-bg:               #F9F0FF;   /* P100 */
+  --purple-bg-hover:         #EFDBFF;   /* P200 */
+  --purple-bg-deep:          #D3ADF7;   /* P300 — stronger bg variant */
+  --purple-surface-l1:       rgba(114, 46, 209, 0.12);
+  --purple-surface-l2:       rgba(114, 46, 209, 0.18);
+  --purple-surface-l3:       rgba(114, 46, 209, 0.36);
+
+  /* accent colors (unchanged, functional accents) */
+  --accent-teal: #00B983;
+  --accent-coral: #FF6B45;
+  --accent-amber: #F2A90C;
+  --accent-lime: #5FC000;
+  --accent-cyan: #00B6F5;
+  --accent-blue: #1380ED;
+  --accent-magenta: #EB2F96;
+  --accent-violet: #9254DE;
+  --accent-slate: #95999E;
+
+  /* special */
+  --special-white: #FFFFFF;
+  --special-black: #000000;
+  --special-bgtabsoverlay: rgba(255, 255, 255, 0.12);
+  --special-mask: rgba(0, 0, 0, 0.45);  /* colorBgMask */
+
+  /* generic fallback */
+  --font-family: var(--font-family-default);
+  --font-size: var(--body-xs-font-size);
+  --font-weight: var(--body-xs-font-weight);
+  --line-height: var(--body-xs-line-height);
+}
+
+
+/* ============================================================
+   DARK MODE — reserved for future use
+   Apply via: <html data-theme="dark"> (see block below)
+   @media prefers-color-scheme intentionally removed.
+   ============================================================ */
+
+/* ============================================================
+   Explicit dark toggle (higher specificity, no media query)
+   ============================================================ */
+[data-theme="dark"] {
+  --bg-base-default: #17181A;
+  --bg-base-secondary: #121314;
+  --bg-base-tertiary: #27292B;
+  --bg-overlay-l1: rgba(255, 255, 255, 0.06);
+  --bg-overlay-l2: rgba(255, 255, 255, 0.10);
+  --bg-overlay-l3: rgba(255, 255, 255, 0.14);
+  --bg-overlay-l4: rgba(255, 255, 255, 0.18);
+  --bg-menu: #27292B;
+  --bg-tooltip: #2D2F32;
+  --bg-invert: #EDEDED;
+  --bg-invert-hover: #FFFFFF;
+  --bg-invert-active: #D9D9D9;
+  --bg-brand: #4F4F4F;
+  --bg-brand-hover: #666666;
+  --bg-brand-active: #383838;
+  --bg-brand-subtle: #242323;
+  --text-default: #E8EAED;
+  --text-secondary: #9EA3A8;
+  --text-tertiary: #5C6066;
+  --text-disabled: #3A3D42;
+  --text-brand: #C5C3C3;
+  --text-brand-hover: #EDEDED;
+  --icon-default: #E8EAED;
+  --icon-secondary: #9EA3A8;
+  --icon-tertiary: #5C6066;
+  --icon-disabled: #3A3D42;
+  --icon-brand: #C5C3C3;
+  --border-neutral-l1: #2D2F32;
+  --border-neutral-l2: #404347;
+  --border-neutral-subtle: #27292B;
+  --border-white: rgba(255,255,255,0.12);
+  --border-brand: #C5C3C3;
+  --border-brand-hover: #EDEDED;
+  --status-success-default: #129659;
+  --status-warning-default: #D9912B;
+  --status-error-default: #D91E28;
+  --status-primary-default: #0A74DF;
+}

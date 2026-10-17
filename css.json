@@ -1,0 +1,253 @@
+{
+  "$schema": "myflicker-design-tokens/v1",
+  "$meta": {
+    "system": "MyFlicker Design System",
+    "version": "1.0.0",
+    "brand": "MyFlicker",
+    "primaryBrandColor": "#242323",
+    "brandPersonality": "near-black monochrome, clean, minimal",
+    "sourceFiles": [
+      "mf_colors_and_type.css",
+      "Figma: 颜色 (Color) / Light-亮色.tokens.json",
+      "Figma: 颜色 (Color) / Dark-暗色.tokens.json",
+      "Figma: 间距 (Spacing) / Mode 1.tokens.json",
+      "Figma: 圆角 (Radius) / Mode 1.tokens.json",
+      "Figma: Myflicker字体样式库"
+    ],
+    "modes": ["light", "dark"],
+    "defaultMode": "light",
+    "darkModeSelector": "[data-theme=\"dark\"]"
+  },
+  "radius": {
+    "$description": "Border radius tokens. PRIMARY: 8px (lg) — most used. SECONDARY: 4px (sm) — tags/badges. Others are available but less common.",
+    "sm":   { "var": "--radius-sm",   "value": "4px",   "figmaToken": "borderRadiusSM", "usage": "常用 ★ — tag、badge、小组件" },
+    "md":   { "var": "--radius-md",   "value": "6px",   "usage": "较少用" },
+    "lg":   { "var": "--radius-lg",   "value": "8px",   "figmaToken": "borderRadius",   "usage": "常用 ★★ — 卡片、输入框、按钮、弹窗，最常用" },
+    "xl":   { "var": "--radius-xl",   "value": "10px",  "usage": "一般不用" },
+    "full": { "var": "--radius-full", "value": "999px", "usage": "pill / avatar / 圆形按钮" },
+    "raw": {
+      "0": "0px", "2": "2px", "4": "4px", "6": "6px",
+      "8": "8px", "10": "10px", "12": "12px", "16": "16px",
+      "20": "20px", "24": "24px", "32": "32px"
+    }
+  },
+  "spacing": {
+    "$description": "Spacing tokens from Figma. XS=4, SM=6, base=8, L=12, XL=16, XXL=24",
+    "xs": { "var": "--spacer-4", "value": "4px", "figmaToken": "SpacingXS" },
+    "sm": { "var": "--spacer-6", "value": "6px", "figmaToken": "SpacingSM" },
+    "base": { "var": "--spacer-8", "value": "8px", "figmaToken": "Spacing" },
+    "l": { "var": "--spacer-12", "value": "12px", "figmaToken": "SpacingL" },
+    "xl": { "var": "--spacer-16", "value": "16px", "figmaToken": "SpacingXL" },
+    "xxl": { "var": "--spacer-24", "value": "24px", "figmaToken": "SpacingXXL" },
+    "raw": {
+      "0": "0px", "2": "2px", "3": "3px", "4": "4px", "6": "6px",
+      "8": "8px", "10": "10px", "12": "12px", "16": "16px",
+      "20": "20px", "24": "24px", "32": "32px", "40": "40px",
+      "48": "48px", "64": "64px"
+    }
+  },
+  "typography": {
+    "$description": "MyFlicker text styles from Figma 'Myflicker字体样式库'. medium=500, regular=400, bold=600",
+    "fontFamily": {
+      "default": "PingFang SC, SF Pro Text, system-ui, -apple-system, sans-serif",
+      "heading": "PingFang SC, SF Pro, system-ui, -apple-system, sans-serif",
+      "mono": "JetBrains Mono, ui-monospace, SF Mono, Menlo, Consolas, monospace"
+    },
+    "fontWeight": {
+      "regular": 400,
+      "medium": 500,
+      "bold": 600
+    },
+    "styles": {
+      "description": {
+        "var": "--body-xs",
+        "fontSize": "12px",
+        "lineHeight": "18px",
+        "fontWeight": 400,
+        "figmaStyle": "description · 12/18",
+        "usage": "辅助描述、备注、时间戳、占位符提示"
+      },
+      "body-sm-regular": {
+        "var": "--body-sm",
+        "fontSize": "13px",
+        "lineHeight": "20px",
+        "fontWeight": 400,
+        "figmaStyle": "regular · 13/20",
+        "usage": "普通正文（主要正文字号）、列表项、消息气泡"
+      },
+      "body-sm-medium": {
+        "var": "--body-sm-medium",
+        "fontSize": "13px",
+        "lineHeight": "20px",
+        "fontWeight": 500,
+        "figmaStyle": "medium · 13/20",
+        "usage": "正文强调态、按钮文字、Tab 标签"
+      },
+      "body-sm-bold": {
+        "var": "--body-sm-bold",
+        "fontSize": "13px",
+        "lineHeight": "20px",
+        "fontWeight": 600,
+        "figmaStyle": "bold · 13/20",
+        "usage": "正文最强调态，一般不用。仅用于极少数需要最高字重强调的特殊场景"
+      },
+      "body-md-medium": {
+        "var": "--body-md-medium",
+        "fontSize": "16px",
+        "lineHeight": "24px",
+        "fontWeight": 500,
+        "figmaStyle": "medium · 16/24",
+        "usage": "标题。页面主标题、弹窗标题、侧边栏分组标题。注：16px/400 已移除，16px 场景统一用 medium(500)"
+      },
+      "title-xl": {
+        "var": "--body-lg",
+        "fontSize": "18px",
+        "lineHeight": "28px",
+        "fontWeight": 500,
+        "figmaStyle": "medium · 18/28",
+        "usage": "特大标题，一般不用。仅用于首屏 Hero 区域等特殊场景"
+      }
+    }
+  },
+  "color": {
+    "$description": "Semantic color tokens. 'light' = Light mode value, 'dark' = Dark mode value.",
+    "brand": {
+      "$description": "Brand = near-black. Primary 1000(L)=#242323, Primary 1000(D)=#4F4F4F",
+      "default":   { "var": "--bg-brand",          "light": "#242323", "dark": "#4F4F4F", "figmaToken": "colorPrimary · Primary 1000" },
+      "hover":     { "var": "--bg-brand-hover",     "light": "#4D4D4D", "dark": "#666666", "figmaToken": "colorPrimaryHover · Primary 900" },
+      "active":    { "var": "--bg-brand-active",    "light": "#000000", "dark": "#383838", "figmaToken": "colorPrimaryActive · Primary 1100" },
+      "disabled":  { "var": "--bg-brand-disabled",  "light": "rgba(36,35,35,0.22)", "dark": "rgba(79,79,79,0.22)" },
+      "subtle":    { "var": "--bg-brand-subtle",    "light": "#F6F6F6", "dark": "#242323", "figmaToken": "colorPrimaryBg · Primary 100" }
+    },
+    "background": {
+      "default":        { "var": "--bg-base-default",    "light": "#FFFFFF",  "dark": "#17181A", "figmaToken": "colorBg · N100" },
+      "secondary":      { "var": "--bg-base-secondary",  "light": "#F5F7FA",  "dark": "#121314", "figmaToken": "N200" },
+      "tertiary":       { "var": "--bg-base-tertiary",   "light": "#F0F2F5",  "dark": "#27292B", "figmaToken": "N300" },
+      "overlay1":       { "var": "--bg-overlay-l1",      "light": "rgba(92,96,102,0.08)",  "dark": "rgba(255,255,255,0.06)" },
+      "overlay2":       { "var": "--bg-overlay-l2",      "light": "rgba(92,96,102,0.12)",  "dark": "rgba(255,255,255,0.10)" },
+      "overlay3":       { "var": "--bg-overlay-l3",      "light": "rgba(92,96,102,0.16)",  "dark": "rgba(255,255,255,0.14)" },
+      "invert":         { "var": "--bg-invert",           "light": "#242323",  "dark": "#EDEDED" },
+      "mask":           { "var": "--bg-mask",             "light": "rgba(0,0,0,0.45)", "dark": "rgba(0,0,0,0.65)", "figmaToken": "colorBgMask" },
+      "success":        { "var": "--bg-success",          "light": "#F0FFF4",  "figmaToken": "colorSuccessBg · G100" },
+      "successHover":   { "var": "--bg-success-hover",    "light": "#DBFFE7",  "figmaToken": "colorSuccessBgHover · G200" },
+      "warning":        { "var": "--bg-warning",          "light": "#FFFCF0",  "figmaToken": "colorWarningBg · O100" },
+      "warningHover":   { "var": "--bg-warning-hover",    "light": "#FFF8E3",  "figmaToken": "colorWarningBgHover · O200" },
+      "error":          { "var": "--bg-error",            "light": "#FFF2F0",  "figmaToken": "colorErrorBg · R100" },
+      "errorHover":     { "var": "--bg-error-hover",      "light": "#FFD9D4",  "figmaToken": "colorErrorBgHover · R200" },
+      "info":           { "var": "--bg-info",             "light": "#E5F2FF",  "figmaToken": "colorInfoBg · B100" },
+      "infoHover":      { "var": "--bg-info-hover",       "light": "#D9ECFF",  "figmaToken": "colorInfoBgHover · B200" }
+    },
+    "fill": {
+      "$description": "Neutral fill scale from Figma 填充色. Use for component backgrounds, hover states, disabled areas.",
+      "default":    { "var": "--fill-default",    "light": "#E1E3E6", "figmaToken": "colorFill · N600",          "usage": "一级填充" },
+      "secondary":  { "var": "--fill-secondary",  "light": "#EBEDF0", "figmaToken": "colorFillSecondary · N400", "usage": "二级填充" },
+      "tertiary":   { "var": "--fill-tertiary",   "light": "#F0F2F5", "figmaToken": "colorFillTertiary · N300",  "usage": "三级填充" },
+      "quaternary": { "var": "--fill-quaternary", "light": "#F5F7FA", "figmaToken": "colorFillQuaternary · N200","usage": "四级填充" },
+      "white":      { "var": "--fill-white",      "light": "#FFFFFF", "figmaToken": "Colorfillwhite · N100",     "usage": "白色填充" },
+      "disabled":   { "var": "--fill-disabled",   "light": "#EDEDED", "figmaToken": "colorPrimaryDisable · P200","usage": "禁用填充" }
+    },
+    "text": {
+      "default":   { "var": "--text-default",       "light": "#1F2329",  "dark": "#E8EAED", "figmaToken": "colorText · N1000" },
+      "secondary": { "var": "--text-secondary",     "light": "#5C6066",  "dark": "#9EA3A8", "figmaToken": "colorTextSecondary · N900" },
+      "tertiary":  { "var": "--text-tertiary",      "light": "#95999E",  "dark": "#5C6066", "figmaToken": "colorTextTertiary · N800" },
+      "disabled":  { "var": "--text-disabled",      "light": "#C4C7CC",  "dark": "#3A3D42", "figmaToken": "colorTextQuaternary · N700" },
+      "onbrand":   { "var": "--text-onbrand",       "light": "#FFFFFF",  "dark": "#FFFFFF" },
+      "white":     { "var": "--text-white",         "light": "#FFFFFF",  "dark": "#FFFFFF" },
+      "brand":     { "var": "--text-brand",         "light": "#242323",  "dark": "#C5C3C3" }
+    },
+    "border": {
+      "l1":          { "var": "--border-neutral-l1",     "light": "#EBEDF0",  "dark": "#2D2F32", "figmaToken": "colorBorder · N400",          "usage": "默认描边，最常用" },
+      "l2":          { "var": "--border-neutral-l2",     "light": "#E1E3E6",  "dark": "#404347", "figmaToken": "colorBorderHover · N600",      "usage": "描边悬浮态" },
+      "subtle":      { "var": "--border-neutral-subtle", "light": "#F0F2F5",  "dark": "#27292B", "figmaToken": "colorBorderSecondary · N300",  "usage": "次级浅描边，比 l1 更浅" },
+      "white":       { "var": "--border-white",          "light": "#FFFFFF",  "dark": "rgba(255,255,255,0.12)", "figmaToken": "ColorBorderwhite · N100", "usage": "白色描边，用于深色背景上" },
+      "brand":       { "var": "--border-brand",          "light": "#242323",  "dark": "#C5C3C3", "figmaToken": "colorPrimaryBorder · P1000",   "usage": "品牌描边" },
+      "brandHover":  { "var": "--border-brand-hover",    "light": "#4D4D4D",  "dark": "#EDEDED", "figmaToken": "colorPrimaryBorderHover · P900","usage": "品牌描边悬浮" },
+      "success":     { "var": "--border-success",        "light": "#32E485",  "figmaToken": "colorSuccessBorder · G600" },
+      "warning":     { "var": "--border-warning",        "light": "#FFB641",  "figmaToken": "colorWarningBorder · O600" },
+      "error":       { "var": "--border-error",          "light": "#FF3135",  "figmaToken": "colorErrorBorder · R600" }
+    },
+    "purple": {
+      "$description": "Golden Purple accent. Used for fill / border / background only. NOT for text. Binding: P600=default, P500=hover, P700=active, P100=bg, P200=bg-hover.",
+      "fill":         { "var": "--purple-fill",          "light": "#722ED1", "figmaToken": "P600" },
+      "fillHover":    { "var": "--purple-fill-hover",     "light": "#9254DE", "figmaToken": "P500" },
+      "fillActive":   { "var": "--purple-fill-active",    "light": "#531DAB", "figmaToken": "P700" },
+      "fillDisabled": { "var": "--purple-fill-disabled",  "light": "rgba(114,46,209,0.22)" },
+      "border":       { "var": "--purple-border",         "light": "#722ED1", "figmaToken": "P600" },
+      "borderHover":  { "var": "--purple-border-hover",   "light": "#9254DE", "figmaToken": "P500" },
+      "bg":           { "var": "--purple-bg",             "light": "#F9F0FF", "figmaToken": "P100" },
+      "bgHover":      { "var": "--purple-bg-hover",       "light": "#EFDBFF", "figmaToken": "P200" },
+      "bgDeep":       { "var": "--purple-bg-deep",        "light": "#D3ADF7", "figmaToken": "P300" },
+      "surfaceL1":    { "var": "--purple-surface-l1",     "light": "rgba(114,46,209,0.12)" },
+      "surfaceL2":    { "var": "--purple-surface-l2",     "light": "rgba(114,46,209,0.18)" },
+      "surfaceL3":    { "var": "--purple-surface-l3",     "light": "rgba(114,46,209,0.36)" }
+    },
+    "status": {
+      "success":   { "var": "--status-success-default", "light": "#20BD6E", "dark": "#129659", "figmaToken": "colorSuccess · Polar Green G700/G800" },
+      "warning":   { "var": "--status-warning-default", "light": "#FFB641", "dark": "#D9912B", "figmaToken": "colorWarning · Calendula Gold O600/O900" },
+      "error":     { "var": "--status-error-default",   "light": "#FF3135", "dark": "#D91E28", "figmaToken": "colorError · Duse Red R600/R800" },
+      "info":      { "var": "--status-primary-default", "light": "#1380ED", "dark": "#0A74DF", "figmaToken": "colorLink · GEEK BLUE B700/B800" },
+      "successBg": { "var": "--status-success-surface-l1", "light": "rgba(32,189,110,0.12)", "dark": "rgba(32,189,110,0.12)", "figmaToken": "colorSuccessBg · Polar Green G100" },
+      "warningBg": { "var": "--status-warning-surface-l1", "light": "rgba(255,182,65,0.12)",  "dark": "rgba(255,182,65,0.12)", "figmaToken": "colorWarningBg · Calendula Gold O100" },
+      "errorBg":   { "var": "--status-error-surface-l1",   "light": "rgba(255,49,53,0.12)",   "dark": "rgba(255,49,53,0.12)", "figmaToken": "colorErrorBg · Duse Red R100" }
+    },
+    "palette": {
+      "$description": "Raw color palette for reference. Not for direct component use — consume via semantic tokens above.",
+      "primary": {
+        "100": "#F6F6F6", "200": "#EDEDED", "300": "#DEDEDE", "400": "#DDDBDB",
+        "500": "#D9D9D9", "600": "#C5C3C3", "700": "#999696", "800": "#737272",
+        "900": "#4D4D4D", "1000": "#242323", "1100": "#000000"
+      },
+      "neutral": {
+        "N100": "#FFFFFF", "N200": "#F5F7FA", "N300": "#F0F2F5", "N400": "#EBEDF0",
+        "N500": "#E6E8EB", "N600": "#E1E3E6", "N700": "#C4C7CC", "N800": "#95999E",
+        "N900": "#5C6066", "N1000": "#1F2329"
+      },
+      "polarGreen": {
+        "G100": "#F0FFF4", "G200": "#DBFFE7", "G300": "#B3FFCF", "G400": "#88FCB7",
+        "G500": "#5BF09B", "G600": "#32E485", "G700": "#20BD6E", "G800": "#129659",
+        "G900": "#087043", "G1000": "#044A2E"
+      },
+      "duseRed": {
+        "R100": "#FFF2F0", "R200": "#FFD9D4", "R300": "#FFB2AB", "R400": "#FF8882",
+        "R500": "#FF5C59", "R600": "#FF3135", "R700": "#D91E28", "R800": "#B3101E",
+        "R900": "#8C0615", "R1000": "#660312"
+      },
+      "calendulaGold": {
+        "O100": "#FFFCF0", "O200": "#FFF8E3", "O300": "#FFEBBA", "O400": "#FFDC91",
+        "O500": "#FFCA69", "O600": "#FFB641", "O700": "#D9912B", "O800": "#B36E1B",
+        "O900": "#8C4F0E", "O1000": "#663609"
+      },
+      "geekBlue": {
+        "B100": "#E5F2FF", "B200": "#D9ECFF", "B300": "#BCDDFF", "B400": "#8EC6FF",
+        "B500": "#5AACFF", "B600": "#339CFF", "B700": "#1380ED", "B800": "#0A74DF",
+        "B900": "#0263C6", "B1000": "#0559AE"
+      },
+      "goldenPurple": {
+        "$note": "Available for future brand accent usage. Not currently in semantic tokens.",
+        "P100": "#F9F0FF", "P200": "#EFDBFF", "P300": "#D3ADF7", "P400": "#B37FEB",
+        "P500": "#9254DE", "P600": "#722ED1", "P700": "#531DAB", "P800": "#391085",
+        "P900": "#22075E", "P1000": "#120338"
+      }
+    }
+  },
+  "doNotInvent": [
+    "Do not use hex values not listed in this token file",
+    "Do not create new spacing values outside the defined spacer scale",
+    "Do not use font-size values not in the typography.styles table",
+    "Do not use font-weight values other than 400 / 500 / 600",
+    "Do not reference goldenPurple palette unless explicitly instructed",
+    "Always use CSS variable syntax: var(--token-name) in component HTML",
+    "For dark mode, always use [data-theme=\"dark\"] on <html> element",
+    "Never hardcode color hex in component CSS when a semantic token exists"
+  ],
+  "quickReference": {
+    "primaryButton": "background: var(--bg-brand); color: var(--text-onbrand); border-radius: var(--radius-lg);",
+    "secondaryButton": "background: transparent; border: 1px solid var(--border-neutral-l2); color: var(--text-default);",
+    "inputField": "background: var(--bg-base-default); border: 1px solid var(--border-neutral-l1); color: var(--text-default);",
+    "card": "background: var(--bg-base-default); border: 1px solid var(--border-neutral-l1); border-radius: var(--radius-lg);",
+    "pageBackground": "background: var(--bg-base-default);",
+    "sidebarBackground": "background: var(--bg-base-secondary);",
+    "bodyText": "color: var(--text-default); font-size: 13px; font-weight: 400; line-height: 20px;",
+    "captionText": "color: var(--text-tertiary); font-size: 12px; font-weight: 400; line-height: 18px;"
+  }
+}
